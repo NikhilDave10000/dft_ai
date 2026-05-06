@@ -1,0 +1,60 @@
+COMMAND: set_physical_db
+
+TITLE:
+set_physical_db
+
+DESCRIPTION:
+This command sets the parameters for creating, validating, and opening the PHDS database, and connecting TestMAX ATPG diagnostics to the PHDS database.
+
+SYNTAX:
+set_physical_db [-create_phds | -nocreate_phds] [-database dirpath] [-device { name version }] [–def_directory dirpath] [-hostname name] [-lef_directory dirpath] [-password name] [-phds_validation_file file_name] [-port_number number] [-retry_connection { max_attempts time_between_attempts }] [-technology_lef_file { tech_file_names } | -notechnology_lef_file] [-top_def_file filename] [-top_design top_design_name] [-user name] [-validation | -novalidation]
+
+OPTIONS:
+-create_phds | -nocreate_phds : Enables or disables the creation of the PHDS database. The PHDS database is created by
+            default. If you do not want to create the PHDS database, use the -nocreate_phds option. If you previously used the set_physical_db -nocreate_db command, and want to create the full PHDS database in a
+            subsequent run, use the -create_phds option
+-database dirpath : Specifies the output directory for the PHDS database. This option enables TestMAX ATPG
+            diagnostics to open a connection with the PHDS database.
+–def_directory dirpath : Specifies the directory containing the DEF files used for building the PHDS
+            database.
+-device { name version } : Specifies the name and version of the design used for establishing a connection with
+            the PHDS database. The parameters must be specified in Tcl list format. For example: set_physical_db -device {DES 4}
+-hostname name : Specifies the name of the machine on which to connect to the PHDS database. This
+            machine must have a process called DAPListener, which is launched by the open_physical_db command.
+-lef_directory dirpath : Specifies the directory containing the LEF files used for building the PHDS
+            database.
+-password name : Specifies the password for connecting to the PHDS database created by Yield
+            Explorer.
+-phds_validation_file file_name : Specifies the name of a file containing validation information (Y rule violations) from
+            a previous session.
+-retry_connection { max_attempts time_between_attempts } : Changes the number of maximum connection attempts and the time between attempts in
+            seconds. The following example sets the maximum number to 100 and the time in between
+            attempts at 60s. BUILD-T> set_physical_db -retry_connection {100
+              60}
+-port_number number : Establishes a connection to the PHDS database by specifying the port number of the host
+            in which TestMAX ATPG is running. The default port number is 9998. This is an option
+            specification that you make before opening the physical database (using the open_physical_db command). However, you must specify the port number to connect to an existing PHDS
+            connection (using the set_physical_db -hostname command).
+-technology_lef_file { tech_file_names } |
+          -notechnology_lef_file : Specifies the name(s) of a LEF technology file(s) to use for creating the PHDS
+            database. By default, TestMAX ATPG automatically uses a single LEF technology file if
+            that file has the string "tech" embedded in its name. The -notechnology_lef_file option clears any previously specified list of
+            LEF technology files.
+-top_def_file filename : Specifies the name of the top-level DEF file to use when the LEF/DEF database contains
+            multiple DEF files. set_physical_db -top_def_file top_def_file
+-top_design top_design_name : Specifies the name of the top design to use as a basis for creating or validating the
+            PHDS database.
+-user name : Specifies the user login name for connecting to the PHDS database created by Yield
+            Explorer.
+-validation | -novalidation : Enables or disables the PHDS database validation process. The validation is run by
+            default. If you want to create the PHDS database without validating it, use the -novalidation option. If you previously used the set_physical_db -novalidation command , but want to validate the PHDS database in a
+            subsequent run, use the -validation option. For related information,
+            see the "Category Y - PHDS Rules" topic.
+
+EXAMPLES:
+set_physical_db -lef_directory ./lef –def_directory ./def
+set_physical_db -top_def_file top_design.def
+set_physical_db -database ./phds
+set_physical_db -device [list DES 4]
+write_physical_db -replace –verbose
+

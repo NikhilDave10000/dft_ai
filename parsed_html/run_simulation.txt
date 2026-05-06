@@ -1,0 +1,156 @@
+COMMAND: run_simulation
+
+TITLE:
+run_simulation
+
+DESCRIPTION:
+Use this command to perform simulation of the current pattern source determined by the set_patterns command and report any differences between simulated and expected values..
+
+SYNTAX:
+run_simulation [-bridge <wand | wor | adom | bdom <nodea> <nodeb>>] [-cell_aware_fault " path/instance_name defect_id " [-compare_x | -nocompare_x] [-disable_masking] [-failure_file file_name] [-fast <<<r | f | rf> < chain_name position >+>] [-last_pattern d] [-max_fails d] [-nocompare] [-nox_difference] [-override_differences] [-parallel_strobe_data_file filename] [-replace] [-resolve_differences] [-sequential] [-sequential_update] [-slow <<<r | f | rf> < pathname | chain_name position >>+>] [-stuck <<<0 | 1 | 01 | x> < pathname | chain_name position >>+>] [-store] [-subnet subnet_id] [-update]
+
+OPTIONS:
+-bridge <wand | wor | adom | bdom nodea nodeb > : This option injects a bridging fault in the functional logic; only one injection is
+            possible. Note that injection of bridging defect in a scan chain is not possible: only
+            one injection is possible. More specifically, if the internal pattern buffer is empty,
+            this will simulate the patterns in the external buffer as if a bridging fault exists
+            between the two specified pinpaths, referred to as nodea and nodeb . The pinpaths must be output pins of nonscan cells. The
+            supported bridge types are wired-AND (WAND), wired-OR (WOR), pinpathA dominating
+            pinpathB (aDom) or pinpathB dominating pinpathA (bDom). For dominant faults, the victim
+            node takes on the value of the dominating (aggressor) node. The fault is assumed to not
+            affect the load_unload operation. The output will display the mismatches caused by the
+            presence of the fault. This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide .
+-cell_aware_fault path/instance_name defect_id : Injects an internal cell defect based on the specified path, instance name and
+            associated defect ID, as shown in the following example: run_simulation -failure_file [list outfile1 outfile2] -cell_aware_fault
+              instance_name1 defect_ID1 –replace For more information, see "Cell-Aware Diagnosis."
+-compare_x | -nocompare_x : Checks all X values in the compared pattern data against the X values in the simulated
+            results and reports any differences. The default is to not compare X values (the -nocompare_x option). By default, X values are treated as no-measure
+            conditions and any differences in X states are ignored. The -compare_x option is incompatible with the set_po_masks -all command because this
+            option identifies mismatches with all known simulated results due to the use of an X
+            value as a mask or no-measure operation. This option is valid only for library
+            validation flows.
+-disable_masking : Enables you to automatically disable or ignore all user-defined masks during the good
+            machine simulation. All capture and observable masks, along with disturbed clock
+            grouping and contention checks, are disabled during this operation (this does not
+            include PO measures). The assumption is that the patterns will pass on the tester. In
+            this case, only X measures from the external patterns have to be taken into account
+            during the simulation. The -disable_masking option will typically remove a large number of
+            simulation mismatches. However in some cases, a few mismatches may still exist. In this
+            situation, you will need to take into account the remaining X measures and update the
+            patterns accordingly; this is the purpose of the -resolve_differences option.
+-failure_file file_name : Writes all failure data to the specified file. This option forces a fast-sequential
+            mode simulation of the basic scan patterns, which affects the behavior of the faults.
+            The behavior difference reflects the differences between the fast-sequential and basic
+            scan simulators.
+-fast <<<r | f | rf> < chain_name position >+> : If the internal pattern buffer is empty, this option will simulate the patterns in the
+            external buffer as if transitions arrive too early at the specified scan cell during the
+            load_unload procedure. The fast fault types are similar to hold time violations. They
+            can be fast-to-rise (r), fast-to-fall (f) or fast-to-rise-fall (rf). The scan cell is
+            identified by the chain name and the position in the scan chain. Position 0 is the one
+            closest to the scan-out port. The output will display the mismatches caused by the
+            presence of the fault. Note that this option can be used to inject chain defects only.
+            It is not possible to inject the same fault type in functional logic. The -fast option supports multiple arguments of the same type. Up to
+            two chain faults can be specified in different scan chains. This option switches to non-threaded processing. For more information, see TestMAX
+            ATPG Multithreading Command Option Support.
+-last_pattern d : Specifies a subset of the current pattern set on which to perform simulation. When this
+            option is used, simulation is performed from the first pattern, pattern 0, through the
+            last pattern specified by the d integer.
+            The default is to perform simulation on all patterns.
+-max_fails d : Specifies a limit on the number of simulated data vs. expected data failures to allow
+            before stopping the simulation. The default is no limit. However, TestMAX ATPG displays
+            all failures for the last failing pattern even if it exceeds this limit.
+-nocompare : Disables the comparison of simulated data to expected data. The default is to perform
+            comparisons.
+-nox_difference : Specifies that a simulated value of X on an output or bidirectional port, when the
+            expected data is not X, should not be considered a failure. This option applies only to
+            the simulation of basic scan or sequential scan patterns and is ignored when sequential
+            simulation is specified using the -sequential option. The default is to
+            treat X differences as failures.
+-override_differences : This option updates an existing pattern set but only replaces certain measure values.
+            It does not replace X values. Instead, it replaces 0/1 and 1/0 mismatches by the
+            simulated boolean values. This option is useful for ECO changes.
+-parallel_strobe_data_file file_name : Generates an enhanced parallel strobe data (PSD) file used for debugging parallel
+            simulation failures using the CPV flow. The PSD file supports the backward compatibility
+            of an existing STIL file. For details, see "Using the run_simulation Command to Create a
+            PSD File in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide ."
+-replace : Allows an existing file to be overwritten. The default is not to overwrite an existing
+            file.
+-resolve_differences : This option updates the external pattern sets without re-running ATPG. It performs a
+            simulation of a pattern set in the external pattern buffer. Any differences between the
+            expected values listed in the pattern set and the obtained simulation values will cause
+            the mismatched value in the pattern to be replaced by an X. The modified pattern set
+            will remain in the external pattern buffer. All cases are supported, including 0 -> 1, 0 -> X, 1 -> 0, 1->X. In addition, you can use the -disable_masking option to reduce the
+            number of X (unknown) simulation values. This approach might reduce the number of added
+            X measures in the external pattern buffer with the assumption that the initial pattern
+            set will pass on the tester.
+-sequential : Invokes a standalone simulator meant to be used only for functional or partial scan
+            patterns. This simulator is event-driven like VCS and designed for very fast simulation
+            of nonscan-based patterns. Note: For TestMAX ATPG-generated patterns, it is recommended that you use the run simulation command without any options since TestMAX ATPG will
+            automatically use the appropriate simulation algorithm based on the type of pattern
+            input -- whether it is basic-scan or fast-sequential. This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide .
+-sequential_update : Equivalent to specifying the -sequential and -update options simultaneously. This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide ..
+-slow <<<r | f | rf> < pathname | chain_name position >>+> : If you use the arguments -slow <r | f | rf> pathname and the internal pattern buffer is
+            empty, this will simulate the patterns in the external buffer as if the specified pin
+            has a rising (r), falling (f) or rising-falling (rf) system clock transition fault. A
+            rising-falling transition fault will delay both rising and falling transitions. The
+            fault is assumed to not affect the load_unload operation. The output will display the
+            mismatches caused by the presence of the fault. The transition fault types are rising
+            (r), falling (f) or rising-falling (rf). A rising-falling transition fault will delay
+            both rising and falling transitions. Note that the arguments -slow <r | f |
+              rf> pathname are not supported in
+            Full-Sequential mode. The arguments -slow <r | f | rf> chain_name pos_number will simulate the patterns in the external buffer as if a slow-to-rise, fall or
+            rise-fall fault is affecting the specified scan cell during the load_unload procedure.
+            The scan cell is identified by the chain name and the position in the scan chain.
+            Position 0 is the one closest to the scan-out port. The -slow option does not support multiple arguments of the same type
+            for logic defects. For chain defects, up to two chain faults can be specified in
+            different scan chains. This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide ..
+-store : Specifies that all patterns are to be stored in the internal pattern set as simulation
+            progresses. This option is ignored if the pattern source is set to internal or if the -sequential option is used. This option is not supported for
+            Full-Sequential patterns. The default is not to store patterns.
+-stuck <<<0 | 1 | 01 | x> pathname | chain_name position >>+> : This option injects a stuck-at fault in functional logic or a chain. To inject a logic
+            defect, you should specify the path name. To inject a chain defect, you should specify
+            the chain name and position. For a chain defect, if the internal pattern buffer is empty, this option will simulate
+            the patterns in the external buffer as if a stuck-at fault is affecting the specified
+            scan cell during the load_unload procedure. The scan cell is identified by the chain
+            name and the position in the scan chain. Position 0 is the one closest to the scan-out
+            port. The output will display the mismatches caused by the presence of the fault. For a logic defect, there are four types of fault behavior that you can select:
+            stuck-at-0 (O), stuck-at-1 (1), stuck-at-01 (01), and stuck-at-X (X). For the
+            stuck-at-01 fault type, the value is fixed either to 0 or 1 for each pattern for all
+            affected fanout branches. For the stuck-at-X fault type, the value is fixed either to 0
+            or 1 for each time frame for all affected fanout branches. All affected fanout branches
+            have the same value. For a chain defect, you can select any fault type except for stuck-at-01. For a logic defect, If the internal pattern buffer is empty, this option will simulate
+            the patterns in the external buffer as if the specified pin has a stuck-at 0 or 1 or 01
+            fault. A stuck-at 01 fault is activated with either a 0 or 1 good circuit value. The
+            fault(s) are assumed to not affect the l oad_unload operation. The
+            output will display the mismatches caused by the presence of the fault(s). The -stuck option supports multiple arguments of the same type. You
+            can specify a maximum of ten logic faults for different pins, however only one injection
+            is supported for a stuck-at-01 logic defect. Only one fault per chain can be injected at
+            a time. Simulating two or more faults on the same chain will cause TestMAX ATPG to exit
+            with an error. To inject two separate defects include both injections in the same -stuck option bracket, as shown in the following example: run_simulation -stuck {0 100 42 0 423 20} This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide ..
+-subnet subnet_id : Specifies the subnet ID ( subnet_id ) to indicate where to inject the
+            subnet fault. The subnet ID should be in the range of the defined ID. The following example shows how to inject a fault on a subnet: run_simulation -stuck {01/X net_driver –subnet n} Note that the -subnet option must be specified within the node
+            definition and between brackets.
+-update : Updates the responses from test in memory. This option can be used only in conjunction
+            with the -sequential option. You can write out the new responses from
+            simulation with the write_patterns command. This option switches to non-threaded processing. For more information, see TestMAX ATPG
+            Multithreading Command Option Support in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide .
+
+EXAMPLES:
+TEST-T> run_simulation -sequential
+ Begin sequential simulation of 36 external patterns.
+  10 o_y2 (exp=1, got=0)
+  20 o_y10 (exp=1, got=0)
+ Simulation completed: #patterns=36/102, #fail_pats=2(0), #failing_meas=2(0), CPU time=0.05
+

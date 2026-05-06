@@ -1,0 +1,32 @@
+COMMAND: test
+
+TITLE:
+test
+
+DESCRIPTION:
+This command changes the session to TEST command mode, where fault simulation and test generation can be performed.
+
+SYNTAX:
+test
+
+EXAMPLES:
+TEST> drc
+ Warning: Internal pattern set is now deleted.
+ DRC> test
+ ------------------------------------------------------------------------
+ Begin scan design rule checking...
+ Begin simulating sg0 load_unload proc...
+ Begin clock rules checking...
+         .
+         .
+         .
+ ------------------------------------------------------------------------
+ DRC Summary Report
+ ------------------------------------------------------------------------
+ Warning: Rule V16 (miscounted formal parameters) failed 2 times.
+ Warning: Rule S19 (nonscan cell disturb) failed 2 times.
+ There were 4 violations that occurred during DRC process.
+ Design rules checking was successful, CPU time=0.66 sec.
+ ------------------------------------------------------------------------------
+ TEST>
+

@@ -1,0 +1,29 @@
+COMMAND: report_idus
+
+TITLE:
+report_idus
+
+DESCRIPTION:
+Generates a report containing data for the specified Instruction Decode Unit (IDU).
+
+SYNTAX:
+report_idus< idu_name\ -all \ -cells idu_reg_name \ -instruction_register \ -reg_positions \ -summary> [-verbose]
+
+OPTIONS:
+idu_name : You can specify a report related to a particular IDU by providing
+              name -idu_name .
+-all : This option is used to report for all the IDUs.
+-cells idu_reg_name : This option is used to report the given register of an IDU (specified -idu_name or -all to report for all IDUs).
+-instruction_register : This option is used to report the instruction register of an IDU (specified -idu_name or -all to report for all IDUs).
+-reg_positions : This is used to report the position Id’s of registers of an IDU (specified -idu_name or -all to report for all IDUs).
+-summary : This is used to report the summary of an IDU (specified -idu_name or -all to report for all IDUs).
+-verbose : This reports the data in verbose mode.
+
+EXAMPLES:
+TEST-T> report_idus -cells cumulative_codec_enable idu
+ Cumulative_codec_enable cell report: length=3, codec_enable_value=1
+     chain              cell  type     inv   gate#  instance_name (type)
+     codec_drc_chain    1790  C1        NN   22991  U_DFT_TOP_IP_0/U_dft_ipInst_1/U_selftestcontroller/accu_codec_enable_reg_inst/\shift_reg_reg[0] (FD2)
+     codec_drc_chain    1791  C1        NN   22990  U_DFT_TOP_IP_0/U_dft_ipInst_1/U_selftestcontroller/accu_codec_enable_reg_inst/\shift_reg_reg[1] (FD2)
+     codec_drc_chain    1792  C1        NN   22989  U_DFT_TOP_IP_0/U_dft_ipInst_1/U_selftestcontroller/accu_codec_enable_reg_inst/\shift_reg_reg[2] (FD2)
+

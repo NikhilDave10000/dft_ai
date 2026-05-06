@@ -1,0 +1,260 @@
+COMMAND: set_patterns
+
+TITLE:
+set_patterns
+
+DESCRIPTION:
+Use this command to select the source of patterns to use for simulation, fault simulation, or test generation.
+
+SYNTAX:
+set_patterns [-adjacent | -discontiguous] [-append] [-delete] [-internal | -random |  -external filename] [-cycle_count | -nocycle_count] [-keep_dictionary] [-histogram_summary | -nohistogram_summary] [-load_summary | -noload_summary] [-netlist_independent | -nonetlist_independent] [-novcd_clock |vcd_clock <auto | <0|1> port >] [-resolve_differences failures_log file] [-sensitive | -insensitive] [-split_patterns] [-strobe_comments] [-strobe_period < d <fs|ps|ns|us|ms|s>>] [-strobe_rising port_name] [-strobe_falling port_name] [-strobe_event port_name] [-strobe_offset < d <fs|ps|ns|us|ms|s>>] [-verbose]
+
+OPTIONS:
+-adjacent | -discontiguous : These options are used only when the -external and -append options of the set_patterns command are
+            specified. The default, the -append option, assumes that the current
+            appended pattern block is generated in sequential order from the previously appended
+            pattern set. The -discontiguous option is used when reading patterns
+            that add initial patterns that are not generated in sequential order or are appended in
+            a different order than the previously appended pattern set.
+-append : This option must be used with the -external option
+              ( set_patterns -external filename -append ). It reads the external pattern file and appends the patterns to any
+            existing patterns in the internal pattern buffer. TestMAX ATPG renumbers the patterns
+            based on their order of occurrence in the new internal pattern set.
+-delete : Deletes all current internal and external patterns before reading external patterns or
+            switching the pattern source.
+-internal | -random | -external filename : These options indicate the pattern source: -internal specifies that the pattern source is internally
+            generated. -random specifies that the pattern source is random (defined by the
+            parameters set with the set_random_patterns command). TestMAX ATPG does not
+            support good machine simulation of a random pattern source if you select the -nobasic_scan option of the set_simulation command. -external specifies that the pattern source is an external file. The
+            file formats accepted are binary, extended VCD, and limited-syntax forms of STIL,
+            Verilog, VHDL, and WGL. TestMAX ATPG reads only the syntax and format similar to what it
+            writes. Use binary formats whenever possible to read patterns into TestMAX ATPG. Other pattern
+            formats such as WGL and STIL have limited capabilities to store all data about the
+            patterns. For example, when you read a STIL or WGL pattern file back, TestMAX ATPG might
+            interpret a fast-sequential pattern as a full-sequential pattern.
+-cycle_count | -nocycle_count : By default, cycle counting will always occur on execution of the set_patterns
+              -external command with a cycle-formatted file. Should this option cause
+            problems, it can be disabled with the command -nocycle_count option. The cycle count must be generated when reading external patterns. This is the only
+            mechanism to identify cycles relative to the actual formatted (cyclized) data used at
+            test. This allows for test formatting changes to be properly interpreted and used as the
+            basis for identifying failing patterns and offsets. For example, if the final test
+            program adds a cycle into the load_unload procedure at test, then reading this modified
+            test data back into the set_patterns -external command creates a
+            properly referenced baseline for interpretation of the cycle offset data in the failure
+            file.
+-histogram_summary | -nohistogram_summary : Selects additional reporting for the report_summaries command that displays a histogram of the
+            number of N-cycle patterns as well as the number of N-load patterns.
+-keep_dictionary : Retains the current dictionary when reading in an external pattern set during
+            diagnostics. For more information, see Using a Dictionary for Diagnositcs.
+-load_summary | -noload_summary : Selects additional reporting for the report_summaries command that displays the total number of
+            scan loads used by the basic-scan and fast-sequential patterns.
+-netlist_independent | -nonetlist_independent : If you specify the -netlist_independent option when the DRC file has
+            the design in the adaptive scan mode, any subsequent "write patterns" in binary format
+            create a special pattern file that can be used to translate adaptive scan patterns so
+            they can be used in scan mode for improved diagnostic resolution (no compression). This
+            special pattern set must be read back in after a scan mode DRC file is read in for the
+            user-transparent translation to occur. After the patterns are read back, a simulation is
+            done internally to compute the expected values to complete the translation process. The
+            translated scan mode patterns can then be written out. The default is -nonetlist_independent . Note that the netlist-independent binary patterns do not store response data. This is
+            necessary if they are to be truly netlist-independent. When TestMAX ATPG reads the
+            netlist-independent patterns back in, it simulates them to determine the proper response
+            data for the current netlist. Note also that this means that the timing exceptions need
+            to be in place at the time the netlist-independent patterns are read into TestMAX ATPG,
+            as the effect of the exceptions will not otherwise show up in the pattern response
+            data.
+-novcd_clock |vcd_clock <auto | <0|1> port > : When the pattern source is extended VCD, it is possible to recognize clock events in
+            the pattern stream and convert them into a single pattern event that pulses a clock
+            rather than retain them as multiple events corresponding to clock off, then clock on,
+            then clock off. This reduces the size of the patterns after they are read into TestMAX
+            ATPG, and might result in faster simulation, fault grading, and reduced memory needs. By
+            default, no clocks are defined when reading VCDE patterns. -vcd_clock auto passes the known clocks are passed to the pattern
+            reader for event collapsing and clock recovery. Use the -vcd_clock auto option if clocks have already been defined for the current design. -vcd_clock <0|1> port defines clocks
+            (if you have not already defined them using the add_clocks command) or creates a subset list of clocks for
+            clock recovery efforts. -novcd_clock disables automatically passing the known list of clocks
+            to the pattern reader. Note: If you define clocks, TestMAX ATPG checks the patterns for unsupported
+            events such as PO measures while clocks are active, PI changes while clocks are active,
+            multiple clocks on simultaneously that do not have the exact same start time and
+            duration. If any of these events occur, TestMAX ATPG displays a warning message and
+            abandons the event collapsing effort for the pattern.
+-resolve_differences failures_log_file : This option is used to update the external pattern sets without re-running ATPG. It
+            resolves tester failures or simulation failures — that is, it performs per-cycle pattern
+            masking. This option does not cause a simulation of the patterns. It simply reads a failure file
+            showing mismatches and places an X in the pattern set located in the external pattern
+            buffer ( -external file_name ) in the
+            position of each of the mismatches. The presumption is that the pattern set has had
+            either Verilog simulation mismatches or failures on the ATE, and the failure file
+            contains a record of these mismatches/failures. All formats used in diagnosis are supported. Support includes both scan and adaptive
+            scan patterns. After masking, the updated patterns could be fault simulated using run_fault_sim and written out to
+            be run on the tester. For related information, please see Updating Pattern Sets Without Re-Running ATPG.
+-sensitive | -insensitive : Specifies case sensitivity for the pattern file. By default, TestMAX ATPG determines
+            the case-sensitivity based on the language: case-insensitive for EDIF and VHDL, or
+            case-sensitive for STIL, Verilog, and Extended VCD.
+-split_patterns : When this option is specified, the patterns from the specified file are appended to the
+            patterns already in the external pattern buffer if the previous set_patterns
+              -external command also used the -split_patterns option. If
+            there are patterns in the external buffer that were not placed there by using the -split_patterns option, the existing patterns in the external buffer
+            are first deleted. TestMAX ATPG will store some data regarding the pattern offset and
+            pattern file names for use during diagnosis. The pattern file names must be unique when
+            the hierarchical directory name is removed. Multiple pattern files can be read into the external pattern buffer for diagnosis by
+            issuing the following command sequence: set_patterns -external pat1.bin –split_patterns set_patterns -external pat2.bin –split_patterns During the execution of the set_patterns -split_patterns command, a
+            report of each pattern file read in is displayed. It includes the pattern file name and
+            the pattern range considered during diagnosis. The cycle range of the patterns
+            considered for diagnosis is displayed, if available. The line is highlighted in bold in
+            the examples shown below: TEST> set_patterns -external split_pattern/prog.stil_0.gz -split End parsing
+              STIL file split_pattern/prog.stil_0.gz with 0 errors. End reading 5 patterns, CPU_time
+              = 0.01 sec, Memory = 0MB Pattern_file=prog.stil_0.gz, basic_scan=[0(3),4(66)],
+              fast_sequential=[-1,-1] TEST> set_patterns -external split_pattern/prog.fast.stil_0.gz -split End
+              parsing STIL file split_pattern/prog.fast.stil_0.gz with 0 errors. End reading 5
+              patterns, CPU_time = 0.01 sec, Memory = 0MB Pattern_file=prog.stil_0.gz,
+              basic_scan=[0(3),4(66)], fast_sequential=[-1,-1] Pattern_file=prog.fast.stil_0.gz,
+              basic_scan=[-1,-1], fast_sequential=[5(82),9(150)] In the previous example, the pattern ranges noted [-1, -1] means that
+            no pattern of this type has been read in. The text [0(3),4(66)] indicates the pattern
+            and cycle range read for the first pattern file. The first pattern is number 0 and it
+            starts at cycle 3. The last pattern is number 4 and it starts at cycle 66. the text
+            [5(82),9(150)] indicates the pattern and cycle range read for the second pattern file.
+            The first pattern is number 5 and it starts at cycle 82. The last pattern is number 9
+            and it starts at cycle 150.
+-strobe_comments-strobe_period < d <fs|ps|ns|us|ms|s>> -strobe_rising port_name -strobe_falling port_name -strobe_event port_name -strobe_offset < d <fs|ps|ns|us|ms|s>> : Use these options when reading an external pattern source, which is Extended VCD
+            (VCDE). These options define a trigger condition for measuring expected values based
+            upon events at a primary input, output, or bidirectional port. The -strobe_offses option acts as a qualifier on the trigger choice. The port_name is any input, output, or bidirectional port in the
+            current top module. The -strobe_rising , -strobe_falling , -strobe_event , -strobe_period , and -strobe_comment options are mutually exclusive; you can specify only
+            one of these options. You cannot combine the -strobe_offset option with
+            the -strobe_comments option. The -strobe_rising option triggers a measure whenever an event, for
+            which the specified port changes to a logic one, occurs. This includes the transitions
+            0->1, 1->1, X->1, Z->1. Without an offset, TestMAX ATPG inserts the measure before
+            processing the pattern event that caused the trigger. With a non-zero offset, TestMAX
+            ATPG inserts the measure at the specified time offset after the time of the trigger. The -strobe_falling and -strobe_event options are
+            similar to the rising option. The -strobe_falling option causes a
+            trigger for any event, which changes the named port to a logic 0. The -strobe_event option causes a trigger for any event on the named
+            port, including transition with no level change such as 1->1 or 0->0. You can combine
+            both the falling and event option with the strobe offset. The -strobe_period option defines a repeating time interval at which
+            TestMAX ATPG inserts a measure into the external pattern set. The VCDE data file
+            specifies the expected values, but the strobe period specifies the time of measure. The d value represents a nonzero positive integer. FS | PS | NS | US | MS|S specify
+            units of time: fs = femtoseconds, ps = picoseconds, ns = nanoseconds, us = microseconds,
+            ms = milliseconds, and s = seconds. You can combine -strobe_offset with -strobe_rising , -strobe_falling , -strobe_event , or -strobe_period . Use the offset to adjust the measure point in the
+            external patterns relative to the trigger event. Like the -strobe_period option, the -strobe_offset option requires an integer and a unit of time. This
+            integer can be zero. If you do not define an offset, TestMAX ATPG considers it as an offset of zero. An
+            offset of zero means that TestMAX ATPG inserts the measure before the trigger event and
+            before processing the VCDE data changes that caused the trigger event. When you use -strobe_offset in conjunction with -strobe_period , then the offset defines the offset from time=0 in the
+            pattern stream at which TestMAX ATPG starts the first measure. For example,
+              " -strobe_period {200 ns} -strobe_offset {399 ns} " causes the first
+            measure to occur at absolute time of 399 ns and at 200 ns intervals thereafter, or at
+            the intervals 399, 599, 799, 999 ... If you specify a strobe period without any strobe offset, then TestMAX ATPG inserts the
+            first measure at an offset just before the period. For example, -strobe_period
+              {100 ns} produces a measure at times 100, 200, 300, 400... If you use a strobe offset in conjunction with a rising, falling, or event trigger,
+            then once a data event on the specified port causes the trigger, TestMAX ATPG ignores
+            any additional events on that port until the offset time elapses. If a strobe offset occurs simultaneously with events in the pattern data, then TestMAX
+            ATPG inserts the measure point before processing the event data. Use the -strobe_comments option to indicate the location of measure
+            points in the VCDE file with the location of ($comment ... $end blocks
+            as markers for measure points. For best results use the comment blocks at #NNNNN event
+            times by themselves; do not combine with any other PI or expected PO changes. You cannot
+            combine the comments option with any other -strobe option. Note: When you use this option, any comment block in the event stream will
+            trigger a strobe or measure operation. The operation is insensitive to the contents of
+            the comment block.
+-verbose : This option lists all unused primary inputs and scan cells due to DRC differences
+            between compression and regular scan mode when reading netlist-independent patterns.
+
+EXAMPLES:
+TEST> set_patterns -delete
+			
+ Warning: Internal pattern set is now deleted. (M133)
+			
+
+TEST> set_patterns -random
+			
+
+TEST> set_patterns -external b010.vi1
+			
+ End parsing Verilog file b010.vi1 with 0 errors;
+			
+ End reading 36 patterns, CPU_time = 5.38 sec, Memory = 28MB
+			
+
+TEST> set_patterns -external func_pat.vcde -strobe_offset {95 ns} -strobe_period {100 ns
+			}
+ End reading 83 patterns, CPU_time = 1.91 sec, Memory = 84MB
+			
+
+TEST> set_patterns -external data.vcde -strobe_rising CLK -strobe_offset {50 ns}
+ End reading 752 patterns, CPU_time = 9.41 sec, Memory = 244MB
+			
+
+TEST> set_patterns -external func_fifo2.vcde -strobe_period {100 ns} -strobe_offset {40 ns
+			}
+   -vcd_clock 0 clk1 -vcd 0 clk2 -vcd 0 clk3
+			
+ End reading 169 patterns, CPU_time = 3.21 sec, Memory = 12MB
+			
+
+TEST> set_patterns -external chk2_fifo.vcde \\
+			
+  -strobe_period {100 ns} -strobe_offset {90 ns} -vcd_clock auto
+			
+ Note: adding -vcd_clock 0 c1
+			
+ Note: adding -vcd_clock 0 c2
+			
+ Note: adding -vcd_clock 0 c3
+			
+ End reading 52 patterns, CPU_time = 3.90 sec, Memory = 9MB
+			
+
+TEST> report_summaries patterns
+			
+            Pattern Summary Report
+			
+ -----------------------------------------------
+			
+ #internal patterns 66
+			
+     #basic_scan patterns 19
+			
+     #fast_sequential patterns 47
+			
+ -----------------------------------------------
+			
+TEST> set_patterns -histogram_summary
+			
+TEST> report_summaries patterns
+			
+            Pattern Summary Report
+			
+ -----------------------------------------------
+			
+ #internal patterns 66
+			
+     #basic_scan patterns 19
+			
+     #fast_sequential patterns 47
+			
+          # 2-cycle patterns 7
+			
+          # 3-cycle patterns 24
+			
+          # 4-cycle patterns 16
+			
+          # 2-load patterns 14
+			
+          # 3-load patterns 33
+			
+ -----------------------------------------------
+			
+
+TEST> set_patterns -load_summary
+			
+TEST> report_summaries patterns
+			
+            Pattern Summary Report
+			
+ -----------------------------------------------
+			
+ #internal patterns 66
+			
+     #basic_scan patterns 19
+			
+     #fast_sequential patterns 47
+			
+     Total #loads 146
+			
+ -----------------------------------------------
+

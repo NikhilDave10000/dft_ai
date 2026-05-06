@@ -1,0 +1,149 @@
+COMMAND: add_clocks
+
+TITLE:
+add_clocks
+
+DESCRIPTION:
+Use this command to specify and define clocks.
+
+SYNTAX:
+add_clocks <0 | 1> { pin_names_list } [-intclock] [-cycle { cycle_id <-always on | -always off> | <int_node_name <0 | 1>>}] [-master_observe] [-pllclock] [-pll_shift] [-refclock] [-ref_timing { period LE TE }] [-shift] [-timing { period LE TE measure_time }] [-unit <ps | ns>]
+
+OPTIONS:
+0 | 1 : Specifies the off state of the clock. The off state is the logic level (either 0 or 1 ) for which the clock port is inactive. It
+            results in holding the state of sequential devices such as flip-flops, latches, or RAMs.
+            An active-high clock has an off state of 0 and an active-low clock has
+            an off state of 1.
+pin_names_list : Specifies the port name that should be treated as a clock. You can specify multiple
+            port names using a single command, but they must all share the same off state. Any backslash that is embedded within a Tcl list is automatically
+            stripped. The following two examples show how to overcome this situation: Use a double-backslash, for example: add_clocks 0 {\\A[0] \\B[0]} Use two levels of braces, for example: add_clocks 0 {{\A[0]} {\B[0]}} As an alternative, you can remove backslashes entirely. In this case, TestMAX ATPG
+            commands automatically match specified identifiers that have no backslashes to
+            identifiers in the database that have backslashes.
+-intclock [-cycle { cycle_id <-always on | -always off>| int_node_name <0 | 1 >>}] [-pll_source node_name ] : Defines internal nets as clocks, controlled by the identified scan cell from the clock
+            chain, when you use it with the off state option. Before defining internal clocks, specify the set_drc num_pll_cycles option, which defines the number of PLL clock cycles
+            supported per load. This option defines zero or more control clauses; each clause associates a cycle
+            (zero-based) with one or more conditions. For the clock to be turned on, the selected
+            cycle must meet all conditions simultaneously; even if it does not meet one condition,
+            the clock is turned off. A condition can be always on, always off, or a net name/pin
+            path name followed by either 0 or 1. The conditions must be combinationally justifiable
+            independent of faults effects, so that internal clock control clauses can be
+            pre-calculated, independent of pattern generation. In Tcl mode, you specify only one -cycle for both 0 and
+            1 conditions, as shown in the following example: add_clocks 0 intclk3 -intclock -pll_source pllclk3 \
+  -cycle { 0 clock_chain/cell[3]/Q 1 \
+  1 clock_chain/cell[4]/Q 1 } Also note the following: You should not to use logic added by add_atpg_primitives command
+                for the -cycle argument or you will get unpredictable and probably
+                erroneous results. intclk3 as an internal clock with offstate 0; its PLL
+                source is pllclk3 ; intclk3 is pulsed in cycle 0 when cell 3 of
+                chain clock_chain is 1, and is pulsed in cycle 1 when cell 4 of chain clock_chain is 1. add_clocks 0 intclk1 -intclock -pll_source pllclk3 \
+  -cycle { 0 clock_chain/cell[1]/Q 1 \
+  0 clock_chain/cell[0]/Q 0 \
+  1 clock_chain/cell[2]/Q 1 \
+  1 clock_chain/cell[0]/Q 0 } intclk1 as an internal clock with offstate 0; its PLL source is pllclk3 ; intclk1 is pulsed in cycle 0 when cell 1 of chain clock_chain is 1 and
+                cell 0 is 0 , and is pulsed in cycle 1 when cell 2 of chain clock_chain is 1 and cell 0 is 0 . Internal clocks are used for all capture operations, and
+                normal clock rule checks are applied to these clocks. No external clocks are used
+                for capture when internal clocks are defined. Additional rule checks are done to
+                check the stated correspondence between an internal clock and scan cells from the
+                clock chain. It is valid for a pattern to load the clock-controlling scan cells so that no
+                internal clocks are pulsed, and still have one or more system pulses that pulse the
+                defined external reference clocks. All internal clocks must have the same number of
+                control clauses, corresponding to consecutive cycles, starting with 0 . For example, it is an error to define control clauses for
+                cycles 0 , 1 , and 2 for intclk3 , and to define control clauses only for cycles 0 and 1 for intclk2 . It is also
+                an error to define control clauses for cycles 0 and 2 , but not for cycle 1 . The -always on condition can only be defined for cycle 0 , otherwise scan ATPG
+                cannot be used. The -always on argument cannot be used with the fast-sequential
+                test generator. The -always off argument can be used in conjunction with a
+                clock-chain cycle specification. However, -always on is
+                incompatible with clock chains. TestMAX ATPG supports a legacy controller containing two identical cycles, with each
+            cycle having at least one clock specified as -always on . Individual
+            clock conditioning cannot be used when the -always on argument is used.
+            Because each pattern has two system cycles, chain test and single cycle basic-scan
+            patterns cannot be created. Only optimized two-cycle, transition-fault ATPG can be used
+            in this case. The following examples show how to use the -always on and -always off arguments: add_clocks 0 pll1/PLLCLK -pllclock
+add_clocks 0 pll2/PLLCLK -pllclock
+add_clocks 0 U1/U2/Z -intclock \
+-cycle { 0 -always on \
+1 -always on } \
+-pll_source pll1/PLLCLK
+add_clocks 0 U2/U2/Z –intclock\
+cycle { 0 -always off \
+1 -always off } \
+-pll_source pll2/PLLCLK
+-master_observe : Identifies the clock that is applied in a master_observe procedure. This option only
+            affects the write_drc_file operation if a
+            master_observe procedure was not defined; a template master_observe procedure is defined
+            in the procedures generated from the write_drc_file operation. You should review this
+            template for completeness and appropriateness before using it with the run_drc command
+-pllclock : Defines internal nets as free-running clocks (outputs of PLLs or clock shapers) when
+            you use it with the off state option. These clocks are considered asynchronous to each
+            other and to all other clocks. TestMAX ATPG uses these clocks only during scan design
+            rule checking and PLL-specific clock rule checking. Pattern generation does not consider
+            these clocks. During scan rule checking after the simulation of each rule checking event
+            (for example, an event in the load_unload procedure), TestMAX ATPG
+            simulates the pulses of the free-running PLL clocks until the circuit stabilizes or a
+            user-defined limit is reached.
+-pllshift : Specifies that the clocks to be added are defined as PLL shift clocks. Note that PLL
+            shift clocks are used only for initializing scan cells to X during DRC. The shift
+            process must be driven from an external clock. PLL shift clocks can also be defined in the STL procedure file in the Clocks
+              {} block by using the PLLShift identifier. For example, the
+            following specification defines internal node des_unit_inst/my_clock_controller/U2/Z as a PLL shift clock with
+            off-state 0: Clocks { "des_unit_inst/my_clock_controller/U2/Z" PLLShift { Offstate 0; } ... } The -pll_shift option can also be used to specify internal serializer
+            shift clocks for serialized DFTMAX compression. The serialized DFTMAX architecture
+            usually has a Serializer FSM whose output gates all the external shift clocks to create
+            internal shift clocks used for scan shifting in serialized compression mode. Typically,
+            the gated external shift clocks outputs are specified as internal serializer shift
+            clocks for serialized DFTMAX. This specification is used to initialize scan cells to X
+            during Serializer DRC. You still need to pulse external shift clocks in the STL
+            procedure file to perform scan shifting in Serialized DFTMAX mode.
+-refclock : Defines primary inputs (PIs) or bidirectional ports (PIOs) as PLL reference clocks when
+            you use this option with the off state option. PLL reference clocks are external,
+            free-running clocks necessary to keep the PLLs synchronized. For TestMAX ATPG, these are
+            non-logical clocks; not used in either DRC or ATPG. Each pulse instruction in every
+            pattern generated pulses the PLL reference clocks. To keep PLLs synchronized, every
+            vector in every procedure defined in the STL procedure file must pulse all PLL reference
+            clocks. You need not define PLL reference clocks supplied by an onboard oscillator,
+            which are not needed for DRC. You need not pulse these clocks in the STL procedure
+            file.
+-ref_timing { period LE TE } : Defines the test cycle period associated with the reference clock. LE is the time of the leading edge of the ref clock, while TE is the time
+            of the trailing edge of the ref clock. For example: add_clocks 0 clkref3 -shift -refclock -ref_timing {31286 5000 15000} \
+  -unit ps Note that the -unit switch is optional and can be ns (the default) or
+            ps.
+-shift : Marks the clock as 1, which is used during the shifting of scan chains and causes the write_drc_file command to
+            pulse the clock in the Shift procedure when a template DRC file is created. Asynchronous
+            set/reset ports or RAM/ROM controls defined as clocks should generally be defined
+            without the -shift option. This option does not honor any PI equivalence relation, so if you declare two pins to
+            be equivalent, and then one of them as a clock with the shift attribute, the other is
+            declared a clock but without a shift attribute. For this
+            reason, you should always declare all clocks first and PI equivalence relations on those
+            clocks second. Use of the -shift option should explicitly list each clock.
+-timing { period LE TE measure_time } : Defines the test cycle period associated with the clock. LE is the
+            time of the leading edge of the clock, while TE is the time of the
+            trailing edge of the clock. The measure time option specifies the time within the test
+            cycle at which the design's output pins is measured. If measure_time is
+            less than LE , then a preclock measure protocol is implied. If
+            measure_time is greater than TE , then an end-of-cycle measure protocol
+            is implied. The default for timing is: period 100, t1=50, t2=70, measure_time=40. If
+            more than one -timing option is specified, then the last one
+            encountered reading from left to right is used. Setting the -timing option changes the default for future add_clocks commands for which the -timing option is
+            omitted. All periods, measure times, and units must be the same for all instances of this
+            command. If a DRC file is specified with the run_drc command, there is a potential for conflict between the clocks, timing, periods, or
+            measures defined with the add clock command and those defined within the DRC file. See
+            the run_drc command for rules of
+            priority. Note : You can use the -timing option only in the first add_clocks command. Attempting to
+            use -timing after one or more add_clocks commands have
+            been issued without the -timing option is reported as an error.
+-unit <ps | ns> : Specifies the time units used with the -timing option and should only be specified if
+            -timing is used. By default, the time unit is ns . All units must be the
+            same for all add clock commands.
+Use a double-backslash, for example: add_clocks 0 {\\A[0] \\B[0]}
+Use two levels of braces, for example: add_clocks 0 {{\A[0]} {\B[0]}}
+
+EXAMPLES:
+DRC> remove_clocks -all
+ DRC> add_clocks 0 {INC CLK }
+ DRC> add_clocks 1 RSTB
+ DRC> report_clocks
+ clock_name off usage
+ ---------- --- -----------
+ /INC        0
+ /CLK        0   master shift
+ /RSTB       1
+

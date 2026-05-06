@@ -1,0 +1,20 @@
+COMMAND: set_environment_info
+
+TITLE:
+set_environment_info
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes that can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment_info [-always_on_top | -noalways_on_top] [-save_dimensions | -nosave_dimensions]
+
+OPTIONS:
+-always_on_top | -noalways_on_top : Selects whether the gate information window stays on top or not. The default is not to
+            stay on top.
+-save_dimensions | -nosave_dimensions : Selects whether last size and position of information window are saved or not. The
+            default is to save and reuse this size and dimensions last used.
+
+EXAMPLES:
+BUILD> set_environment_info -always_on_top
+

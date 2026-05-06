@@ -1,0 +1,16 @@
+COMMAND: remove_slow_cells
+
+TITLE:
+remove_slow_cells
+
+DESCRIPTION:
+This command is used to remove the modification behavior of scan DFF or DLAT cells added with the add_slow_cells command.
+
+SYNTAX:
+remove_slow_cells < instance_path | gate_id | -all>
+
+OPTIONS:
+instance_path | gate_id |
+          -all : Specifies the instance path name, the gate ID, or that all scan DFF or DLAT cells whose
+            simulation behavior was modified should be removed.
+

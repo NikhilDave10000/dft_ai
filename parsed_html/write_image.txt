@@ -1,0 +1,71 @@
+COMMAND: write_image
+
+TITLE:
+write_image
+
+DESCRIPTION:
+This command writes the TestMAX ATPG database to a file after a successful build or a successful DRC run.
+
+SYNTAX:
+write_image file_name [-compress <gzip | binary | off>] [-design_view] [-garble] [-netlist_data] [-password string] [-replace] [-schematic_view] [-violations] [-nosubnets] [-nonet_pairs]
+
+OPTIONS:
+file_name : Specifies the pathname of the file into which the database is written.
+-compress <gzip | binary | off> : Specifies whether to compress the database. The default is gzip. The binary keyword
+            creates a proprietary format that can be read only by TestMAX ATPG. The off keyword creates a file without compression.
+-design_view : Enables schematic viewing in Design View of the GSV for password-protected and
+            unprotected images. Note that the image must always be written using the -netlist_data option. The netlist data is required to draw the
+            schematic with design names and related information. The default is not to enable
+            schematic viewing. To write a password-unprotected image for the GSV in Design View, execute the following
+            command: write_image design.image -design_view -netlist_data To write a password-protected image for the GSV in Design View, execute the following
+            command: write_image design.image.passwrd -password topsecret -schematic_view
+              -design_view -netlist_data
+-garble : Obfuscates names to a single hierarchy level name before the image is written. Instance
+            names become of the format u###, net names become n### and module names become m###,
+            where "###" is an integer number of any length. Some names are not garbled, such as
+            primary IOs, to allow some commands to work with the original names. Command scripts
+            might have to be modified to use the garbled name. Garbled names can be translated to
+            the original names by using the report_nets or report_instances commands if an ungarbled design database
+            is read by TestMAX ATPG. This option can only be used in TEST mode. It is not supported
+            for physical data (you cannot simultaneously specify both the -garble and -physical options of the write_image command).
+-netlist_data : Adds net and instance names to the image files. By default, these names are not stored
+            in the image file. Commands involving net and instance names, such as report_nets , report_instances , or set_diagnosis -report_net_data , are functional after TestMAX ATPG reads in an image
+            with netlist data. Using this option will increase the image file size. If you
+            want to protect IP information for certain design data, such as net names, do not use
+            this option.
+-password string : Creates a password-protected secure image, where string is
+            the password to be used for encryption. Commands specified by previous set_commands -secure commands are designated as allowed in secure state. The
+            encrypted image is compressed by default. You can use double quotation marks (" ") to
+            enclose your password if you desire. This password must be used to read the secure
+            image. The output of this command lists the commands that are allowed when that image is
+            read. The default is to create unprotected image files. Settings from commands such as set_atpg might remain unchanged when a secure image is read
+            by read_image .
+-replace : Specifies that the image file is allowed to replace an existing file. The default is
+            not to replace an existing file and generate an error message indicating the file
+            already exists.
+-schematic_view : Enables schematic viewing in primitive view only when used with the -password option. Note that primitive view minimizes the image file
+            size and protects the IP by not displaying certain design data, such as net names and
+            intermediate levels of hierarchy. To write a password-protected image for the GSV in
+            Design View you must also include the -design_view and -netlist_data options. The default is not to enable schematic
+            viewing.
+-violations : Stores DRC violations for the C, D, L, S, X, and Z rules.
+-nosubnets : This option avoids saving the subnet data to the image. If the subnet data has been
+            read, and after that, an image was written, then the data is stored by default.
+-nonet_pairs : This option prevents all bridging net pairs used for physical diagnostics (specified by
+            the read_layout -likely_pairs command) from being saved and included in the output image. The net pairs data is read
+            by default, and is saved and included in the output image. The saved net pairs are
+            intended for physical diagnostics only.
+
+EXAMPLES:
+TEST> write_image i044_image.dat -replace
+  End write image: #bytes=1830406, CPU time=3.00 sec.
+
+ TEST> write_image image_enc.gz -password secret
+ End write image: #bytes=11403, CPU time=0.03 sec.
+ Secure image created with schematic viewing disabled and \
+  allowing the following commands:
+ help
+ run_diagnosis
+ set_patterns
+ run_simulation
+

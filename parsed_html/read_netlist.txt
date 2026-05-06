@@ -1,0 +1,59 @@
+COMMAND: read_netlist
+
+TITLE:
+read_netlist
+
+DESCRIPTION:
+Use this command to read netlists.
+
+SYNTAX:
+read_netlist file_name [-format <edif | verilog | vhdl>] [-library] [-define variable_name] [-master_modules] [-sensitive | -insensitive] [-delete] [-noabort] [-verbose]
+
+OPTIONS:
+file_name : Indicates the path name to a file containing the netlist to read. The standard wildcard
+            usage for filenames is supported, which results in reading all netlists that match the
+            selected file_name .
+-format <edif | verilog | vhdl> : Specifies the format of the netlist to read. If you don't specify this, the type of
+            netlist is automatically determined. When reading EDIF-based designs, it is
+            strongly suggested that you read in the design first and the libraries last. When mixing
+            VHDL designs with Verilog libraries, you should read the libraries first and the design
+            modules second.
+-sensitive | -insensitive : Specifies whether the netlist is read in with or without case sensitivity. The default
+            depends on the netlist format: case-sensitive for Verilog netlists and case-insensitive
+            for EDIF and VHDL netlists.
+-library : Specifies that all modules defined within the file name specified should be treated as
+            if they were library modules. This is equivalent to surrounding each Verilog module with
+            `celldefine and `endcelldefine directives. Use of this option results in a module
+            definition that has fault sites only on the pin boundaries. Use of this option is
+            generally not needed and can negatively affect the ability to create STIL or WGL
+            patterns (see DRC rule V15). Use only if necessary.
+-master_modules : Specifies that all modules defined by the file being read should be marked as Master
+            Modules. Normally, when reading more than one module with the same name, the last module
+            encountered determines the final module definition (or first module encountered if set
+            -redefined_module first has been used). When a module is read with the -master_modules option, it is marked as a Master Module and is not
+            replaced if other modules with the same name are encountered. However, it can be
+            replaced if a module with the same name is read and the -master_modules option is again used. This mechanism can be useful for reading specific modules that are
+            intended as module replacements, independent of the order in which standard modules are
+            read.
+-define variable_name : Defines any variable, function, or expression while reading a netlist. This option is
+            equivalent to the 'define Verilog statement. You can enter multiple names as a Tcl list,
+            as shown in the following example: read_netlist define.v -define {test1 test2}
+-delete : Specifies that all previously read netlists currently in memory should be deleted. If a
+            file name is also specified, then memory is cleared before reading that file.
+-noabort : Specifies that reading multiple netlists will not terminate if a netlist receives an
+            error. This allows reading all netlists with wildcard (*) filenames. TestMAX ATPG
+            ignores this option and issues an M3 warning message if you use this option to read a
+            single netlist.
+-verbose : Specifies that individual netlist information is displayed when wildcard filenames are
+            used. The default is to only give a single summary of all the netlists that were
+            read.
+
+EXAMPLES:
+BUILD> read_netlist brand_x.lib
+  Begin reading netlist ( brand_x.lib )...
+  Warning: Rule N2 (unsupported entry) failed 472 times.
+  End parsing Verilog file brand_x.lib with 0 errors;
+  End reading netlist: #modules=517, top=ADD4, #lines=78240, CPU_time=3.22 sec
+ BUILD> report_modules -summary
+  Modules: #UNKNOWN_FORMAT=19 #STRUCT_VERILOG=474(#unsupported_beh=18) #BEH_VERILOG=24(#unsupported_beh=24)
+

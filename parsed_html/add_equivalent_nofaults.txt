@@ -1,0 +1,12 @@
+COMMAND: add_equivalent_nofaults
+
+TITLE:
+add_equivalent_nofaults
+
+DESCRIPTION:
+This command propagates the existing list of nofaults to their equivalent faults and adds them to the nofault list.
+
+EXAMPLES:
+TEST> add_equivalent_ nofaults
+ 49326 equivalent faults were added to nofault list.
+

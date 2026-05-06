@@ -1,0 +1,76 @@
+COMMAND: set_rules
+
+TITLE:
+set_rules
+
+DESCRIPTION:
+Use this command to set the severity of a rule violation.
+
+SYNTAX:
+set_rules rule_id [error | warning | ignore -instance instance_name] [error | warning | ignore -module module_name] [-remove_instance instance_name] [-remove_module module_name] [-autofix | -noautofix] [error | warning | ignore] [-mask | -nomask] [-max_fails number] [-min_area value] [-reset] [-verbose | -noverbose]
+
+OPTIONS:
+rule_id : Specifies the rule for which the severity is to be changed. Rules are identified by an
+            alphabetic character followed by a number, such as B1, C6, S22, and so on. Categories of
+            rules are: B, C, L, N, P, S, T, V, X, and Z. Messages for information, warnings, or
+            errors start with the letter M and are not rules, and are not affected by the set_rules command.
+-autofix | -noautofix : Supported for the V33 rule only, this option automatically modifies output to correct
+            the violating condition. When this option is set, rule violations are no longer be
+            reported. You should review the output modifications when using this option.
+error | warning | ignore : Specifies the new severity level of the rule. If the rule violation is a fatal error by default,
+              you cannot set it to a lower severity level. If you do not specify a severity level,
+              the existing setting is retained.
+-instance instance_name : Passes the instance_name or list of instance_names for which the severity level for a
+              specific rule_id is to be changed or downgraded. Violation is not downgraded for other
+              instances. The instance_name argument can be a fixed string or a limited regular
+              expression.
+-module module_name : Passes the module_name or list of module_names for which the severity level for a
+              specific rule_id is to be changed or downgraded.
+-mask | -nomask : For selected DRC rules, the -mask option enables masking of either the control
+              or observe functionality of the affected sequential elements, as appropriate for the
+              specific rule. This masking improves the ability to create ATPG patterns that pass in
+              simulation. However, the tradeoff is usually lowers test coverage. Not all rules
+              support this option. The current list of DRC rules that accept the -mask option are: C1, C2, C5, C6, C7 , C8, C9, C10, C11, C12, C13,
+              C14, C22, C25, S18, and S29. You can use the -mask option to compensate for DRC violations by
+              setting the rule severity to warning. This causes the ATPG algorithm to mask off the
+              observe value to ensure that any ATPG pattern generated passes simulation. The
+              tradeoff is a reduction in test coverage.
+-max_fails number : Sets the maximum number of failures reported for all DRC rules. The default is 10000
+            (ten thousand) and can be adjusted individually for each rule by specifying the rule ID
+              ( rule_id ). If the maximum number of rule violations is
+            reached, a message is printed to the log at the point where the rule is checked, as
+            shown in the following example: Rule R45 has reached its max_fails limit.
+-min_area : Defines the minimum area of a cell that will trigger a Y20 violation (this option is
+            only supported for the Y20 violation). You can find the area of the cell in the “Size”
+            category defined in the cell’s LEF file.
+-reset : Restores all rule severities and mask or autofix settings back to the original
+            documented defaults. This option must be specified as the only option to a set_rules command; it cannot be used with any options as it overrides
+            any other rule settings with this command.
+-remove_instance : Passes the instance_name or list of instance_names to remove the instances which are
+              set by set_rule -instance for selective downgrading for a specific rule_id .The
+              instance_name argument can be a fixed string or a limited regular expression.
+-remove_module : This option specifies the rule and modules or list of modules names to update to
+              match what was used for -remove_instance but for module_name. The module name argument
+              can be a fixed strings or a limite regular expression.
+-verbose | -noverbose : The -verbose option prints an expanded list of S14, S22, or C39
+            violations. In the case of S14, the -noverbose option (the default)
+            prints only the first S14 violation that is encountered. If the -verbose option is specified with S14, then all S14 violations are
+            printed. In the case of S22, the -verbose option prints all instances
+            and clocks associated with the violating transition. If checking is still not
+            sufficiently improved, use the report_lockup_latches command instead. For C39, by default, only
+            one violation is printed per clock. If the -verbose option is specified
+            with C39, then violations are reported by scan cell, which usually results in a
+            significant increase in the number of reported violations. Note that the -verbose option applies only to S14, S22, and C39 violations.
+
+EXAMPLES:
+DRC> report_rules n2
+ rule severity #fails description
+ ---- -------- ------ ---------------------------------
+ N2   warning  0      unsupported entry
+ DRC> set_rules N2 ignore
+ # observe changes for N2
+ DRC> report_rules n2
+ rule severity #fails description
+ ---- -------- ------ ---------------------------------
+ N2    ignore   0     unsupported entry
+

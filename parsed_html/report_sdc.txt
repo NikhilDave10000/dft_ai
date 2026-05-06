@@ -1,0 +1,28 @@
+COMMAND: report_sdc
+
+TITLE:
+report_sdc
+
+DESCRIPTION:
+This command, which is valid only in Tcl mode, reports timing exceptions read in from a SDC (Synopsys Design Constraints) file.
+
+SYNTAX:
+report_sdc [-clocks] [-to_cells] [-groups] [-case_analysis] [-false_paths] [-multicycle_paths] [-case_paths] [-disable_paths] [-all_paths]
+
+OPTIONS:
+-clocks : Reports SDC clocks specified by the create_clock and create_generated_clock SDC commands. This does not include clocks
+            specified only by regular TestMAX ATPG commands.
+-to_cells : Reports SDC clocks and the registers driven by these clocks. This report is useful for
+            debugging clock-to-clock exceptions, but can be very long.
+-groups : Reports exceptions specified by the set_clock_groups SDC command.
+-case_analysis : Reports constant signals specified by the set_case_analysis SDC
+            command.
+-false_paths : Reports exceptions specified by the set_false_path SDC command.
+-multicycle_paths : Reports exceptions specified by the set_multicycle_path SDC
+            command.
+-case_paths : Reports exceptions specified by the set_case_analysis SDC command
+            (with set_sdc -case_paths ).
+-disable_paths : Reports exceptions specified by the set_disable_timing SDC
+            command.
+-all_paths : Reports all exceptions.
+

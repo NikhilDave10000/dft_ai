@@ -1,0 +1,20 @@
+COMMAND: get_fanin
+
+TITLE:
+get_fanin
+
+DESCRIPTION:
+This command returns a collection of fanin pins.
+
+SYNTAX:
+collection get_fanin -to pin_name [-shift] [-test_setup]
+
+OPTIONS:
+-to pin_name : Specifies the pin name to be used as the end point or sink for mapping/tracing. By
+            default, the get_fanin command prints all the PIs, PIOs and flip-flops
+            that are driving this pin. You can specify wildcard characters for specifying pin names,
+            but not instance names. The get_fanin command will report, one-by-one,
+            all the sources for all the matching endpoint pin names.
+-shift : Outputs endpoints after the shift constraints are applied.
+-test_setup : Outputs endpoints after applying the test_setup sequence.
+

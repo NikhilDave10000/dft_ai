@@ -1,0 +1,14 @@
+COMMAND: add_display_proc
+
+TITLE:
+add_display_proc
+
+DESCRIPTION:
+This command registers a Tcl procedure name that is called when you select a context-sensitive menu item in the GSV.
+
+SYNTAX:
+add_display_proc proc_name
+
+OPTIONS:
+proc_name : The name of the procedure to be added.
+

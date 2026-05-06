@@ -1,0 +1,19 @@
+COMMAND: get_patterns
+
+TITLE:
+get_patterns
+
+DESCRIPTION:
+The get_patterns command returns a collection of pattern objects.
+
+SYNTAX:
+collection get_patterns -pattern d | -filter <expression> | -all
+
+OPTIONS:
+-pattern d : Return a collection of pattern objects with the specified pattern number (internal or
+            external buffer).
+-filter <expression> : Filters the collection with the expression. For any pattern objects that match
+            patterns, the expression is evaluated based on the patterns object's attributes. If the
+            expression evaluates to true, the pattern object is included in the result.
+-all : Returns all pattern objects.
+

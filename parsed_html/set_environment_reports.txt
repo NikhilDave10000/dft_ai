@@ -1,0 +1,38 @@
+COMMAND: set_environment_reports
+
+TITLE:
+set_environment_reports
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes that can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment_reports [-color <text | background> <red> <green> <blue>] [-font_size d] [-height d] [-line_length d] [-max_lines d] [-margin d] [-width d] [-xpos d] [-ypos d]
+
+OPTIONS:
+-color <text | background> <red> <green> <blue> : Specifies the color of the text or background used in report windows opened by various
+            "report" commands. The color is specified as a triplet of three numbers in the range of
+            0 to 255, with 0 0 0 for black or 255 255 255 for white. The default for the background
+            is white and for the text is black.
+-font_size d : Selects the size of the font in points used in the popup report windows. The default is
+            16 points.
+-height d : Selects the initial height of the window in pixels used by the report window. The
+            default is 400 pixels.
+-width d : Selects the initial width of the window in pixels used by the report window. The
+            default is 600 pixels.
+-line_length d : Selects the maximum number of characters per line to store in the report window. Lines
+            longer than this are truncated. The default is 200 characters.
+-max_lines d : Selects the maximum number of lines held in the report window. When more lines are
+            written to the report window than this limit, the oldest lines are removed. The default
+            is 5000 lines.
+-margin d : Selects the size of the left margin of the report window in pixels. The default is 5
+            pixels.
+-xpos d : Selects the initial X position of the upper left corner of the report window relative
+            to the upper left corner of the screen. The default is 20 pixels offset to the
+            right.
+-ypos d : Selects the initial Y position of the upper left corner of the report window relative
+            to the upper left corner of the screen. The default is 20 pixels offset down.
+
+EXAMPLES:
+BUILD> set_environment_reports -line_length 300
+

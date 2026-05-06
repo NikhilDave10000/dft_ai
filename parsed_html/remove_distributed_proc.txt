@@ -1,0 +1,23 @@
+COMMAND: remove_distributed_proc
+
+TITLE:
+remove_distributed_processors
+
+DESCRIPTION:
+Use this command to removes machines from the list of distributed processors.
+
+SYNTAX:
+remove_distributed_processors { name_list } [-all | -grd | -lsf]
+
+OPTIONS:
+name_list : Specifies the slave machine names being removed from the distributed processor list.
+            These names must match the names specified in an add_distributed_processors command.
+-all : Specifies to remove all slave machines from the distributed processor list.
+-lsf : Specifies to remove all slave processors in the load sharing facility (LSF) queue from
+            the distributed processor list.
+-grd : Specifies to remove all slave processors in the load sharing facility (LSF) queue from
+            the distributed processor list.
+
+EXAMPLES:
+TEST> remove_distributed_processors {himalaya himalaya himalaya}
+

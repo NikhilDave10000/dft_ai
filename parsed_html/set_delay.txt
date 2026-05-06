@@ -1,0 +1,94 @@
+COMMAND: set_delay
+
+TITLE:
+set_delay
+
+DESCRIPTION:
+Use this command to specify options for transition fault and path delay fault test generation and fault simulation.
+
+SYNTAX:
+set_delay [-allow_nonrobust_tests | -noallow_nonrobust_tests] [-allow_reconverging_paths | -noallow_reconverging_paths] [-allow_multiple_common_clocks | -noallow_multiple_common_clocks] [-data path_name] [-common_launch_capture_clock | -nocommon_launch_capture_clock] [-diagnostic_propagation | -nodiagnostic_propagation] [-disturb | -nodisturb] [-extra_force | -noextra_force] [-infinite_slack_checks | -noinfinite_slack_checks] [-launch_cycle <last_shift  | system_clock | extra_shift | any>] [-mask_nontarget_paths | -nomask_nontarget_paths] [-max_delta_per_fault float | inf | tmgn%] [-max_tmgn float | defect%] [-multicycle_length N] [-negative_slack_checks | -nonegative_slack_checks] [-pi_changes | -nopi_changes] [-po_measures | -nopo_measures] [-relative_edge | -norelative_edge] [-robust_fill | -norobust_fill] [-simulate_hazards | -nosimulate_hazards] [-slackdata_for_atpg |-noslackdata_for_atpg] [-slackdata_for_faultsim |-noslackdata_for_faultsim] [-slow_equivalence | -noslow_equivalence] [-transition_clocking_checks | -notransition_clocking_checks] [-two_clock_transition_optimization | -notwo_clock_transition_optimization]
+
+OPTIONS:
+-allow_nonrobust_tests | -noallow_nonrobust_tests : By default, TestMAX ATPG accepts all robust and nonrobust tests for path delay faults,
+            and retains all patterns that provide this type of detection for one or more faults. If
+            you specify the -noallow_nonrobust_tests option, TestMAX ATPG does not
+            recognize faults detected from nonrobust tests, and does not retain the patterns
+            containing only nonrobust detections. If a pattern provides both robust and nonrobust
+            detections of path delay faults, it is retained in the pattern set. However, TestMAX
+            ATPG recognizes only the faults detected from robust tests. You can reset the default
+            setting using the -allow_nonrobust_tests option (the default). This option applies only to the fast-sequential path delay test generator. Nonrobust tests are
+              accepted in full-sequential mode.
+-allow_reconverging_paths | -noallow_reconverging_paths : The -allow_reconverging_paths option causes TestMAX ATPG to reconverge
+            off-path segments when redundant logic prevents a specified path segment from being
+            individually tested. The standard definition of a path delay fault causes TestMAX ATPG
+            to classify these paths as untestable. However, it might be possible for TestMAX ATPG to
+            test the on-path and off-path segments together using this relaxed criteria. A
+            reconverging path might cause a path to be immediately marked as untestable, but this
+            option would allow test generation to occur if allowed. The default is not to allow
+            reconverging paths (the -noallow_reconverging_paths option). NOTE: The -allow_reconverging_paths option might
+            cause confusing output from the analyze_faults command. It might be best to use the default, -noallow_reconverging_paths , when doing fault analysis.
+-allow_multiple_common_clocks | -noallow_multiple_common_clocks : Uses multiple clocks for common launch/capture clocking for clock-launch transition
+            fault patterns. Enabled by default if the -common_launch_capture_clock option is issued before DRC. The -allow_multiple_common_clocks option identifies clocking pairs
+            that can be grouped with infinite skew. These combinations are then allowed when ATPG is
+            run with both the -allow_multiple_common_clocks and -common_launch_capture_clock options specified.
+-common_launch_capture_clock | -nocommon_launch_capture_clock : This option disables dynamic clocking and uses only a single clock for launch and capture. That
+              is, it avoids generating patterns with one clock being used for launching the
+              transition and another clock being used for capturing the transition. You cannot
+              specify -common_launch_capture_clock in the TEST command mode. The
+              default is -nocommon_launch_capture_clock . TestMAX ATPG performs conservative grouping (which assumes infinite tester skew) during
+            clock grouping analysis when both -allow_multiple_common_clocks and -common_launch_capture_clock are specified. The -common_launch_capture_clock option is supported by the -launch_cycle system_clock or -launch_cycle
+              extra_shift options of the set_delay command. When TestMAX
+            ATPG is generating last shift-launch patterns (using either the set_delay
+              -launch_cycle last_shift command or the set_delay -launch_cycle
+              any command), there is no simple way to prevent transitions from being
+            launched in one clock domain and captured in another. This option has the same effect in both non-threaded TestMAX ATPG and threaded TestMAX ATPG. But
+              in threaded TestMAX ATPG it is used during stuck-at ATPG to constrain two-cycle
+              patterns.
+-data path_name : Sets the GSV and primitive report data to load the path set by this option. The set_pindata delay_data command allows viewing this data in the GSV.
+-diagnostic_propagation | -nodiagnostic_propagation : Enables ATPG to be performed with a more stringent set of rules for off-path inputs.
+            For a diagnostic propagation path delay fault test, all off-path inputs must have a
+            constant propagating value, which means that only the target path is tested at its
+            endpoint. This type of test might be useful for characterizing the timing of a
+            particular path, or for better diagnostic resolution of a failing path delay test. Note
+            that requiring such path delay fault tests will result in lower overall coverage. The
+            default is to not generate diagnostic propagation tests: -nodiagnostic_propagation .
+-disturb | -nodisturb : Enables disturbed clock grouping for two-clock optimized transition fault ATPG. The
+            default is -disturb . TestMAX ATPG silently ignores this option. For more information, see TestMAX ATPG
+            Multithreading Command Option Support.
+-extra_force | -noextra_force : The default, the -extra_force option, provides additional delay for
+            force PI behavior. Some ATPG engines place an additional force of all PI values at the
+            start of the capture operation before the launch sequence starts for that particular
+            transition capture sequence. This behavior enables the assertion of PI states in the
+            additional vector or capture procedure before the clock events of the launch operation
+            and provides extra settling time for the PI states before the launch. Depending on the
+            capture procedures defined in the STL procedure file, this additional force PI might be
+            an inline vector, a call to an unclocked capture procedure, or a call to the
+            multiclock_capture procedure, before the vector initiates the launch operation. If you do not want the additional test cycles and the additional PI settling time,
+            suppress the force PI event using the -noextra_force option . TestMAX silently ignores this option. For more information, see TestMAX ATPG
+            Multithreading Command Option Support.
+-infinite_slack_checks | -noinfinite_slack_checks : Enables or disables infinite slack check during read timing file, slack-based
+            transition fault test generation, or fault simulation. During read timing file, warning
+            message M751 is printed if this check is enabled. During slack-based transition fault
+            test generation or fault simulation, warning message M753 is printed if this check is
+            enabled. The default is -noinfinite .
+-launch_cycle <last_shift | system_clock | extra_shift | any> : This option specifies how the transition is launched based on the transition fault
+            model. The last_shift parameter launches the transition on the last
+            shift clock of the scan chain load. A capture clock procedure is then used to observe
+            the transition. The system_clock parameter (the default) launches a
+            transition launch procedure that captures data from its functional data input, and a
+            second capture clock procedure is used to observe it. If you use the system_clock parameter, fast-sequential patterns or two-clock
+            optimized patterns are generated, and the -capture_cycle option of the set_atpg command is
+            automatically set to 2 if it is not already set to 2 or higher. The extra_shift parameter launches a logic value based on one more shift
+            than the last_shift parameter. This ensures that all clock domains
+            receive their last scan shift before the internally controlled capture clock pulse.
+            Unlike the last_shift parameter, the extra_shift parameter does not place additional timing requirements on an OCC controller. The any parameter allows the use of any of the -launch_cycle option parameters, including the last_shift , system_clock , and extra_shift parameters. Note the following:
+The -launch_cycle option affects ATPG, fault simulation, and
+          diagnostics.
+This option has no affect when the Path_delay fault model is selected.
+The last_shift and any parameters work do not respect
+          the -common_launch_capture_clock option of the set_delay command. Note that the any parameter allows the generation of last-shift
+          patterns.
+This option switches to non-threaded processing. The only exception is when system_clock or extra_shift is specified as a value,
+          which is supported by multithreading.
+

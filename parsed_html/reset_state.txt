@@ -1,0 +1,51 @@
+COMMAND: reset_state
+
+TITLE:
+reset_state
+
+DESCRIPTION:
+Use this command to reset the session state in preparation for restarting fault simulation or test generation using the current fault list.
+
+SYNTAX:
+reset_state
+
+EXAMPLES:
+TEST> report_summaries
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class        code #faults
+ ------------------ ---- ---------
+ Detected           DT   83321
+ Possibly detected  PT   324
+ Undetectable       UD   1071
+ ATPG untestable    AU   3453
+ Not detected       ND   239
+ -----------------------------------------------
+ total faults 88408
+ test coverage 95.59%
+ -----------------------------------------------
+ Pattern Summary Report
+ -----------------------------------------------
+ #internal patterns                        1605
+ -----------------------------------------------
+ TEST> reset_state
+ Warning: Internal pattern set is now deleted. (M133)
+ TEST> report_summaries
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class        code #faults
+ ------------------ ---- ---------
+ Detected           DT   11816
+ Possibly detected  PT   56
+ Undetectable       UD   1071
+ ATPG untestable    AU       3721
+ Not detected       ND   71744
+ -----------------------------------------------
+ total faults 88408
+ test coverage 13.56%
+ -----------------------------------------------
+           Pattern Summary Report
+ -----------------------------------------------
+ #internal patterns 0
+ -----------------------------------------------
+

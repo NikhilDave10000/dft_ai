@@ -1,0 +1,29 @@
+COMMAND: report_wires
+
+TITLE:
+report_wires
+
+DESCRIPTION:
+Use this command to report data associated with wire gates.
+
+SYNTAX:
+report_wires [ id | -summary | -all] [-contention <fail | pass | abort>] [-max d] [-verbose]
+
+OPTIONS:
+id : Displays wire data for the selected primitive ID. An error is reported if the object
+            requested is not a wire gate.
+-summary : Gives a summary of all wire gates.
+-all : Displays wire data for all wire gates.
+-contention <fails | pass | abort> : Reports all wire gates of the selected contention category.
+-max d : Specifies the maximum number of wire gates allowed to be reported. By default, there is
+            no limit.
+-verbose : Displays verbose data for each reported wire gate.
+
+EXAMPLES:
+TEST> report_wires -contention pass
+         contention     zstate #drivers
+ gate_id status/capture status strong/weak behavior_data
+ ------- -------------- ------ ----------- --------------------
+     79  pass ...          ...       4 0   clock
+    206  pass ...          ...       5 0
+

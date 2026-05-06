@@ -1,0 +1,35 @@
+COMMAND: add_scan_chains
+
+TITLE:
+add_scan_chains
+
+DESCRIPTION:
+This command is used to define scan chains. It is an alternative to defining scan chains in the STIL procedure file and is intended to be used before issuing a write_drc_file command to create a template STIL procedure file or before using the run_drc command without a DRC file argument.
+
+SYNTAX:
+add_scan_chains chain_name input_pin output_pin
+
+OPTIONS:
+chain_name : The chain name is the symbolic name used to reference the scan chain. Select a name
+            that has not already been used as the label of a scan chain. It is suggested you begin
+            the chain name with an alphabetic character, as some pattern output formats have this
+            restriction.
+input_pin : This is the name of the top-level design port that operates as the scan chain input.
+            When a differential scan chain input exists, use the add_pi_equivalences command to define the relationship between the two input pins, but define only one as
+            the scan chain input.
+output_pin : This is the name of the top-level design port that operates as the scan chain output
+            corresponding to the specified input. The output pin must not have been specified as the
+            scan input or output of another scan chain. Differential scan chain outputs are not
+            supported.
+
+EXAMPLES:
+DRC> add_scan_chains chain_1 si[1] so[1]
+ DRC> add_scan_chains chain_2 si[2] so[2]
+ DRC> add_scan_chains C3 si[3] so[3]
+ DRC> report_scan_chains
+  chain   group length input_pin output_pin
+  ------- ----- ------ --------- -----------
+  chain_1 sg0   0       si[1]     so[1]
+  chain_2 sg0   0       si[2]     so[2]
+  C3      sg0   0       si[3]     so[3]
+

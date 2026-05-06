@@ -1,0 +1,45 @@
+COMMAND: report_buses
+
+TITLE:
+report_buses
+
+DESCRIPTION:
+Use this command to report data associated with BUS primitives.
+
+SYNTAX:
+report_buses < gate_id | -behavior <buf | inv | and | or | xor | mux | tie0 | tie1 | tiez> | -contention <fail | pass | abort | bidi> | -zstate <fail | pass | abort | bidi> | -bidis | -clock | -keepers | -pull | -weak | -summary | -all > xor | mux | tie0 | tie1 | tiez> | -contention <fail | pass | abort | bidi> | -zstate <fail | pass | abort | bidi> | -bidis | -clock | -keepers | -pull | -weak | -summary | -all > [-names] [-max d] [-verbose]
+
+OPTIONS:
+gate_id : Specifies a specific BUS primitive for reporting by its primitive ID. An error occurs
+            if the ID is not a BUS primitive.
+-behavior <buf | inv | and | or | xor | mux | tie0 | tie1 | tiez> : Specifies that BUS primitives that match a particular behavior category are to be
+            reported.
+-bidis : Specifies that bus data is displayed for BUS primitives that connect to bidirectional
+            ports.
+-clock : Specifies that bus data is displayed for BUS primitives that have a combinational path
+            leading from a clock input.
+-contention <fail | pass | abort | bidi> : Specifies that BUS primitives of the selected contention category is reported.
+-keepers : Specifies that bus data is displayed for BUS primitives that connect to bus
+            keepers.
+-pull : Specifies that bus data is displayed for BUS primitives that have both strong and weak
+            drivers connecting to BUS inputs.
+-weak : Specifies that bus data is displayed for BUS primitives that have only weak drivers
+            connecting to BUS inputs.
+-zstate <fail | pass | abort | bidi> : Specifies that bus data is displayed for BUS primitives of the selected Z-state
+            category.
+-summary : Specifies that a summary of all BUS primitives is given.
+-all : Specifies that bus data is displayed for all BUS primitives.
+-max d : Indicates the maximum number of buses reported. The default is to have no limit.
+-names : Prints the names of all buses; one bus is reported per line.You can redirect this
+            output to a file if the design contains a large number of buses. You should use the -all option with this option. You can use the -max option to limit the number of reported buses. A bus defined in a celldefined module may have a partial or incomplete name due to the
+            cell constructs.
+-verbose : Indicates that verbose data is displayed for each BUS primitive. The default is not to
+            display verbose data.
+
+EXAMPLES:
+report_buses -summary
+  Bus summary: #bus_gates=577, #bidi=128, #weak=0, #pull=0, #keepers=0
+     Contention status: #pass=257, #bidi=31, #fail=289, #abort=0, #not_analyzed=0
+     Z-state status : #pass=160, #bidi=128, #fail=286, #abort=3, #not_analyzed=0
+     Learned behavior : none
+

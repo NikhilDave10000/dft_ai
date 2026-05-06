@@ -1,0 +1,21 @@
+COMMAND: drc
+
+TITLE:
+drc
+
+DESCRIPTION:
+Avoids the warning prompt that would otherwise occur when there are any unsaved
+            patterns. All current patterns are deleted.
+
+SYNTAX:
+drc [-force]
+
+OPTIONS:
+-force : Avoids the warning prompt that would otherwise occur when there are any unsaved
+            patterns. All current patterns are deleted.
+
+EXAMPLES:
+TEST> drc -force
+  Warning: Internal pattern set is now deleted.
+ DRC>
+

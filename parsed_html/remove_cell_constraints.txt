@@ -1,0 +1,29 @@
+COMMAND: remove_cell_constraints
+
+TITLE:
+remove_cell_constraints
+
+DESCRIPTION:
+Use this command to delete cell constraints that were added with the add_cell_constraints command.
+
+SYNTAX:
+remove_cell_constraints << chain_name <-position cell_position | instance_name | -all>>
+
+OPTIONS:
+chain_name -position cell_position : Specifies the chain name and position in the scan chain of a scan cell whose cell
+            constraint is to be removed. The position number 0 indicates scan cell closest to chain
+            output.
+instance_name : Specifies the instance name of a scan cell whose cell constraint is to be removed.
+-all : Specifies that all cell constraints are to be removed.
+
+EXAMPLES:
+DRC> report_cell_constraints
+ type chain   pos.  site name
+ ---- ------- ---- ---------------------------
+   1  ...    ...    MAIN/CPU/TP/FI/OFIFO/[3]
+  OX  ...    ...    MAIN/PER/PRT_1/PORTIN_1/[3]
+  XX  c34     6     ...
+ DRC> remove_cell_constraints -all
+ DRC> report_cell_constraints
+ Warning: Requested report contained no entries. (M13)
+

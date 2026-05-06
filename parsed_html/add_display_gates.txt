@@ -1,0 +1,27 @@
+COMMAND: add_display_gates
+
+TITLE:
+add_display_gates
+
+DESCRIPTION:
+Use this command to selectively add gates to the GSV.
+
+SYNTAX:
+add_display_gates [< pin_pathname | gate_id | -all>] [-color <blue | green | orange | pink | purple | yellow | white | default>] [-path { begin_gate_id end_gate_id }]
+
+OPTIONS:
+< pin_pathname | gate_id |
+          -all> : Adds gates associated with the pin_pathname, gate ID, or all gates to the
+            GSV. Choices pin_pathname , gate_id , and -all are
+            only accepted in primitive view.
+-color <blue | green | orange | pink | purple | yellow | white | default> : Designates a particular color for displaying selected gates in the graphical schematic
+            viewer (GSV).
+-path
+            { begin_gate_id end_gate_id } : This option traces the path between two sequential elements in the GSV. You must
+            specify two end-points that are not separated by any other sequential elements. A path,
+            in this case, is considered to be the combinational logic between sequential
+            elements.
+
+EXAMPLES:
+TEST> add_display_gates mux3/MUX2_UDP_1/Q
+

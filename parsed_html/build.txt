@@ -1,0 +1,20 @@
+COMMAND: build
+
+TITLE:
+build
+
+DESCRIPTION:
+Use this command to return a session to BUILD command mode to run commands that can only be applied while in BUILD command mode.
+
+SYNTAX:
+build [-force]
+
+OPTIONS:
+-force : Used to force TestMAX ATPG into BUILD mode from any other mode, regardless of the
+            presence of unsaved patterns or simulation models.
+
+EXAMPLES:
+DRC> BUILD
+  Warning: Internal pattern set is now deleted.
+ BUILD>
+

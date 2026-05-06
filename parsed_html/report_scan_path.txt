@@ -1,0 +1,106 @@
+COMMAND: report_scan_path
+
+TITLE:
+report_scan_path
+
+DESCRIPTION:
+This command reports the gates in a segment of a scan chain path.
+
+SYNTAX:
+report_scan_path chain_name <sco | cell_position > <sci | cell_position > [-physical] [-reverse] [-verbose]
+
+OPTIONS:
+chain_name : Specifies the name of the scan chain selected for reporting the scan path segment.
+sco | cell_position : Specifies the end of the scan path segment. If you select sco , the
+            trace begins at the scan chain output port. If you select a cell_position , the trace is bounded by the master of that scan cell.
+            When there are multiple scan chains that share the same output port, specify the
+            position as 0 rather than sco for best results.
+sci | cell_position : Specifies the beginning of the scan path segment. If you select sci ,
+            the trace continues to the scan chain input port. If you select a cell_position , the trace is bounded by the master of that scan cell.
+            If you specify both ends of the segment to be reported, the second cell_position number must be greater than the first.
+-physical : Includes physical locations for the reported gates. This option requires that physical
+            locations for cells on the scan paths were previously extracted using the extract_pins command.
+-reverse : Reports the gates in reverse order.
+-verbose : Provides a one line report of each gate in the selected scan chain path.
+
+EXAMPLES:
+TEST-T>
+report_scan_path c1 sco sci
+Scan path for chain=c1: begin_position=SCO, end_position=SCI
+ SDO2 (148) PO (_PO)
+     ---    I 137-reg4/Q
+     SDO2   O
+ PO usage: scanout(c1)
+ reg4 (137) BUF (DFFP)
+     ---    I 147-reg4/r/Q
+     Q O 148-SDO2
+ reg4/r (147) DLAT (N_LATCH)
+    !SB   I (TIE_1)
+    !RB   I (TIE_1)
+     CK   I 14-
+     D    I 146-reg4/lat1/Q
+     Q    O 137-
+ scan_behavior: MASTER(LS/-) chain=c1 cell_id=0 invert_data=IN obs=noproc
+ reg4/lat1 (146) DLAT (P_LATCH)
+    !SB   I (TIE_1)
+    !RB   I (TIE_1)
+     CK   I 19-
+     D    I 116-reg3/Q
+     Q    O 147-reg4/r/D
+ scan_behavior: DSLAVE(LS/-) chain=c1 cell_id=1 invert_data=IN
+ reg3 (116) BUF (DFFRLP)
+     ---   I 145-reg3/r/Q
+     Q     O 146-reg4/lat1/D
+             118-out3/DO ...
+ reg3/r (145) DLAT (N_LATCH)
+    !SB   I (/TIE_1)
+     RB   I 31-
+     CK   I 13-
+     D    I 144-reg3/lat1/Q
+     Q    O 116-
+ scan_behavior: MASTER(LS/-) chain=c1 cell_id=1 invert_data=IN obs=noproc
+ reg3/lat1 (144) DLAT (P_LATCH)
+    !SB   I (TIE_1)
+     RB   I 30-
+     CK   I 18-
+     D    I 136-reg3/MX1/Q
+     Q    O 145-reg3/r/D
+ scan_behavior: SCANTLA(UP/D) chain=c1 cell_id=2 invert_data=IN
+ reg3/MX1 (136) OR (SCANINP_UDP_1)
+     ---   I 96-
+     ---   I 135-
+     Q O 144-reg3/lat1/D
+ reg3/MX1 (96) AND (SCANINP_UDP_1)
+     SDI I 94-reg2/QB
+     --- I 46-
+     --- O 136-
+ reg2 (94) INV (DFFRLP)
+     --- I 143-reg2/r/Q
+     QB O 96-reg3/MX1/SDI
+ reg2/r (143) DLAT (N_LATCH)
+    !SB I (TIE_1)
+     RB I 29-
+     CK I 12-
+     D I 142-reg2/lat1/Q
+     Q O 95-
+                94-
+ scan_behavior: MASTER(LS/-) chain=c1 cell_id=2 invert_data=NI obs=noproc
+ reg2/lat1 (142) DLAT (P_LATCH)
+    !SB I (/TIE_1)
+     RB I 28-
+     CK I 17-
+     D I 115-reg2/MX1/Q
+     Q O 143-reg2/r/D
+ non_scan_behavior: TLA(hot_clock_tla) port_data=0-0C-1C single_port_id=2
+ reg2/MX1 (115) OR (SCANINP_UDP_1)
+     --- I 49-
+     --- I 114-
+     Q O 142-reg2/lat1/D
+ reg2/MX1 (49) AND (SCANINP_UDP_1)
+     SDI I 2-SDI2
+     --- I 45-
+     --- O 115-
+ SDI2 (2) PI (_PI)
+     SDI2 O 49-reg2/MX1/SDI
+ PI usage: scanin(c1)
+

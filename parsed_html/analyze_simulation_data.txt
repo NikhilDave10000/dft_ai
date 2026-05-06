@@ -1,0 +1,64 @@
+COMMAND: analyze_simulation_data
+
+TITLE:
+analyze_simulation_data
+
+DESCRIPTION:
+You use this command to compare the results from any two of three possible simulation sources, or to display the results from a single simulation source.
+
+SYNTAX:
+analyze_simulation_data < file_name |-fast_sequential pattern | -full_sequential pat#1 pat#2 > [-bidi_events] [-diag] [-max_fails_reported d] [-max_values_reported d] [-sensitive | -insensitive] [-top top_instance_name]
+
+OPTIONS:
+file_name : Specifies the filename of the VCD input file that contains simulation to be displayed
+            by itself or to be compared to a second form of simulation, either the -fast
+              sequential or -full_sequential data sources. The first 32
+            characters of this VCD simulation data is displayed without interpretation either on the
+            schematic or in the output from the report_primitive command when set_pindata is set to debug_sim_data . A dash "-" is displayed for circuit
+            locations for which there is no corresponding VCD data present in this file.
+-fast_sequential pattern : Selects as one of the simulation sources the currently selected internal or external
+            pattern buffer using the Fast-Sequential simulation algorithm. A single pattern must be
+            specified. If the pattern is a Basic-Scan pattern the pattern is simulated with the
+            Fast-Sequential simulator and the graphical display will show three character values
+            corresponding to a preclock, active-clock, and postclock events. A minus character "-"
+            is used as a delimiter between the values from different capture cycles and a pound sign
+            '#' indicates a scan load.
+-full_sequential pat#1 pat#2 : Selects as one of the simulation sources the currently selected internal or external
+            pattern buffer using the Full-Sequential simulation algorithm. A starting and stopping
+            pattern range must be specified. In collecting the simulated values all patterns from
+            the beginning of the pattern buffer to the selected ending pattern are simulated, but
+            only the start to stop range is saved for comparison and display. When displaying the
+            simulated pattern values, a minus character "-" is used as a delimiter between values
+            from different patterns.
+-bidi_events : When a VCD data source is specified, the default conversion of simulation events to
+            internal events advances time only if primary inputs (PIs) change. The selection of
+            -bidi_events causes a time advance and a new event to be stored if bidirectional ports
+            change (PIOs). By default, event changes that only involve bidirectional ports are
+            merged until an event involving any PI occurs.
+-diag : When two sources for simulation data compare are Fast-Sequential and Full-Sequential
+            patterns and the same pattern is selected, then this option
+            can also be specified to perform an automated diagnosis to search out the simulation
+            differences. It will first compare the results of the simulation and report any POs or
+            scan cells with pattern differences (an X for the Fast-Sequential simulation will not be
+            considered a failure). If there is a failure, the first failure is automatically
+            selected and displayed graphically. The failing node gate and the gates connected to it
+            which have a simulation mismatch is displayed with the debug_sim_data annotated on the
+            pins. The cone of logic displayed is limited to a single input with a difference and is
+            bounded by state element gates.
+-max_fails_reported d : This specifies the maximum number of reported failures when the -diag option is selected. The default is 10.
+-max_values_reported d : This specifies the maximum number of simulation values reported for each simulation
+            source. The default is 32.
+-sensitive | -insensitive : Specifies whether the VCD file is read in with or without case sensitivity for
+            instance, net, and pin names present. The default is -sensitive .
+-top top_instance_name : Specifies the instance name in the VCD data file corresponding to the current flattened
+            design module in use by TestMAX ATPG. If a VCD source is selected without specifying how
+            to recognize the instance name of the top module, then the first nested instance name is
+            used (for instance, if $scope TESTBENCH has nested $scope DUT, the "DUT" is treated as
+            the instance name corresponding to the currently selected top module in TestMAX ATPG
+            memory.
+
+EXAMPLES:
+TEST> analyze_simulation data -fast_sequential 10
+ TEST> set_pindata debug_sim_data
+ TEST> # show instances of interest in schematic
+

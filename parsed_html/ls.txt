@@ -1,0 +1,35 @@
+COMMAND: ls
+
+TITLE:
+ls
+
+DESCRIPTION:
+Use this command to display file information for a selected file or directory.
+
+SYNTAX:
+ls [-l] [ pathname]
+
+OPTIONS:
+-l : Selects the long format output.
+pathname : Specifies the pathname of the directory or file that is listed. The current working
+            directory is listed by default.
+
+EXAMPLES:
+DRC> ls
+ [.]
+ [..]
+ Makefile
+ [BIN]
+ [log_archive]
+ [oacs_data]
+ [DESIGNS]
+ [WORK]
+ [DATA]
+ [DOCS]
+ [tmp]
+ r-all_i970527.txt
+ cumulative_log
+ I000.rpt
+ I001.rpt
+ r-i_i970527.txt
+

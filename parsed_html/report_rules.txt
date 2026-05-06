@@ -1,0 +1,36 @@
+COMMAND: report_rules
+
+TITLE:
+report_rules
+
+DESCRIPTION:
+Use this command to report rule data.
+
+SYNTAX:
+report_rules [ rule_id | rule_type | -all] [-fail]
+
+OPTIONS:
+rule_id : Reports all rules of the selected rule ID. You can use -fails to
+            display only failing rules for this rule ID.
+rule_type : Reports all rules of the selected rule type. You can use -fails to
+            display only failing rules for this rule type.
+-all : Reports all rules. This is the default choice. You can use -fails to
+            display only the failing rules.
+-fail : Reports only the rules that have violations.
+
+EXAMPLES:
+TEST> report_rules -fail
+ rule severity #fails description
+ ---- -------- ------ ---------------------------------
+ B6   warning    2     undriven module inout pin
+ B7   warning  178     undriven module output pin
+ B10  warning   32     unconnected module internal net
+ B13  warning    2     undriven instance input pin
+ S23  warning   64     unobservable potential TLA
+ S29  warning    1     invalid dependent slave operation
+ C3   warning   32     no latch transparency when clocks off
+ C6   warning    1     TE port captured data affected by new capture
+ Z1   warning  289    bus contention ability check
+ Z2   warning  289    Z-state ability check
+ Z4   warning  360    bus contention in test procedure
+

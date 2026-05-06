@@ -1,0 +1,30 @@
+COMMAND: set_colors
+
+TITLE:
+set_colors
+
+DESCRIPTION:
+This command sets the colors for selected transcript messages.
+
+SYNTAX:
+set_colors <error | warning | user_commands | file_commands> <red_number> <green_number> <blue_number>
+
+OPTIONS:
+error : Changes the color of error messages in the transcript. The default color is red.
+warning : Specifies changing the color of warning messages in the transcript. The default color
+            is magenta.
+user_commands : Changes the color of user command messages in the transcript. The default color is
+            blue.
+file_commands : Changes the color of file command messages in the transcript. The default color is
+            green.
+red_number : The intensity of the red component, an integer between 0 and 255 inclusive. The higher
+            the number, the greater the amount of red.
+green_number : The intensity of the green component, an integer between 0 and 255 inclusive. The
+            higher the number, the greater the amount of green.
+blue_number : The intensity of the blue component, an integer between 0 and 255 inclusive. The higher
+            the number, the greater the amount of blue.
+
+EXAMPLES:
+# the color of error transcript messages is set to blue
+ DRC> set_colors error 0 0 255
+

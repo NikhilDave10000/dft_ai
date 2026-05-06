@@ -1,0 +1,41 @@
+COMMAND: report_clocks
+
+TITLE:
+report_clocks
+
+DESCRIPTION:
+This command reports all pins defined to be clocks, either by the add_clocks command or implicitly defined in the test protocol file.
+
+SYNTAX:
+report_clocks [-capture_matrix] [-constraints [-procedure name | -all>] [-command_report | -verbose | -matrix | -intclocks | -pllclocks | -dominant] [-by_id] [-gating]
+
+OPTIONS:
+-capture_matrix : Reports clock pulse overlapping information used for synchronizing multi frequency
+            internal clocks. For more information, see "Specifying Synchronized Multi Frequency
+            Internal Clocks" in the TestMAX ATPG User Guide .
+-constraints [-procedure name | -all] : Reports internal clocking procedures as they are used by ATPG. The -procedure name option provides information only for a
+            specific internal clocking procedure. The -all option provides
+            information for all clocking procedures. If neither -procedure nor -all are specified, a summary of the usable clocking procedures is
+            reported. For more information, see "Using Internal Clocking Procedures."
+-command_report : Causes the clocks to be reported in the form of the add_clocks command that would be necessary to define the
+            clocks in a command file. This option only supports clocks defined at top of the design
+            (external clocks). Statements to generate internal clocks are not created at this
+            time.
+-matrix : Displays the dynamic clock pair group ability in table form where each row indicates
+            the potential grouping relationship of a candidate clock with each of the other
+            candidate clocks. This option will report information for both external and internal
+            clocks. Note the following:
+This option can only be used in Test mode.
+TestMAX ATPG can identify additional disturbed clocks at the beginning of the run_atpg command process. This
+          means a clock matrix reported before the run_atpg command process can be
+          more restrictive than a matrix used during ATPG. To determine if the clock matrix was
+          actually used by TestMAX ATPG, you should use the -matrix option after
+          the first invocation of TestMAX ATPG.
+
+EXAMPLES:
+report_clocks
+  clock_name   off   usage
+  ----------   ---   ------------
+  CLK          0     			master shift
+  RSTB         			1     master reset
+

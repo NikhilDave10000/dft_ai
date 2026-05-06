@@ -1,0 +1,19 @@
+COMMAND: analyze_violation
+
+TITLE:
+analyze_violation
+
+DESCRIPTION:
+This command analyzes the cause of certain rule violations.
+
+SYNTAX:
+analyze_violation violation_id
+
+OPTIONS:
+violation_id : Indicates the rule violation ID (such as "Z1-4") to analyze.
+
+EXAMPLES:
+TEST> analyze_violation z4-3
+  Warning: Bus contention on my_asic/BIBUS/L34 (375) occurred at time 0 of test_setup  procedure. (Z4-3)
+  The pin data is now set to "test_setup".
+

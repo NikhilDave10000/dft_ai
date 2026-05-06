@@ -1,0 +1,15 @@
+COMMAND: add_slow_bidis
+
+TITLE:
+add_slow_bidis
+
+DESCRIPTION:
+This command is used to modify the behavior of BUS primitives associated with bidirectional ports such that when these ports are in output mode, the values driven by internal tristate gates only propagate to the bidirectional port's output path.
+
+SYNTAX:
+add_slow_bidis <port_name | -all>
+
+OPTIONS:
+port_name : Specifies the output of the BUS primitive that is being modified to an X.
+-all : Indicates that all BUS primitives are modified to an X.
+

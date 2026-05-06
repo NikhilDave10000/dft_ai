@@ -1,0 +1,27 @@
+COMMAND: report_atpg_primitives
+
+TITLE:
+report_atpg_primitives
+
+DESCRIPTION:
+Use this command to report data from the current ATPG primitives list.
+
+SYNTAX:
+report_atpg_primitives < atpg_primitive_name | -summary | -all> [-max d] [-verbose]
+
+OPTIONS:
+atpg_primitive_name : Specifies the name of the ATPG primitive to report.
+-summary : Specifies that a summary of all ATPG primitives is reported. This is the default if you
+            don't select -All or an ATPG primitive name.
+-all : Specifies that all ATPG primitives should be reported.
+-max d : Selects the maximum number of ATPG primitives to be reported. The default is no
+            limit.
+-verbose : The verbose switch causes a detailed report, which includes the name of the ATPG
+            primitive, its primitive ID, and the source of its inputs.
+
+EXAMPLES:
+TEST> report_atpg_primitives -all
+ name          id      type  inputs
+ ------------- ------- ----- -------------------------------
+ my_atpg_prim  20217   EQUIV 861 990
+

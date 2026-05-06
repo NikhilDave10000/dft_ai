@@ -1,0 +1,19 @@
+COMMAND: remove_net_connections
+
+TITLE:
+remove_net_connectionss
+
+DESCRIPTION:
+Use this command to remove user-defined net connections that were added with a prior add_net_connections command..
+
+SYNTAX:
+remove_net_connections <{ net_names } | -all >
+
+OPTIONS:
+net_names : Indicates the name of the net from the defined net connections which is to be
+            removed.
+-all : Specifies that all previously defined net connections are to be removed.
+
+EXAMPLES:
+BUILD> remove_net_connections level2/float1
+

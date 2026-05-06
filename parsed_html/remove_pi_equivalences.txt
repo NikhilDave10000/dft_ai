@@ -1,0 +1,25 @@
+COMMAND: remove_pi_equivalences
+
+TITLE:
+remove_pi_equivalences
+
+DESCRIPTION:
+Use this command to delete PI equivalence relationships previously added with the add_pi_equivalences command.
+
+SYNTAX:
+remove_pi_equivalences <{ port_names } | -All>
+
+OPTIONS:
+port_names : Specifies the name of the PI (primary input) or bidirectional port whose PI equivalence
+            relationships are to be removed.
+-all : Specifies that all PI equivalence relationships are to be removed.
+
+EXAMPLES:
+DRC> report_pi_equivalences
+ port_name         equivalent pins
+ ---------------- ----------------------------------
+ /NL0             ~/NSYNC ~/NL1
+ DRC> remove_pi_equivalences -all
+ DRC> report_pi_equivalences
+  Warning: Requested report contained no entries. (M13)
+

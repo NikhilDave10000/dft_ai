@@ -1,0 +1,48 @@
+COMMAND: set_simulation
+
+TITLE:
+set_simulation
+
+DESCRIPTION:
+Use this command to set the simulation-related control parameters that are in effect for the run_simulation and run_fault_sim commands.
+
+SYNTAX:
+set_simulation [-analyze_x_effects | -noanalyze_x_effects] [-analyze_x_sources | -noanalyze_x_sources] [-basic_scan | -nobasic_scan] [-bidi_fill | -strong_bidi_fill | -weak_bidi_fill | -nobidi_fill] [-capture_mask_always_x | -nocapture_mask_always_x] [-check_padding_patterns | -nocheck_padding_patterns] [-data { first_pattern last_pattern }] [-dominance_use <off | on | sr_persist>] [-interval_pattern pattern_name] [-map_exception_endpoints | -nomap_exception_endpoints] [-num_processes number | max] [-num_threads number] [-oscillation { num_passes num_additional_fault_passes }] [-pipeline_cells | -nopipeline_cells] [-ported_patterns | -noported_patterns] [-progress_message number] [-shift_cycles number] [-source_disturb | -nosource_disturb] [-store_memory_contents < pattern_num | last> | -nostore_memory_contents] [-timing_exceptions_for_stuck_at | -notiming_exceptions_for_stuck_at] [-truncate file_name | -notruncate] [-two_clock_resim | -notwo_clock_resim] [-use_timing_exceptions | -nouse_timing_exceptions] [-verbose | -noverbose] [-words_per_pass d] [-xclock_gives_xout | -noxclock_gives_xout] [-xfill_out_of_range_write | -noxfill_out_of_range_write]
+
+OPTIONS:
+-analyze_x_effects | -noanalyze_x_effects] : This option turns on and off the analysis of X effects performed during a
+            TestMAX ATPG simulation. It is supported only for the simulation of basic scan and
+            fast-sequential patterns. This analysis includes a printed report, and is performed
+            during both the run_simulation process and the simulation that occurs as part of the
+            test generation process when the run_atpg command is used. When the -analyze_x_effects option is specified, each pattern is
+            evaluated individually. TestMAX ATPG prints an analysis of the simulation of patterns
+            that have at least one scan cell with a final simulated value of X, as shown in the
+            following example: X-effect analysis results: pattern=0, #scancells_at_X=115313
+                (42.27%) shift results for non-Xchains: 0X=1 6X=1 9X >9X=202, maxX=1244 non-Xchain results: 1351=118 804=111 743=110 1128=110 1048=107 1255=107 1257=107 1338=107 916=106 1051=106 This analysis includes the following information: A summary message that indicates the pattern number, number of scan cells at X for
+                the pattern, and the percent of scan cells at X. Shift results for non-X-chains. This message provides an analysis of the
+                distribution of simultaneous Xs shifted out of non-X-chains. The tool analyzes the
+                captured values across the chains at each shift position, counts the number of X
+                values in each shift position row, then prints the distribution of those counts:
+                zero Xs, one X, two Xs, three Xs, four Xs, five Xs, six Xs, seven Xs, eight Xs, nine
+                Xs, and more than nine Xs. The maximum number of Xs for any shift is also
+                provided. Non-X-chain results. This message includes an ordered list of the top 10 chains
+                with X counts that have the most Xs for the pattern. At the end of the simulation, a summary report is printed, as shown in the following
+            example: Final X-effect analysis results: #scancells_at_X=275038 (3.15%) shift results for non-Xchains: 0X=187 1X=162 2X=343 3X=407 4X=470 5X=498 6X=702
+              7X=753 8X=730 9X=569 >9X=1739 maxX=2241 non-Xchain results: 652=3133 1235=2209 1236=2128 1237=2127 802=2005 1362=1664
+              803=1177 653=1145 638=1122 656=926 This summary report includes the following information:
+A summary message that indicates the pattern number, number of scan cells at X for
+                the pattern, and the percent of scan cells at X.
+Shift results for non-X-chains. This message provides an analysis of the
+                distribution of simultaneous Xs shifted out of non-X-chains. The tool analyzes the
+                captured values across the chains at each shift position, counts the number of X
+                values in each shift position row, then prints the distribution of those counts:
+                zero Xs, one X, two Xs, three Xs, four Xs, five Xs, six Xs, seven Xs, eight Xs, nine
+                Xs, and more than nine Xs. The maximum number of Xs for any shift is also
+                provided.
+Non-X-chain results. This message includes an ordered list of the top 10 chains
+                with X counts that have the most Xs for the pattern.
+
+EXAMPLES:
+DRC> set_simulation -measure pat -oscillation {20 2} -verbose
+ TEST> set_simulation -store_memory last
+

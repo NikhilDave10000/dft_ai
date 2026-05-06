@@ -1,0 +1,37 @@
+COMMAND: report_nonscan_cells
+
+TITLE:
+report_nonscan_cells
+
+DESCRIPTION:
+Use this command to report behavioral data on nonscan flip-flops and latches.
+
+SYNTAX:
+report_nonscan_cells <-summary | -all | c0 | c1 | cu | l0 | l1 | tla | le | te | ls | ram_out | unstable_set_resets | load | nonx_load> [-max d]  [-tlas [no_clock | hot_clock | x_clock]] [-unique] [-verbose]
+
+OPTIONS:
+-summary : Generates a summary report on all nonscan cells.
+-all : Reports all nonscan cells.
+c0 | c1 | cu | l0 | l1 | tla | le | te | ls | ram_out | unstable_set_resets | load |
+          nonx_load : Reports nonscan cells with specific behavior characteristics. The choices are as
+            follows: Nonscan Cell Type Description c0 Constant 0 c1 Constant 1 cu Clock unstable l0 Always loads 0 l1 Always loads 1 tla Transparent latches le Leading edge clock behavior te Trailing edge clock behavior ls Level-sensitive behavior ram_out Macro Out bit of a memory cell unstable_set_resets Unstable set/resets load Loadable nonscan cells nonx_load Loadable nonscan cells which always have a non-X value (that is,
+                    0 or 1) during the random pattern-based analysis performed when the set_drc -load_nonscan_cells command is specified.
+-max d : Limits the number of nonscan cells that can be reported. By default, there is no
+            limit.
+-tlas [no_clock | hot_clock | x_clock] : Reports transparent latches (TLAs) of the specified type.
+-unique : Prints the same report as the -all option, but filters out the
+            reporting of latches that are also listed in the scan cell report. This option can be
+            used together with the -max and -verbose options, but
+            is incompatible with any other report_nonscan_cells command
+            options.
+-verbose : Displays verbose data. For a summary report, this includes information about load
+            disturbances and TLA behavior. For nonsummary reports, this includes the primitive
+            report for all nonscan cells.
+
+EXAMPLES:
+TEST> report_nonscan_cells -summary
+  Nonscan cell summary: #DFF=416 #DLAT=227 tla_usage_type=no_clock_tla
+  Nonscan behavior: #CU=64 #TLA=131 #LE=407 #TE=9 #LS=32
+  Load disturbs : #CU=64 #TLA=131 #LE=407 #TE=9 #LS=32
+  TLA behavior: #no_clock=131, #hot_clock=0, #X_clock=0
+

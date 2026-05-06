@@ -1,0 +1,28 @@
+COMMAND: set_scan_ability
+
+TITLE:
+set_scan_ability
+
+DESCRIPTION:
+Use this command to explore the test coverage and testability effects of converting selected nonscan elements into scan elements.
+
+SYNTAX:
+set_scan_ability <on | off> < nonscan_cell_gate | -dff | -dlat | -all>
+
+OPTIONS:
+<on | off> : Specifies whether to consider the named nonscan cells scan or nonscan. Use on to add nonscan cells to the list or off to remove them. The
+            instances in the scan ability list are treated as if they belong to scan chains and are
+            controlled and observed accordingly. Added scan cells are placed in a non-existing scan
+            chain named "_sc1".
+nonscan_cell_gate : Identifies a nonscan cell gate to be added to or removed from the scan ability list. It
+            can be defined by primitive ID, instance name, or pin pathname.
+-dff : Adds or removes all DFF type nonscan cells.
+-dlat : Adds or removes all DLAT type nonscan cells.
+-all : Adds or removes all nonscan cells (DFF and DLAT).
+
+EXAMPLES:
+DRC> report_scan_ability
+ gate_id type instance_name
+ ------- ---- -------------------------
+ There were 0 DLATs/DFFs with scan ability set to ON.
+

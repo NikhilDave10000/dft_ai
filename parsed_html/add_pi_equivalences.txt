@@ -1,0 +1,47 @@
+COMMAND: add_pi_equivalences
+
+TITLE:
+add_pi_equivalences
+
+DESCRIPTION:
+Use this command to define constant logic relationships between top-level ports.
+
+SYNTAX:
+add_pi_equivalences port_name [-invert | -differential | -same_polarity] { port_name_list }
+
+OPTIONS:
+port_name : Specifies the initial port for which an equivalence relationship is defined. This port
+            must be a primary input or bidirectional port.
+-invert : Specifies that the following ports is constrained to be at an inverted value relative
+            to the first port in the list.
+-differential : This option is similar in function to the -invert option with two
+            differences. The first is that only two pins are accepted. The second is that pins
+            declared as having a -differential relationship that are also clocks
+            retain that relationship when clock grouping is enabled. A differential clock
+            relationship formed with the -invert option might be ignored by clock
+            grouping. Pins declared as having a differential relationship is driven to opposite
+            values by generated patterns.
+-same_polarity : This option is similar in function to the -differential option. The -same_polarity option only accepts two pins, but these two signals
+            must have the same clock_off state (unlike differential clocks). Pins that are declared
+            to have a same_polarity relationship will always be active at the same time; this
+            relationship is maintained even if clock-grouping options are applied (pins with
+            same_polarity will not be ungrouped). You can use the -same_polarity option to restrict pattern generation for equivalent external clocks, however you should
+            be aware that this is a restriction on the clocking opportunities in the design, and
+            might impact coverage. Note that the -same_polarity option has been
+            replaced by the -dynamic_clock_equivalencing option of the set_drc command. By default,
+            pin equivalences are automatically deleted for clocks during DRC when dynamic clock
+            grouping is enabled. You can use the -dynamic_clock_equivalencing
+              disturb option of the set_drc command to allow the use of pin equivalences for clocks when
+            dynamic clock grouping is enabled using normally calculated disturb cells. The nodisturb option allows the use of pin equivalences for clocks when
+            dynamic clock grouping is enabled with no consideration for disturb cells.
+port_name_list : Specifies the ports that is constrained to be at an equivalent (or complementary if the -invert option is selected) value relative to the initial port.
+
+EXAMPLES:
+DRC> add_pi_equivalences {NL0 NL1 NL2}
+ DRC> add_pi_equivalences ENA_P -inv ENA_N
+ DRC> report_pi_equivalences
+ port_name equivalent pins
+ --------- ----------------------------------
+ NL0       NL1 NL2
+ ENA_P     ~ENA_N
+

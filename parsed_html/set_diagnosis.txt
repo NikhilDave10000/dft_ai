@@ -1,0 +1,338 @@
+COMMAND: set_diagnosis
+
+TITLE:
+set_diagnosis
+
+DESCRIPTION:
+This command specifies the parameters associated with performing a diagnosis of a failing device.
+
+SYNTAX:
+set_diagnosis [-add_default_offset { value }] [-auto | -noauto] [-check_expected_data | -nocheck_expected_data] [-composite | -nocomposite] [-chain_sample]       (<limit_pats> [<min_pats>]) [-cycle_offset d] [–default_offset { pat_namevalue }] [-dftmax_chain_format | -nodftmax_chain_format] [-enable threaded_logic] [-enable tmax2_chain_diagnosis | -disable tmax2_chain_diagnosis] [-failing_compressor { number | patterns | failures }] [-failing_cycles_limit] [-failure_memory_limit d | -nofailure_memory_limit] [–fault_type [ all | shared | transition | stuck] [-filter_bridges { [ambiguous <on | off>] [same_cell < none | feedback | all >]}] [-filter_candidates {score_distance < distance | off> | [min_score < distance | off>] max_number < number | off>]}] [-hide value] [-incomplete_failures | -noincomplete_failures] [-intermediate_chain_faults] [-mapping_report | -nomapping_report] [–max_defective_chains n] [-max_fail_gates n] [-max_report_failures d] [-num_processes number] [-organization class | fault] [-original_pattern_id] [-pattern { p1 p2 on|off }] [-per_pin_limit | -no_per_pin_limit] [-post_procedure procedure_name | none] [-process_fail stop | continue | rerun] [-reset_filters] [-sample d1 d2] [-show value] [-time_limit d | -notime_limit] [–use_default_offset | -nouse_default_offset] [-use_dictionary | -nouse_dictionary] [-use_phds { values }] [-verbose | -noverbose]
+
+OPTIONS:
+-add_default_offset { value } : This option, which is used for split patterns diagnostics, adds the specified value to all default offsets. A default offset is the cycle offset
+            between each split patterns file. Default offsets are computed automatically when the
+            split patterns are read for diagnosis; one default offset is defined for each split
+            pattern file. You can use this option if the offset value is constant between all split patterns
+            files. Any manual initialization changes directly affect the value of the default
+            offsets. The failures log file must use the cycle-based format for this option to
+            work. The set_diagnosis command prints the updated default offsets, as shown
+            in the following example: Pattern_file=pat.ser_0.stil, basic_scan=[0(3),9(137)], fast_sequential=[-1,-1],
+              default_offset=0 Pattern_file=pat.ser_1.stil, basic_scan=[10(152),19(287)],
+              fast_sequential=[-1,-1], default_offset=14 Pattern_file=pat.ser_2.stil, basic_scan=[20(302),29(437)],
+              fast_sequential=[-1,-1], default_offset=28 Pattern_file=pat.ser_3.stil, basic_scan=[30(452),32(482)],
+              fast_sequential=[-1,-1], default_offset=42 The set_diagnosis -add_default_offset {10} command prints the
+            following updated default offsets: Pattern_file=pat.ser_0.stil, basic_scan=[0(3),9(137)], fast_sequential=[-1,-1],
+              default_offset=0 Pattern_file=pat.ser_1.stil, basic_scan=[10(152),19(287)],
+              fast_sequential=[-1,-1], default_offset=24 Pattern_file=pat.ser_2.stil, basic_scan=[20(302),29(437)],
+              fast_sequential=[-1,-1], default_offset=48 Pattern_file=pat.ser_3.stil, basic_scan=[30(452),32(482)],
+              fast_sequential=[-1,-1], default_offset=72 The effect of the -add_default_offset option is cumulative. For
+            example, if the command is used twice, the specified values from each command are
+            combined: TEST-T> set_diagnosis -add_default_offset {1} Pattern_file=pat.ser.stil_0.gz, basic_scan=[0(87),399(3103505)],
+              fast_sequential=[-1,-1], default_offset=0 Pattern_file=pat.ser.stil_1.gz, basic_scan=[400(3111283),799(6214703)],
+              fast_sequential=[-1,-1], default_offset=863 Pattern_file=pat.ser.stil_2.gz, basic_scan=[800(6222481),1199(9325903)],
+              fast_sequential=[-1,-1], default_offset=5726 TEST-T> set_diagnosis -add_default_offset {1} Pattern_file=pat.ser.stil_0.gz, basic_scan=[0(87),399(3103505)],
+              fast_sequential=[-1,-1], default_offset=0 Pattern_file=pat.ser.stil_1.gz, basic_scan=[400(3111283),799(6214703)],
+              fast_sequential=[-1,-1], default_offset=864 Pattern_file=pat.ser.stil_2.gz, basic_scan=[800(6222481),1199(9325903)],
+              fast_sequential=[-1,-1], default_offset=5728 For more information, see "Split Patterns Diagnosis for Cycle-Based Failures."
+-auto | -noauto : When the -auto option is set and the chain test pattern fails, the run_diagnosis command
+            performs chain diagnostics (the same behavior as if you specify the -chain_failure option). If you specify the -noauto argument, the run_diagnosis command performs functional logic diagnosis (the same behavior as if you do not specify
+            the -chain_failure option).
+-chain_sample : The option allows adjusting the number of failing patterns simulated. The default is to
+            simulate up to 100 failing non-chain test patterns. Here is an example. TEST-T> set_diagnosis-chain sample {200 10} TEST-T> report setting diag diagnosis . time_limit=0, check_expected_data=yes, sample.(100000:96), chain_sample=(200:10),
+-check_expected_data | -nocheck_expected_data : This option recognizes a field in the tester failure data file as the expected data for
+            that measure. It performs a comparison between this data and the expected data from the
+            pattern file. If the compared values do not match, this option displays the M530 warning
+            and stops the diagnosis. Otherwise, diagnosis proceeds normally. It does not compare
+            masked outputs. It supports scan and adaptive scan designs. The expected value field is the last one on the line (fourth field from the left for
+            scan shifting failures, and third field from the left for capture cycle failures). The
+            output format from the run_simulation command is also supported. The H/L format is
+            not accepted. It is treated as a comment and simply ignored. The result is that the
+            expected data will not be checked. Note: To indicate the expected data during a capture of a scan chain output
+            and use -check_expected_data option, you must use the exp= syntax. For example: 103 scan_out3 1 #invalid
+					
+ 103 scan_out3 (exp=1, got=0) #valid
+					
+ 103 scan_out3 exp=1 #valid Use this option as a sanity check of the process that translates tester failures into
+            the TestMAX ATPG failure data file. Mismatches indicate that the tester cycles are not
+            properly mapped to the pattern numbers. Diagnosis will report the number of compared
+            values. The default is -check_expected_data . If no expected data is
+            present in the failures log file, no message is printed.
+-composite | -nocomposite : The -composite option is used for the diagnosis ranking flow
+                ( run_diagnosis <file>
+              -rank_faults ). It enables diagnosis to perform a more precise fault ranking
+            using complex fault models, such as bridging or transition. The default is -nocomposite . As a result, during ranking, only simple stuck-at
+            models are used. If both sa0 and sa1 are defined for the same instance, the usage of the -composite option will rank the sa01 fault. If you want to rank the
+            sa0 and the sa1 faults independently, use -nocomposite . If both str and stf are defined for the same instance, the usage of the -composite option will rank the strf fault. If you want to rank the
+            str and the stf faults independently, use -nocomposite . If default setting is used (that is, -nocomposite ), and the bridging
+            faults are defined (even if the faults defined are equivalent to a bridging composite
+            fault), then the component faults (ba0 and ba1) are ranked. Here is an example: #Fault defined in fault.txt
+node1 node2 ba0
+node2 node1 ba0
+
+#TestMAX ATPG Script
+set_faults –model bridging
+add_faults –node fault.txt
+set_diagnosis -nocomposite
+run_diagnosis fail.txt -rank_faults In the previous example, the definition of the bridging faults is equivalent to
+            defining a WAND bridging fault (node1 node2 wand). However, because the -nocomposite option of the set_diagnosis command is
+            used, only the component faults is ranked. If the -composite option of set_diagnosis command is
+            used, and the faults defined are equivalent to a bridging composite fault, then the
+            composite faults are ranked.
+-cycle_offset d : Enables you to adjust the cycle count when the cycle numbering for cycle-based failure
+            log files does not correspond to the cycle numbering for the pattern. TestMAX ATPG adds
+            the specified positive or negative integer offset to the cycle counts of the failure log
+            file. The cycle counts derived by counting the vector or V statements in the STIL or WGL
+            pattern set always starts at 1. If the ATE counts cycle number starting with cycle 0 as
+            the first cycle, use an argument of 1 to adjust this. If the tester failure log includes
+            additional initialization cycles that are not accounted in the patterns, specify a
+            negative integer as the argument. The default is 0. An example usage of this option is as follows: If you use test patterns generated by TestMAX ATPG directly in the ATE, the test_setup
+            cycles on the ATE are, by default, the same as the test_setup cycles in the pattern file
+            read for diagnosis. In this case, you shouldn't set a cycle_offset value. However, it's possible that the ATE program could add more cycles to accommodate
+            the patterns to the ATE. This change could also be made by the engineers who adapt the
+            patterns to the ATE. For example, an engineer could add more wait cycles to reset the
+            chip. In this case, you should use a negative integer for the cycle_offset value which corresponds to the number of added wait
+            cycles.
+–default_offset { pat_name value } : This option adjusts some or all of the default offsets used for split patterns
+            diagnosis if the failures log file format is cycle-based. A default offset is the cycle
+            offset between each split patterns file. Default offsets are computed automatically when
+            the split patterns are read in for diagnosis; one default offset is defined for each
+            split pattern file. Any manual initialization changes directly affect the value of the
+            default offsets. When value is the only argument specified with this option, all
+            default offsets use the specified value. The default offsets are echoed to the log. For
+            example: set_diagnosis -default_offset {14} In this case, the set_diagnosis command prints following report: Pattern_file=pat.ser_0.stil, basic_scan=[0(3),9(137)], fast_sequential=[-1,-1],
+              default_offset=0 Pattern_file=pat.ser_1.stil, basic_scan=[10(152),19(287)],
+              fast_sequential=[-1,-1], default_offset=14 Pattern_file=pat.ser_2.stil, basic_scan=[20(302),29(437)],
+              fast_sequential=[-1,-1], default_offset=28 Pattern_file=pat.ser_3.stil, basic_scan=[30(452),32(482)],
+              fast_sequential=[-1,-1], default_offset=42 You can also define the default offset for each split pattern. In this case, both the pattern_name and value arguments must be specified,
+            as shown in the following example: set_diagnosis -default_offset {pat.ser_0.stil 0} set_diagnosis -default_offset {pat.ser_1.stil 14} set_diagnosis -default_offset {pat.ser_2.stil 28} set_diagnosis -default_offset {pat.ser_3.stil 42}
+-dftmax_chain_format | -nodftmax_chain_format : This option enables the usage of the pattern-based failure format, which uses the
+            failing scan chain name instead of the failing output pin name. When this option is
+            enabled, the diagnosis does not check the expected data even if it is present in the
+            failures log file. The pattern-based failure format with scan chain name does not require a specific
+            switch for legacy scan. This switch is only needed for DFTMAX failures that use this
+            format. After the set_diagnosis -dftmax_chain_format command is set, the
+            failures log file reader expects this format. Thus, it is not possible to use another
+            format since DFTMAX failures use the output pin. To unset this option, use set_diagnosis -nodftmax_chain_format command. The pattern-based failure format is obtained from a DFTMAX patterns simulation in
+            parallel mode. When this mode is enabled, the following set_diagnosis options are not supported: -mapping_report and -max_report_failures d . Chain diagnosis is also not supported for
+            this mode. The default is -nodftmax_chain_format .
+-enable threaded_logic : This command enables the tmax2 logic diagnosis engine.
+-enable tmax2_chain_diagnosis : The command enables the threaded chain analysis. For example: TEST-T> set_diagnosis-enable tmax2_chain_diagnosis TEST-T> set diagnosis -disable tmax2_chain_diagnosis
+-failing_compressor { number | patterns | failures } : Targets a failing compressor during diagnostics based on the specified order associated
+            with the number of failing patterns or failures. The patterns parameter specifies that failing compressors are ordered based on the number of failing
+            patterns. The failures parameter specifies that failing compressors
+            are ordered based on the number of failures. For example, the following command specifies diagnostics to be run on the second
+            compressor associated with the second number of failing patterns: set_diagnosis -failing_compressor { 2 patterns } In the example, compressors are ranked based on the number of failing patterns.
+            Diagnosis is run on the second compressor because it is associated with the second
+            highest number of failing patterns. To target either the first or third compressor, specify 1 or 3 with the -failing_compressor option. By default, failing compressors are ordered based on the compressor ID.
+-failing_cycles_limit : This option enables you to limit the failure data collection based on the number of
+            failing cycles. The use the set_diagnosis –failing_cycles_limit d option, or . failing_cycles_limit d
+            directive in the failure data file. d is the maximum number
+            of failing cycles that can be collected. If there are d or more failing cycles in the failure data file, TestMAX Diagnosis
+            ignores the last failing pattern and all subsequent patterns. This behavior is similar
+            to that of executing the set_diagnosis –incomplete_failures command. Use d=0 to turn off the limit.
+–failure_memory_limit d | -nofailure_memory_limit : This option specifies the maximum number of failures that can be captured by the
+            tester. It ensures accurate diagnosis results when the tester truncates failure data
+            before reaching the end of the pattern set. The d argument is the maximum number of
+            failures that can be captured by the tester. The value 0 disables this feature (this is
+            the default, which is the same as the -nofailure_memory_limit option). If the number of failures in the failure log file is less than d , all
+            failing and passing patterns are considered for diagnosis. If the number of failures in
+            the failure log file is greater than or equal to d , the last failing
+            pattern and all subsequent patterns are ignored during diagnosis (the same as specifying
+            the -incomplete_failures option). If there are more failures than the
+            value specified by d , only the failures in the last failing pattern are
+            ignored. If this option is used in the context of the split pattern feature, it ignores patterns
+            in the range beginning with the last failing pattern recorded in each failure log file
+            to the last pattern in the corresponding pattern file – if the number of failures in
+            that file is at least d .
+–fault_type [ all | shared | transition | stuck ] : This option enables diagnosis to simulate both stuck fault sites and transition fault
+            sites in a single run. When the all argument is specified, all fault sites are simulated for
+            both transition and stuck types. The shared argument is the default and enables simulation of both
+            stuck and transition types, but only at stuck fault sites. This reduces diagnosis
+            runtime when transition defects are less likely. The transition argument simulates only transition types and the stuck argument simulates only stuck types.
+-filter_bridges { [ambiguous <on | off>] [same_cell <none | feedback | all>]} : Removes all specified bridging candidates when class-based diagnostics reporting is enabled
+              (using the -organization class setting of the set_diagnosis command). The candidates must be exercised by either
+              of the following excitation conditions: an ambiguous bridge or any bridge candidates
+              between two nets connected to the same cell. An ambiguous bridge is any bridge
+              candidate in which every explained pattern has the same value on the aggressor node.
+              These bridge candidates are not distinguishable from a stuck candidate on the victim
+              node. A same-cell bridge is any bridge candidate between two nodes that are connected
+              to the same library cell. Such bridge candidates are not distinguishable from bridges
+              inside the cell. The feedback parameter filters only output/input
+              bridging candidates; the all parameter filters both output/input and
+              input/input bridging candidates. These filters must be applied before specifying the run_diagnosis command,
+              otherwise they will not affect the candidate list reported by the report_defects or write_ydf commands. For
+              more information on creating a class-based diagnosis report, see the "Class-Based
+              Diagnosis Reporting" section in the TestMAX ATPG User
+                Guide .
+-filter_candidates {score_distance < distance | off> |
+          [min_score < score | off> ] max_number
+            < number | off>]} : Specifies various filters to remove candidates when class-based diagnostics reporting
+            is enabled: The score_distance parameter removes all candidates with a match
+                score that is further than the specified distance from the maximum defect score
+                reported ( distance ). The default score distance is 20 percent. The min_score parameter removes all candidates with a match score
+                that is less than the specified score ( score ). At least one candidate with
+                the maximum defect score is reported, even if it is below the specified minimum
+                score. The default minimum score is 50 percent. The max_number parameter removes all but the top-scoring specified number
+                of candidates for each defect ( number ). All candidates with the same score
+                are reported, even if the number of candidates exceeds the specified value. The
+                default is 10. These filters must be specified before the run_diagnosis command,
+            otherwise they will not affect the candidate list reported by the report_defects or write_ydf commands. For more
+            information on creating a class-based diagnosis report, see the "Class-Based Diagnosis
+            Reporting" section in the TestMAX ATPG User Guide .
+-hide value : This option suppresses the information from the diagnostics report that was added by
+            the set_diagnosis -show command. The value argument
+            has four possibilities: version, cycles , key_value_pairs , and physical_subnet_id . To suppress the version name from the report, use the -hide version option. To suppress the cycle conversion use -hide cycles option. To suppress reporting the header values contained in the header of the failures log
+            file, use the -hide key_value_pairs option. For more information on
+            using this option, see "Adding Header Information to a Failure Data File." To suppress reporting the physical subnet ID in the diagnostics report, use the -hide physical_subnet_id option. For more information on using this
+            option, see"Reporting Physical Subnet ID Data." Only one value can be specified at a time. By default, the version, cycles, header
+            values, and physical subnet ID information are hidden.
+-incomplete_failures | -noincomplete_failures : This option specifies that the tester failure memory limitations might have caused the
+            failure log to have only partial failure data for the last failing pattern contained
+            there. Therefore, the last failing pattern and all subsequent patterns are ignored
+            during diagnosis. Do not use -incomplete_failures together with the -truncate option of run_diagnosis . The default is -noincomplete_failures . In the context of the split pattern feature, this option ignores patterns in the range
+            beginning with the last failing pattern recorded in each failure log file to the last
+            pattern in the corresponding pattern file.
+-intermediate_chain_faults : Enables the scoring and identification of candidates on pins along the scan chain when
+            diagnosing chain failures. This includes the scan in and scan out pins of each scan cell
+            and the pins of any combinational cells along the scan chain. Without this option, only
+            the scan cell state elements are scored and identified. The default is not to enable
+            scoring of intermediate scan chain pins. When this option is enabled, each intermediate
+            candidate is reported with the associated chain name and position indices of the
+            subsequent and previous scan cells.
+-mapping_report | -nomapping_report : This option enables the detailed report of failure mapping results for Adaptive Scan
+            technology. If -nomapping_report (default) is used, only a one line summary of the
+            failure mapping result is printed: Failure mapping completed: #failing_pats=815, #skipped_pats=0, #masked_cycles=35, CPU_time=15.90 Note: #failing_pats indicates the number of failing patterns for which a
+            potential failure mapping is found. #skipped_pats indicates the number of failing patterns for which a
+            potential failure mapping has not been found and thus is skipped. #masked_cycles indicates the number of cycles for which any failure
+            mapping has not been found and thus is ignored. If the -mapping_report option is used, additional lines are printed at
+            the head of the one-line summary. For example, successful mapping is reported per
+            compressor as follows: - ---------------------------------- Failure mapping report: ----------------------------------- Successful mapping for des_chip2_U_compressor: Pattern 1, position 54, chains: 13 Pattern 1, position 55, chains: 13 Pattern 1, position 57, chains: 13 If some failures are not successfully mapped, potential observe point and their score
+            are added to the report. For example: Failed mapping for des_chip2_U_compressor:
+					
+ Pattern 36, position 9, potential chains: 31
+					
+ Pattern 105, position 9, potential chains: 31
+					
+ ---------------------------------------------
+					
+ Compressor des_chip2_U_compressor, shift_position=3
+					
+score=100.00%, max_score=100.00%, chain=31, cell=u_des_hard_macro_1/u_des_hard_macro_core_u_03/kdin_reg_91_
+					
+ ---------------------------------------------
+					
+ Compressor des_chip2_U_compressor, shift_position=9
+					
+score=75.00%, max_score=100.00%, chain=31, cell=u_des_hard_macro_ 1/u_des_hard_macro_core_u_03/kdin_reg_85_
+					
+score=25.00%, max_score=100.00%, chain=32, cell=u_des_hard_macro_ 1/u_des_hard_macro_core_u_03/kdin_reg_124_ Refer to the topic “Understanding the Failure Mapping Report” for a complete
+            description of this report. Note: The mapping report printed by this option and the report printed by the run_diagnosis -only_report_failures command are the only complete reports. The first
+            mapping report printed at the beginning of the diagnosis report is not intended to be
+            complete. See "Understanding the Diagnosis Report" for more details. ------------------------------------------------------------------------------
+              pattern chain pos# output pin_names ------- ---------------- ----
+              ------------------------------------------------ 9 1 4 test_so1 test_so2 test_so3 14 1
+              3 test_so1 test_so2 test_so3
+–max_defective_chains n : Aborts running the chain diagnosis engine if the number of defective chains is larger
+            than the specified number n . By default, n is 3. This
+            default is a trade-off between simulation time and quality of the results. The value 0
+            is used to disable this feature. If the scan chain engine is halted because of meeting the maximum defective scan chain
+            specification, then the following message is printed: Scan chain diagnosis aborted due to exceeding the maximum number of defective chains.
+-max_report_failures d : For adaptive scan designs, the output includes the failing measures. The argument for
+            this option specifies the number of failures to be displayed. The default is 10.
+-num_processes number : Specifies the number of cores to use during a parallel diagnostics run. Using this
+            option conserves memory usage when processing a large number of failure files. For more
+            information on using this option, see "Parallel Diagnosis" in the TestMAX
+              ATPG User Guide .
+-organization class | fault : Enables the class-based or fault-based diagnostics report. The default is the
+            fault-based report. The class-based report identifies each physically distinguishable
+            location as a separate candidate, and each candidate may contain different fault types.
+            In the fault-based report, a fault and all of its equivalent faults are considered a
+            single candidate, and each fault type is considered a separate defect. For a complete
+            description of both reports, see the "Diagnosing Manufacturing Test Failures" chapter in
+            the TestMAX ATPG User Guide .
+-original_pattern_id : When split patterns are used, additional patterns may need to be added to each split
+            such that there are more total patterns than in the original pattern set. In this case,
+            patterns after the first split will have different pattern numbers than in the original
+            pattern set. This option specifies that diagnosis should use the original (pre-split)
+            pattern IDs in the split pattern files as the pattern numbers instead of counting
+            patterns in the external pattern set. This option should be used if failures from the
+            tester are pattern-based, and if the tester uses the pattern IDs in the pattern files
+            rather than counting the number of applied patterns.
+-pattern { p1 p2 on|off} : This option specifies a range of patterns to include or ignore during a diagnosis
+            run. The range p1 p2 can be specified as a single pattern. To include a
+            pattern, use the parameter on . To exclude a pattern, use the parameter off . If the neither on nor off is
+            specified, the default is off . The parameters of this option should be specified as a Tcl list when TestMAX ATPG is
+            run in Tcl mode. The following example shows how to specify this option as a list in Tcl
+            mode: set_diagnosis -pattern {1 5 off} The native mode equivalent command is as follows: set diagnosis -pattern 1 5 off The -pattern option can be used to optimize the match score if a
+            specific pattern from the external pattern buffer has not been run on the tester but
+            produces a TPSF. For example: # read all patterns
+set_patterns -external pat.bin
+# exclude pattern 3
+set_diagnosis -pattern {3 off}
+run_diagnosis fail.log The -pattern option can also be used when the TPSF needs to be
+            computed for only passing patterns. In this case, the flow is to read all patterns,
+            exclude the failing patterns (but include the passing patterns), and then run the
+            diagnosis with -rank option: # read all patterns [0 to 9]
+set_patterns -external pat.bin
+# exclude all patterns
+set_diagnosis -pattern {0 9 off}
+# include only a single passing pattern
+set_diagnosis -pattern {3 on}
+# read fault list
+read_fault fault.txt
+run_diagnosis fail_2.log -rank
+-per_pin_limit | -no_per_pin_limit : The -per_pin_limit option causes TestMAX ATPG to set a per-pin limit
+            truncation mechanism commonly used by testers. Because of tester memory limits, the
+            total amount of failures per pin for the device under test is usually limited. If
+            TestMAX ATPG does not recognize this situation when it occurs, the failures that are not
+            captured are considered as passing by the diagnostics engine. This can degrade the match
+            score of the fault candidates. When the -per_pin_limit option is set, TestMAX ATPG recognizes a pin
+            as truncated if it has at least one failure. TestMAX ATPG will also recognize only certain pins as truncated if you set the -per_pin_limit option, and use the following directive to define the
+            truncated pins in the failures log file: .pin_truncate pin_name If this directive is specified, only the identified pins are considered truncated. The default is -no_per_pin_limit . This option is not supported for DFTMAX Ultra.
+-post_procedure procedure_name | none : Specifies the name of a post processing procedure to run during parallel diagnostics.
+            You can specify diagnostics commands, such as write_ydf, or Tcl API commands, such as
+            get_diag_files, within a procedure. To disable a post processing procedure, specify the none argument ( none is the default). The following example shows how to define a post processing procedure and specify it
+            using the -post_procedure option: proc pp {} { write_ydf -append my_ydf.ydf set datalog [get_attribute [index_collection [get_diag_files -all] 0]
+              name] foreach_in_collection cand [get_candidates -all] { echo [get_attribute $cand pinpath] $datalog >> candidates.list } } set_diagnosis –post_procedure pp For more information on using this option, see "Parallel Diagnosis" in the TestMAX ATPG User Guide .
+-process_fail stop | continue | rerun : Sets the diagnosis behavior when a slave process crashes during the parallel diagnosis
+            flow. The stop argument is the default and causes all processes to
+            stop. The continue argument allows the remaining processes to continue
+            without interruption. The rerun argument schedules the crashed job to
+            rerun at the end of the diagnosis process.
+-reset_filters : Resets all user-specified candidate filters back to their defaults for class-based
+            diagnostics reporting (see the descriptions of the -filter_candidates and
+              - filter_bridges options). For more information creating a class-based
+            diagnosis report, see the "Class-Based Diagnosis Reporting" section in the TestMAX ATPG User Guide .
+-sample d1 d2 : Controls the number of patterns simulated during logic diagnosis. Simulates a loose
+            upper limit of d1 failing patterns and d2 passing
+            patterns. The actual number of patterns simulated might be higher due to the
+            word-parallel simulation algorithm. This option can be used to get results faster,
+            especially in the case of large designs, at the expense of lower precision. Minimum
+            value for d1 is 1 and for d2 is 0. A large value can
+            be specified for either argument to simulate all patterns. The default is to simulate
+            all failing patterns and 96 passing patterns. The usage of this option has a direct impact on the match score because the match score
+            computation is not weighted with the number of patterns simulated. Note that using too
+            many passing patterns could decrease your ranking score. It is recommended that you
+            leave the default as it is.
+-show parameter : This option adds information to the diagnostics report related to the following
+            parameters: version , cycles , and key_value_pairs . run_diagnosis ./fail1.log Version:
+              K-2015.06-SP4-CS1-i131004_180753-tcl The cycles parameter prints data from the conversion of cycle-based
+            failures into pattern-based failures by TestMAX ATPG diagnostics as shown in the
+            following example: 16 test_so5 11 # Cycle conversion from cycle 270; fail in shift The example shows that a failure at tester, cycle 270, corresponds to a failure
+            measured on the test_so5 pin at pattern 16. The scan cell which captures the failure is
+            at position 11. The key_value_pairs parameter prints the values from the header of the
+            failure log file. For more information on using this option, see "Adding Header
+            Information to a Failure Log File." Note the following:
+The score_distance parameter removes all candidates with a match
+                score that is further than the specified distance from the maximum defect score
+                reported ( distance ). The default score distance is 20 percent.
+The min_score parameter removes all candidates with a match score
+                that is less than the specified score ( score ). At least one candidate with
+                the maximum defect score is reported, even if it is below the specified minimum
+                score. The default minimum score is 50 percent.
+The max_number parameter removes all but the top-scoring specified number
+                of candidates for each defect ( number ). All candidates with the same score
+                are reported, even if the number of candidates exceeds the specified value. The
+                default is 10.
+

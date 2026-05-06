@@ -1,0 +1,83 @@
+COMMAND: set_netlist
+
+TITLE:
+set_netlist
+
+DESCRIPTION:
+Use this command to set the parameters that control the reading of netlists.
+
+SYNTAX:
+set_netlist [-celldefine | -nocelldefine] [-check_only_used_udps | -nocheck_only_used_udps] [-conservative_mux < none | combinational_udp | all >] [-dominance_detection <on | off | boolean>] [-enable_portfaults | -noenable_portfaults] [-escape <both | all | none>] [-max_errors d] [-pin_assign | -nopin_assign] [-redefined_module <first | last>] [-scalar_net | -noscalar_net] [-sequential_modeling | -nosequential_modeling] [-suppress_faults | -nosuppress_faults] [-xmodeling | -noxmodeling]
+
+OPTIONS:
+-celldefine | -nocelldefine : Selects whether to ignore the Verilog compiler directive `celldefine in netlists. The
+            default is -celldefine .
+-check_only_used_udps | -nocheck_only_used_udps : Specifies check and warning behavior for reading design netlists and libraries. With
+            the default, -check_only_used_udp s, the checks are performed during the
+            build phase and only the modules and UDPs actually used by the design are checked. Using -nocheck_only_used_udps causes all library and netlist files to be
+            checked as they are read.
+-conservative_mux < none | combinational_udp | all > : Specifies if conservative MUX gates are extracted from conservative UDP models of a
+            MUX. In a conservative MUX, if the select input is X, then the output is X, even if the
+            data inputs have the same Boolean value. In a regular "optimistic" MUX, if the select
+            input is X and the data inputs have the same Boolean value, then the output has the
+            value of the data inputs. If the UDP model specifies optimistic MUX behavior, then this
+            is the behavior that will take place in TestMAX ATPG. If the UDP model specifies
+            conservative MUX behavior however, this option will control whether the resulting
+            TestMAX ATPG MUXes will have optimistic or conservative behavior. If none is selected, then all MUXes extracted are regular (and
+            appropriate violations are issued if necessary). If combinational_udp is selected (the default), then conservative
+            MUXes can be extracted from combinational UDPs, but not from sequential UDPs.
+            Previously, UDPs describing a conservative MUX were extracted into a regular MUX and
+            rule violations N20 (underspecified UDP) and N12 (inconsistent usage of x) were issued.
+            When a conservative MUX is extracted, these N20s and N12s are no longer issued. To
+            support this, the checking of N12 was moved from before to after the extraction of the
+            UDP's function into gates. This has the side effect that the remaining N12 violations of
+            combinational UDPs are, in some cases, fewer but using more wildcards. If all is selected, then conservative MUXes can be extracted from any
+            UDP, combinational or sequential. When this setting is selected, extraction of
+            sequential UDPs is less tolerant to incomplete and inconsistent UDPs, which might be
+            extracted into TIEX, even though a gate-level model could be extracted if -conservative_mux is set to none or -combinational_udp . Use the all setting only if the
+            sequential UDPs you parse are properly defined.
+-dominance_detection <on | off | boolean> : Specifies whether the derived ATPG model recognizes dominance behavior between the
+            set/reset/clock pins. A selection of off disables this checking,
+            whereas on enables it. A selection of Boolean enables the checking but
+            checks only the state table entries for which clock/set/reset are Boolean values, and
+            ignores the entries where they are Xs. The default is on .
+-enable_portfaults | -noenable_portfaults : Specifies whether to ignore the Verilog compiler directive `enable_portfaults in
+            netlists. The default is -enable_portfaults .
+-escape <both | all | none> : Specifies whether the escape character is preserved as part of the identifier's name.
+            The choices are: to store the instance names both with and without escape characters
+              ( both ) (the default); to always preserve escape characters
+              ( all ); to never preserve escape characters ( none ).
+            You should use the none argument with caution. For example, if you
+            specify the none argument, "\net[4]" changes to "net[4]." As a result,
+            this name becomes indistinguishable from bit 4 of the "net" vector net.
+-max_errors d : Specifies the maximum number of parsing errors allowed before terminating netlist
+            parsing of the current file. The default setting is 10.
+-pin_assign | -nopin_assign : Specifies whether a netlist assign statement results in artificial pin names (and
+            faults) being assigned to all inputs and to the output of the assignment. The default is -nopin_assign . An assign statement can only appear in Verilog and
+            VHDL netlists.
+-redefined_module <first | last> : Specifies how to treat the redefinition of a module. In case of multiple definitions,
+            one definition is kept and the others are ignored. You can specify the first or last
+            encountered netlist definition as the one to keep. The default is last .
+-scalar_net | -noscalar_net : Specifies whether Verilog nets such as "wire [N:N] netname" are considered 1-bit vector
+            nets or scalar nets. The default is a 1-bit vector net. If you select -scalar_net , such nets instead are considered scalar nets (as if the
+            definition were in the form of "wire netname").
+-sequential_modeling | -nosequential_modeling : Specifies whether the derived ATPG model is generated to precisely model set/rst/clock
+            simultaneous effects during sequential simulation. This is usually not needed for ATPG
+            pattern generation but might be needed for fault grading of functional patterns when
+            X-miscompares need to be avoided. The default is -nosequential_modeling , and this produces a memory-efficient derived
+            ATPG model that is accurate for Basic-Scan and Fast-Sequential ATPG, but is slightly
+            more pessimistic (output=X when simultaneous set/rst/clk active) than the more precise
+            model.
+-suppress_faults | -nosuppress_faults : Specifies whether to ignore the Verilog compiler directive `suppress_faults in
+            netlists. Using -nosuppress_faults causes this directive to be ignored.
+            The default is -suppress_faults .
+-xmodeling | -noxmodeling : When a UDP table is missing a line, it implies the output should be X for the omitted
+            input condition. However, for translation into Boolean gates, the expected output is
+            sometimes non-X to map to a gate-level equivalent. When -xmodeling is
+            selected and this situation occurs, then additional gates are added to the derived ATPG
+            model in an attempt to exactly match the defined UDP table. If -noxmodeling is selected, then a simpler, more optimal gate-level
+            model is used. The default is -xmodeling .
+
+EXAMPLES:
+DRC> set_netlist -escape none -scalar_net -redefined_module last
+

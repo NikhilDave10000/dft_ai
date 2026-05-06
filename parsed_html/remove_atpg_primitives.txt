@@ -1,0 +1,27 @@
+COMMAND: remove_atpg_primitives
+
+TITLE:
+remove_atpg_primitives
+
+DESCRIPTION:
+Use this command to delete ATPG primitives previously added with the add_atpg_primitives command..
+
+SYNTAX:
+remove_atpg_primitives < atpg_primitive_name | atpg_primitive_id | -all>
+
+OPTIONS:
+atpg_primitive_name : Specifies the name of the ATPG primitive to remove.
+atpg_primitive_id : Specifies the ATPG primitive ID number of the ATPG primitive to remove.
+-all : Specifies that all ATPG primitives is removed.
+
+EXAMPLES:
+DRC> report_atpg_primitives -all -noverbose
+ name             id#     type  inputs
+ ---------------- ------- ----- ---------------------------
+ MY_ATPG_GATE_1   101071  AND   47566 250
+
+ DRC> remove_atpg_primitives -all
+  1 primitives have been removed from the ATPG primitive list.
+ DRC> report_atpg_primitives
+  ATPG primitive summary: none
+

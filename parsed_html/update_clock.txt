@@ -1,0 +1,25 @@
+COMMAND: update_clock
+
+TITLE:
+update_clock
+
+DESCRIPTION:
+This command is used to change the pulse timing of a specific clock in a specific named WaveformTable.
+
+SYNTAX:
+update_clock -wft { list_of_wft_names } -clock { list_of_clock_names } [-pulse { integer integer }] [-unit <ps|ns>]
+
+OPTIONS:
+-wft { list_of_wft_names } : Specifies the required name or list of the specific WaveformTable(s) you want to
+            modify. At least one -wft option must be provided. You may specify a
+            list of names if you want to change a list of WaveformTables with a single command.
+-clock { list_of_clock_names } : Specifies the required name of the clock signal or group of clock signals to be
+            modified. At least one -clock specification must be provided. You may
+            specify a list of clock names to change a set of clocks with a single command. The name
+            specified by the -clock option must match the name used in the
+            WaveformTable definition; aliases or groups containing a named clock will not be
+            modified unless the group name as defined in the WaveformTable is used in the update_clock command.
+-pulse { integer integer } : Specifies the timing for the leading edge and trailing edge of the specified clock
+            pulse.
+-unit <ps|ns> : Identifies the unit for specified all time values.
+

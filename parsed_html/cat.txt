@@ -1,0 +1,20 @@
+COMMAND: cat
+
+TITLE:
+cat
+
+DESCRIPTION:
+This command displays the contents of a selected file.
+
+SYNTAX:
+cat filename [-max <n>] [-line_numbers]
+
+OPTIONS:
+filename : Specifies the filename whose content is to be displayed.
+-max <n> : Selects the maximum number of lines to display.
+-line_numbers : Specifies that line numbers should be displayed for each line.
+
+EXAMPLES:
+DRC> cat hello_file
+Hello!!!
+

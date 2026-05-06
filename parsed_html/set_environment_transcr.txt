@@ -1,0 +1,18 @@
+COMMAND: set_environment_transcr
+
+TITLE:
+set_environment_transcript
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes that can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment_transcript [-font_size d] [-max_lines d]
+
+OPTIONS:
+-font_size d : Selects the font size in points of the text displayed in the transcript. The default
+            font size is 16 points.
+-max_lines d : Selects the maximum number of lines to store in the transcript. When this limit is
+            reached, the oldest lines are removed as new lines are added. The default is 15000
+            lines.
+

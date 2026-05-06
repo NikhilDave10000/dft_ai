@@ -1,0 +1,17 @@
+COMMAND: quit
+
+TITLE:
+quit
+
+DESCRIPTION:
+Use this command to terminate the current session and return to the windows or shell environment.
+
+SYNTAX:
+quit [-force]
+
+OPTIONS:
+-force : Avoids the prompt that occurs at exit if there are any current unsaved patterns.
+
+EXAMPLES:
+DRC> quit
+

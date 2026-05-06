@@ -1,0 +1,34 @@
+COMMAND: report_nofaults
+
+TITLE:
+report_nofaults
+
+DESCRIPTION:
+Use this command to report faults that have the nofault attribute.
+
+SYNTAX:
+report_nofaults < instance_name | pin_pathname [-stuck<0|1|01>] | -summary | -all> [-max d]
+
+OPTIONS:
+instance_name : Reports all faults with the nofault attribute that are associated with the specified
+            instance name.
+pin_pathname [-stuck<0|1|01>] : Reports all faults with the nofault attribute that are associated with the specified
+            pin pathname. You can use the -stuck option to report only the
+            stuck-at-1 or stuck-at-0 fault associated with the specified pin. The default is to
+            report both.
+-summary : Generates a summary report of nofault counts. This option can also be used in
+            conjunction with an instance pathname to report the number of nofaults associated with
+            that instance.
+-all : Reports of all nofault locations.
+-max d : Specifies the maximum number of faults with the nofault attribute that are allowed to
+            be reported. By default, there is no limit.
+
+EXAMPLES:
+TEST> add_nofaults -module MUX2H -stuck 1 SL
+  4 faults were added to nofault list.
+ TEST> report_nofaults -all
+ sa1 ** mux0/SL
+ sa1 ** mux1/SL
+ sa1 ** mux2/SL
+ sa1 ** mux3/SL
+

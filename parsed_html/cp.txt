@@ -1,0 +1,18 @@
+COMMAND: cp
+
+TITLE:
+cp
+
+DESCRIPTION:
+Use this command to copy a file to a selected destination.
+
+SYNTAX:
+cp source_filename destination_filename
+
+OPTIONS:
+source_filename : Specifies the filename that is copied.
+destination_filename : Specifies the filename where the source file is copied.
+
+EXAMPLES:
+DRC> cp flt_file1 flt_file2
+

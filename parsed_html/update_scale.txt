@@ -1,0 +1,17 @@
+COMMAND: update_scale
+
+TITLE:
+update_scale
+
+DESCRIPTION:
+This command is used only after specifying a read_drc command.
+
+SYNTAX:
+update_scale -wft { list_of_wft_names } -unit <ps|ns>
+
+OPTIONS:
+-wft { list_of_wft_names } : Specifies the required name or list of the specific WaveformTable(s) you want to
+            modify. At least one -wft option must be provided. You may specify a
+            list of names if you want to change a list of WaveformTables with a single command.
+-unit <ps|ns> : Identifies the new scale value for all time values contained in the WaveformTable.
+

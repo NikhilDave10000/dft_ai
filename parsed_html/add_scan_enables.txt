@@ -1,0 +1,29 @@
+COMMAND: add_scan_enables
+
+TITLE:
+add_scan_enables
+
+DESCRIPTION:
+This command is used to specify that a pin is to be initialized to a specific value before scan chain shifting. It is an alternative to defining a load_unload preamble vector in the STIL procedure file and is intended to be used before issuing a write_drc_file command to create a STIL procedure template or when a run_drc command is used without a procedure file.
+
+SYNTAX:
+add_scan_enables <0 | 1 | z> pin_name
+
+OPTIONS:
+0 | 1 | z : This defines the port's state during scan chain shifting. The port is initialized to
+            this value in a load_unload preamble cycle before the shift procedure.
+pin_name : This is the name of the top-level design port to be initialized during scan shifting.
+            Multiple pins can be specified in the same command if they are all initialized to the
+            same value.
+
+EXAMPLES:
+DRC> add_scan_enables 1 SCAN_EN
+ DRC> add_scan_enables Z {bidi[0] bidi[1] bidi[2]}
+ DRC> report_scan_enables
+  value port
+  ----- -----------------------
+  1     SCAN_EN (6)
+  Z     bidi[0] (3210)
+  Z     bidi[1] (3211)
+  Z     bidi[2] (3212)
+

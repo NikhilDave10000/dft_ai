@@ -1,0 +1,47 @@
+COMMAND: set_workspace_sizes
+
+TITLE:
+set_workspace_sizes
+
+DESCRIPTION:
+Use this command to select the size of user-adjustable workspaces.
+
+SYNTAX:
+set_workspace_sizes [-atpg_gates integer] [-command_line max_length] [-command_words max_strings] [-connectors integer] [-decisions integer] [-drc_buffer_size integer] [-line integer] [–max_trace_gates] [-string integer]
+
+OPTIONS:
+-atpg_gates integer : Specifies the maximum number of entries in the storage table used to keep track of
+            user-defined ATPG gates resulting from the add_atpg_primitives command. The default is 1024
+            entries.
+-command_line max_length : Specifies the maximum length of any command line that can be entered. Note that the
+            command line limit is still in effect even when a command line is split up using
+            backslashes in an effort to avoid exceeding the maximum length. The default is
+            50000.
+-command_words max_strings : Specifies the maximum number of strings that can be processed as part of a single
+            command line. The default is 10,000.
+-connectors integer : Specifies the maximum number of fanout connections supported when calculating the draw
+            image for the graphical schematic viewer (GSV). The default is 20000.
+-decisions integer : Specifies the maximum storage table size used to keep track of all of the active
+            decisions. This table is used during the ATPG process. The default size is 10000
+            entries. Occasionally, a design can require a larger decision table.
+-drc_buffer_size integer : Specifies the maximum number of state element candidates that can be analyzed to
+            determine the source for shift data associated with a multiple sensitized path during a
+            scan chain trace. The default setting, 1000, can be increased to 10000 when an M251
+            message is issued due to insufficient workspace size.
+-line integer : Specifies the maximum length of any line that can be processed when reading files. The
+            default is 50000 characters per line.
+–max_trace_gates integer : Specifies the maximum depth of gate tracing during DRC. By default, DRC tracing events
+            terminate when the size of a trace exceeds 500 gates. Use the -max_trace_gates option when a M738 warning message is generated when
+            tracing R17 violations during DRC. For example, try doubling the maximum trace value to
+            determine if the change affects subsequent DFT results and eliminates the R17
+            violations. Note that specifying a large increase in gate tracing affects the overall
+            DRC runtime.
+-string integer : Specifies the maximum length of a single string that can be processed. The default is
+            2048 characters. Consider increasing this value. For example, when the number of inputs
+            and bidirectionals defined in the design or when the number of outputs and
+            bidirectionals in the design exceeds the default of this parameter. An M441 message
+            indicates the increase to the default during processing.
+
+EXAMPLES:
+DRC> set_workspace_sizes -string 5000 -line 10000
+

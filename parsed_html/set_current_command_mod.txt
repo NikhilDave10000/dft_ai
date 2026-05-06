@@ -1,0 +1,18 @@
+COMMAND: set_current_command_mod
+
+TITLE:
+set_current_command_mode
+
+DESCRIPTION:
+The set_current_command_mode command sets the current command mode.
+
+SYNTAX:
+string set_current_command_mode -mode command_mode | -command command string command_mode string command
+
+OPTIONS:
+-mode command_mode : Specifies the name of the new command mode to be made current.
+-command command : Specifies the name of the command whose associated command mode is to be made current.
+
+EXAMPLES:
+shell> set_current_command_mode -mode mode_1
+

@@ -1,0 +1,64 @@
+COMMAND: add_capture_masks
+
+TITLE:
+add_capture_masks
+
+DESCRIPTION:
+Use this command to mask any potential value captured into a scan or nonscan sequential cell during a capture clock.
+
+SYNTAX:
+add_capture_masks { instance_path | gate_id | -scan { chain_name : index }} [-index number] [-load_only]
+
+OPTIONS:
+instance_path | gate_id : Specifies the instance path name or the gate ID of the scan or nonscan sequential
+            element for the capture value you want to mask. This is equivalent to considering the
+            data input of the state element connected to a TIEX. If the state element is a scan
+            cell, it can still be loaded to a non-X value during a scan load. One or more instances
+            can be specified on the same command line.
+-scan { chain_name : index } : Specifies a capture mask using the scan chain name and the index reference. The scan
+            chains are identified after the run_drc command is finished processing. Any information specified by
+            the -scan option is saved and applied after the run_drc command completes scan chain
+            tracing. All errors related to incorrect references are printed after the run_drc command is processed. You can use
+            the -scan option to specify multiple mask references in a list. There
+            are no spaces on either side of the colon for each specified reference. For example: DRC> add_capture_masks -scan {scan_chain_1:0 scan_chain_1:1} You cannot specify the -scan option with other capture mask data. If
+            you use this option, it must be the only option specified with the add_capture_masks command.
+-index number : When the instance_path argument defines a reference that contains
+            multiple sequential elements (a multibit cell), you can use the -index option to specify the specific bit to be masked. Without this option, all bits of this
+            type of reference are masked. Bit order is a function of a model definition. If you use
+            the -index option, you should also use the report_capture_masks command to
+            review which specific bit (identified by its gate ID) was masked and verify that the bit
+            is intended for masking. The -index option specifies only a single value that is applied to all
+            names associated with the specified instance_path argument. If you need
+            to mask multiple specific bits of an instance, you should specify the add_capture_masks command multiple times with a different index value
+            in each command. The -index option does not affect gate IDs, as there
+            is no ambiguity in this context. The index value must be greater than or equal to 1;the
+            first bit of a multibit cell is nearest to the scan-input of the cell and is referenced
+            as “1”. If the index value exceeds the number of bits in the instance, no mask is
+            defined and no errors are generated.
+-load_only : Causes scan and nonscan cells to load unknown values (Xs). These cells continue to
+            capture known values during the capture cycles. This functionality masks nonscan cells
+            when the set_simulation –shift_cycles n command is specified. For scan
+            cells, the -load_only option has the same effect as the add_cell_constraints X command. The -load_only option modifies the output of the report_capture_masks command. When this option is specified, the report appears as follows: TEST-T> report_capture_masks gate_id type lo instance_name ------- ---- -- -------------------- 45 DFF -- s1 58 DFF LO n0and The output report includes an " lo " column. If the -load_only switch applies to a cell, the " LO "
+            characters appear in this column. When the -load_only option does not
+            apply to a cell, two dash characters " -- " appear in this column. Any nonscan cells masked by the add_capture_masks -load_only command
+            can be designated as load-0 (L0) or load-1 (L1) cells. But they do not behave as L0 or
+            L1 cells because of the capture masks. The report_capture_masks command
+            reports them correctly, and ATPG and simulation handle them correctly. However, the
+            output of the report_nonscan_cells command gives them misleading
+            designations.
+
+EXAMPLES:
+DRC> add_capture_masks { MAIN/U111/K1 MAIN/U112/J99 MAIN/U113/R1 }
+  3 capture masks were added to capture mask list.
+
+ DRC> report_capture_masks
+  gate_id type instance_name
+  ------- ---- ---------------------------------
+    19286 DFF MAIN/U111/K1
+    19287 DFF MAIN/U112/J99
+    19288 DFF MAIN/U113/R1
+
+ DRC> add_capture_masks -scan A:2
+
+ DRC> add_capture_masks -scan {scan_chain_1:0 scan_chain_1:1}
+

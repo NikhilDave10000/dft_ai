@@ -1,0 +1,11 @@
+COMMAND: open_physical_db
+
+TITLE:
+open_physical_db
+
+DESCRIPTION:
+This command starts a server process that queries a PHDS (Synopsys Physical Design Store) database used for physical diagnostics.
+
+SYNTAX:
+open_physical_db
+

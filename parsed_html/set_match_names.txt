@@ -1,0 +1,48 @@
+COMMAND: set_match_names
+
+TITLE:
+set_match_names
+
+DESCRIPTION:
+This command specifies a set of name manipulation parameters that enable the match_names command to correctly match the referenced logical names with the physical names in the physical database.
+
+SYNTAX:
+set_match_names [-auto] [-exclude_modules { verilog_module_names }] [-instance name] [-reset] [-sub_prefix { prefix1 prefix2 }] [-sub_str { string1 string2 }]
+
+OPTIONS:
+-auto : Enables the match_names command to automatically define name matching rules to resolve hierarchy conflicts
+            related to top-level wrappers.
+-exclude_modules { verilog_module_names } : Sets a flag on the specified logical module or modules which do not have counterpart
+            physical modules. As a result of this setting, the diagnosis operation does not report
+            physical data in the YDF tables for the specified modules. You should specify only
+            Verilog module names; the module names provided by the report_physical command should not
+            be used.
+-instance name : Applies the name matching operation to the specified instance and all instances under
+            its hierarchy. Note that this option is intended only for debugging mismatches. It does
+            not accept a Tcl list of instances or regular expressions.
+-reset : Resets all name-manipulation specifications originally set by the set_match_names command.
+-sub_prefix { prefix1 prefix2 } : Replaces the instance prefix prefix1 with prefix2 from the flattened logical instance names.
+-sub_str { string1 string2} : Replaces all occurrences of string1 in flattened logical instance
+            names with string2 . Note that in the reverse name matching logic used
+            in bridge extraction, the whole pin (for example, ‘/D’ and if the ‘/D’ is the end of the
+            string) or hierarchy level (the name between ‘/’ to be matched) is required. For details
+            on reverse name matching logic used in bridge extraction, see the Description section
+            below.
+
+EXAMPLES:
+// command to change the hierarchy prefix from top_i to i_core
+ set_match_names –sub_prefix {top_i i_core}
+ -----------------------------------------------------------------------
+ Name Match Options Summary
+ -----------------------------------------------------------------------
+ Name Manipulation Flag = ON
+ Prefix to be deleted: top_i
+ Prefix to be added: i_core
+ -----------------------------------------------------------------------
+
+ //  command to replace top_i/i_core with top_i1/i_core1
+ set_match_names –sub_str {top_i/i_core top_i1/i_core1}
+
+ // command to reset the match settings
+ set_match_names –reset
+

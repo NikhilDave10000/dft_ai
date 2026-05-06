@@ -1,0 +1,21 @@
+COMMAND: report_pi_constraints
+
+TITLE:
+report_pi_constraints
+
+DESCRIPTION:
+This command reports all primary input and bidirectional ports that have been constrained either explicitly with the add_pi_constraints command or implicitly by the test protocol file.
+
+SYNTAX:
+report_pi_constraints [-command_report]
+
+OPTIONS:
+-command_report : Causes the PI constraints to be reported in the form of add_pi_constraints commands
+            that would be necessary to define the PI constraints.
+
+EXAMPLES:
+DRC> report_pi_constraints
+ port_name        constrain_value
+ ---------------- ---------------
+ /TEST_MODE        1
+

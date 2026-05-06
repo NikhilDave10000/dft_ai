@@ -1,0 +1,53 @@
+COMMAND: report_cell_model
+
+TITLE:
+report_cell_model
+
+DESCRIPTION:
+This command reports the CTM defects and the associated I/O combinations that was read using read_cell_model command.
+
+SYNTAX:
+report_cell_model cell_name |   					-all -defect<<defect_name>|   					all > -summary -used
+
+OPTIONS:
+-defect <<defect_name> | all : The –defect option reports all I/O combinations that detect the specified defect. When
+            combined with the –all option, only CTMs that contain the specified defect are reported.
+            Other CTMs are ignored.
+-summary : This option reports all I/O names, defect names and the number of rows in the detection
+            table.
+
+EXAMPLES:
+TEST-T> report_cell_model XOR3X2_LVT -defect D5
+Cell: XOR3X2_LVT Defect:D5
+Q   IN1   IN2   IN3
+0       0       0      0
+1       0       0      1
+1       1       0      0
+
+TEST-T> report_cell_model -defect all
+Cell: SDFFX2_LVT Defect:D1019 no detections
+Cell: SDFFX2_LVT Defect:D1020 no detections
+Cell: SDFFX2_LVT Defect:D1024 no detections
+Cell: SDFFX2_LVT Defect:D1025
+QN   CLK   SE   D   SI
+0   P   0   1   R
+0   P   0   1   F
+F   P   0   R   1
+
+TEST-T> report_cell_model -summary
+Cell: OR4X1_LVT
+Inputs: IN1, IN2, IN3, IN4
+Outputs: Q
+Defects: 264
+Detections
+Table Static rows: 16  defects: 18
+Table Dynamic rows: 64  defects: 14
+Cell: SDFFX2_LVT
+Inputs: CLK, SE, D, SI
+Outputs: Q, QN
+Defects: 1035
+Detections
+Table Static rows: 8  defects: 29
+Table Dynamic rows: 7  defects: 15
+Total number of cell models: 8
+

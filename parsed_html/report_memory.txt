@@ -1,0 +1,32 @@
+COMMAND: report_memory
+
+TITLE:
+report_memory
+
+DESCRIPTION:
+Use this command to report memory gate data for selected memory gates.
+
+SYNTAX:
+report_memory < id | instance_name | -all | -summary> [-max d] [-contents <address | all>] [-verbose]
+
+OPTIONS:
+id | instance_name : Specifies a specific memory primitive for which information is to be displayed. A
+            memory gate might be identified by its primitive ID or its instance name.
+-all : Causes the report to display information on all MEMORY primitives, including all RAMs
+            and ROMs in the design.
+-summary : Causes a summary report to be displayed. When this option is chosen, all MEMORY
+            primitives are included in the report.
+-max d : Specifies the maximum number of memory gates allowed to be reported. By default, there
+            is no limit.
+-contents <address | all> : Specifies that the contents of the selected memories is reported. The contents might be
+            selected to be for a single address or for all addresses. By default, the contents
+            displayed are the initial data values of the RAMs or ROMs. You can use the -store_memory_contents option of the set_simulation command along
+            with the run_simulation -sequential command to determine RAM contents for a particular
+            pattern.
+-verbose : Displays a verbose memory gate report.
+
+EXAMPLES:
+TEST> report_memory -summary
+  RAM summary: #RAMS=4, #clock_unstable=4, #load_unstable=0, #read_only=0.
+  ROM summary: #ROMS=1, #hot_read=0, #readoff_X=0, #readoff_0=0, #readoff_1=0.
+

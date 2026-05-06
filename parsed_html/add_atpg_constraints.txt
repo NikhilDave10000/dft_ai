@@ -1,0 +1,44 @@
+COMMAND: add_atpg_constraints
+
+TITLE:
+add_atpg_constraints
+
+DESCRIPTION:
+This command defines constraints that must be satisfied during ATPG pattern generation. You can also apply the constraints to the DRC process.
+
+SYNTAX:
+add_atpg_constraints name <0 | 1 | z> [-module name] < atpg_primitive_name | id | module_pinname | pin_pathname > [-drc | -iddq] [-no_detection_credit file_name]
+
+OPTIONS:
+name : Specifies the symbolic name assigned to the ATPG constraint that is being created.
+0 | 1 | z : Indicates the value of the constraint.
+-module name : Indicates that the ATPG constraint is added for the selected pins for every usage of the selected module.
+atpg_primitive_name | id | module_pinname | pin_pathname : Indicates the site of the constraint. The site can be identified by its ATPG primitive
+            name, primitive ID, pin pathname, or module pin name(if -module is
+            used).
+-drc | -iddq : Specifies that the ATPG constraint is monitored during the DRC analysis or IDDQ analysis as well as during ATPG pattern generation. The -drc option specifies that the ATPG constraint must be satisfied during the simulation of the load_unload, shift, setup, and other DRC procedures in addition to being satisfied during ATPG pattern generation. All ATPG analyses (such as contention ability checking) must also satisfy these constraints. A DRC ATPG constraint can only be added or removed during DRC command mode. The -iddq option specifies that the ATPG constraint is to be satisfied only during an IDDQ measure strobe and only if the IDDQ fault model has been selected. An IDDQ measure strobe corresponds to the time in the tester cycle specified in the DRC file when outputs would be measured.
+-no_detection_credit file_name : Specifies a file containing a list of cells that are not used for fault detection credit. These cells are still used for good machine values. This option is supported only in TestMAX ATPG. Note the following: Test generation avoids using no detection credit cells as observe points, which can produce additional AU faults. Fault simulation avoids using these cells when giving detection credit for faults. This option is supported for all fault models, test generation engines, and compression. If you specify the -no_detection_credit option, any other options used in the same command line are ignored. You can specify other options using a separate command line. For a complete description of using this option, see Defining, Reporting, and Removing
+            No Detection Credit Cells in the TestMAX ATPG and TestMAX Diagnosis User Guide.
+Test generation avoids using no detection credit cells as observe points, which can produce additional AU faults.
+Fault simulation avoids using these cells when giving detection credit for faults.
+This option is supported for all fault models, test generation engines, and compression.
+If you specify the -no_detection_credit option, any other options used in the same command line are ignored. You can specify other options using a separate command line.
+
+EXAMPLES:
+# by atpg primitive name
+ DRC>
+add_atpg_constraints my_constraint1 1 my_atpg_primitive1
+# by primitive id
+ DRC>
+add_atpg_constraints my_constraint2 0 1911
+# by pin pathname
+ DRC>
+add_atpg_constraints my_constraint3 1 CORE/ALU/DEMU/U266/H02
+DRC>
+report_atpg_constraints -all -verbose
+name val DRC site 					
+ -------------- --- --- ------------------------------- 					
+ my_constraint1 1 no my_atpg_primitive1 (20217) 					
+ my_constraint2 0 no MAIN/CPU/CAL/TBL/U1842 (1911) 					
+ my_constraint3 1 no CORE/ALU/DEMU/U266/H02 (12683)
+

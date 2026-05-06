@@ -1,0 +1,22 @@
+COMMAND: read_timing
+
+TITLE:
+read_timing
+
+DESCRIPTION:
+This command causes TestMAX ATPG to read a file of data that is interpreted as the minimum slacks (timing margins) for each faultable pin in the design.
+
+SYNTAX:
+read_timing file_name [-delete] [-verbose]
+
+OPTIONS:
+file_name : Specifies the input file containing the pin-slack data that is read.
+-delete : Causes any slack data currently in the data structure to be deleted before reading in
+            the slack data from the specified file and storing it in the data structure. Without
+            this option, the slack data in the file is added to the slack data already stored in the
+            data structure. Note that any existing data is overwritten if the input file contains
+            slack data for the same pin.
+-verbose : The option enables additional messages on missing slack data during when running the
+            read timing command. By default, only the first 50 missing slack messages are printed.
+            This option enables the printing of all missing slack messages.
+

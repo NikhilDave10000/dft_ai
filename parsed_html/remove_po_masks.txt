@@ -1,0 +1,24 @@
+COMMAND: remove_po_masks
+
+TITLE:
+remove_po_masks
+
+DESCRIPTION:
+Use this command to delete PO masks previously added with the add_po_masks command.
+
+SYNTAX:
+remove_po_masks < port_name | -All>
+
+OPTIONS:
+port_name : Specifies the name of a port whose PO (primary output) mask is to be removed.
+-all : Specifies that all PO masks are to be removed.
+
+EXAMPLES:
+DRC> report_po_masks
+ output port_name
+ ----------------
+ /LINK_X2
+ DRC> remove_po_masks -all
+ DRC> report_po_masks
+  Warning: Requested report contained no entries. (M13)
+

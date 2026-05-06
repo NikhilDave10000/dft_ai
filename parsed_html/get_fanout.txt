@@ -1,0 +1,18 @@
+COMMAND: get_fanout
+
+TITLE:
+get_fanout
+
+DESCRIPTION:
+This command returns a collection of the fanout endpoint cells.
+
+SYNTAX:
+collection get_fanout -from pin_name [-shift] [-test_setup]
+
+OPTIONS:
+-from pin_name : Specifies the hierarchical pin name in the top-level netlist to be used as the starting point for
+              reporting the fanout endpoints. Wildcard pin names are supported, although they do not
+              apply to instance names.
+-shift : Outputs endpoints after the shift constraints are applied.
+-test_setup : Outputs endpoints after applying the test_setup sequence.
+

@@ -1,0 +1,33 @@
+COMMAND: set_buses
+
+TITLE:
+set_buses
+
+DESCRIPTION:
+Use this command to set the parameters that control the behavior of bus gates.
+
+SYNTAX:
+set_buses [-contention_status <<ignore | noignore> < gate_id | pin_pathname | all>>…] [-external_z <z | 0 | 1 | x>] [-fault_contention <and | or | x>] [-zstate_status <<ignore | noignore> < gate_id | pin_pathname | all>>…]
+
+OPTIONS:
+-contention_status <<ignore | noignore> < gate_id | pin_pathname | all>>.... : Ignores selected buses for contention.
+-external_z <z | 0 | 1 | x> : Specifies the behavior of the Z state for external pins and determines the usability of
+            the Z state for fault detection. The default is z, which enables
+            detection of Z states on outputs and bidirectional ports. If your target tester does not
+            support this behavior, you need to disable it by selecting x.
+-fault_contention <and | or | x> : This option affects only the fault simulator, and has no effect on the test generator
+            itself. Adjusts the fault machine simulated value for the bussed net when buses are in
+            contention (multiple drivers on). The default is X. When a value of and is selected, the simulated value in the faulty machine when contention occurs is the AND
+            of the values, which is often 0. Likewise, a selection of or produces a
+            fault machine-simulated value, which is the OR of the data values, most often 1. Using a
+            simulated contention value, which is 0 or 1 instead of X, can make it easier to detect
+            faults on the tristate enable control lines. This is not possible if the faulty machine
+            simulated value is X. In essence, when a value other than X is selected, the fault
+            simulator "pretends" it can still be able to detect faults on tristate enable lines,
+            even though contention is occurring. This setting does not affect the simulated value of
+            the GOOD machine. This option is not yet implemented for the Full-Sequential pattern generator.
+-zstate_status <<ignore | noignore> gate_id | pin_pathname | all>>... : Ignores selected buses for z-state checking.
+
+EXAMPLES:
+DRC> set_buses -external_z z
+

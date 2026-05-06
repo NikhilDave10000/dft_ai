@@ -1,0 +1,40 @@
+COMMAND: report_modules
+
+TITLE:
+report_modules
+
+DESCRIPTION:
+Use this command to report data associated with a selected netlist module.
+
+SYNTAX:
+report_modules [ name | -unreferenced | -undefined | -unspecified | -udp -behavioral | -black_box | -errors | -summary | -all] [-garble | -ungarble] [-verbose]
+
+OPTIONS:
+name : Specifies the name of the module to report.
+-unreferenced : Reports all modules that are not referenced by another module. The last unreferenced
+            module is the default top module choice for the run_build_model command.
+-undefined : Reports all modules that are referenced but not defined.
+-unspecified : Reports all modules that were defined with sequential syntax, usually by UDP table, but
+            the actual description resulted in a combinational model as output instead of a
+            sequential model.
+-udp : Reports all modules identified as Verilog UDP definitions.
+-behavioral : Reports all modules considered to be behavioral.
+-black_box : Reports all black box modules (modules that have port definitions but no contents).
+-errors : Reports all modules that have at least one violation of a rule with a severity of
+            "error."
+-summary : Generates a summary report on all modules.
+-all : Generates a report on all known modules.
+-garble | -ungarble : The -garble option displays the garbled module name to which that the
+            given original module name is mapped in a garbled image created by the -garble option of the write_image command. This can be done only with an
+            ungarbled design database.
+-verbose : Generates verbose information for each selected module, including a list of input pins,
+            output pins, and all instances within the module. For each instance, the report includes
+            the instance name, module referenced, and pin to pin connectivity. The default is
+            nonverbose, which displays a single line per module showing the module name, number of
+            pins, number of internal ATPG modeling gates used to model the module, and number of
+            times the module is referenced.
+
+EXAMPLES:
+DRC> report_modules -summary
+  Modules: #STRUCT_VERILOG=423 #BEH_VERILOG=3 #COMB_ UDP=4(#xdetector=4) #SEQ_UDP=8
+

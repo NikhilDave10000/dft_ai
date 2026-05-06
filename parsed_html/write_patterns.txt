@@ -1,0 +1,171 @@
+COMMAND: write_patterns
+
+TITLE:
+write_patterns
+
+DESCRIPTION:
+Use this command to write ATPG patterns to a file in one of the supported formats: FTDL, STIL, TDL91, TSTL2, WGL, WGL_FLAT, and the ATPG tool's proprietary binary.
+
+SYNTAX:
+write_patterns filename [-cellnames <internal | verilog| parallel | type | module | garbled>] [-compress <gzip | binary>] [-compressor_based] [-cycle_count | -nocycle_count] [-exclude <setup | repeat_setup | patterns | chain_test | atpg_patterns | all>] [-first d] [-last d] [-format <binary | ftdl | tdl91 | tstl2 | 			wgl | wgl_flat | stil | stil99>] [-config_file cfilename] [-internal | -external] [-internal_force_clocks | -nointernal_force_clocks] [-internal_scancells | -nointernal_scancells] [-longtokensplit | -nolongtokensplit] [-measure_forced_bidis] [-nocompaction] [-nooverlap_load] [-occ_load_split] [-order_pins] [-pad_character < 0 | 1 | x >] [-patinfo | -nopatinfo] [-patname pat_block_name] [-replace] [-scanstructures <-all | min>] [-serial | -parallel] [-sorted | -reorder file | -type <basic_scan | clock_on_measure | fast_sequential | full_sequential>] [-split d] [-stil | -wgl] [-top_scanports | -notop_scanports] [-unified_stil_flow | -nounified_stil_flow] [-use_delay_capture_start number] [-use_delay_capture_end number] [-usf2 | -nousf2]
+
+OPTIONS:
+filename : Specifies the base path name of the file in which TestMAX ATPG writes the patterns. If
+            the file already exists, TestMAX ATPG displays an error unless you use the -replace option. Note that the filename must be the
+            first argument specified on the write_patterns command line.
+-cellnames <internal | verilog | parallel | type | module | garbled> : Controls the format of the scan cell information in the ScanStructures block of a
+              STIL file. Default is -cellnames type. When -cellnames internal is used, you can specify scan cell names that match the
+              names reported by the report_scan_cells command. When -cellnames type is used for STIL (but not STIL99) output, the ScanStructures
+              block contains ScanCellType statements with compact references to the scan cell
+              information. This is the default. When -cellnames module is used, the ScanCellType statement uses the cell module type
+              in the design (with additional references to scan-in and scan-out connections) and
+              each scan cell identifies the specific module. When -cellnames verilog is used, the generated names are specified with Verilog
+              syntax. When -cellnames parallel is used, the names are the same as -cellnames verilog, with
+              an additional reference to the scan-input port of these cells. When -garbled is used, the internal scan cell names (instance-level names only) are
+              generated in a garbled format. This enables TestMAX ATPG to read netlists containing
+              garbled names without affecting subsequent pattern usage. Note that garbled names are
+              not appropriate for parallel simulation and errors are generated if a pattern file is
+              used in this context. The naming constructs used for the type or module options require 1450.1 constructs
+              and are supported for the STIL (not STIL99) format only. Checks are not made on the
+              module names as appropriate for a STIL flow, and the -cellnames module option may
+              generate STIL files that are not appropriate for other translators. For STIL99 files
+              files written with -parallel or -unified_stil_flow, the should use -cellnames
+              parallel.
+-compress <gzip | binary> : Specifies the compressed format (gzip or binary) of the output file that TestMAX ATPG
+            writes. Binary compression is a proprietary format of TestMAX ATPG. The default is to
+            write the file without compression. If you select the gzip format, add
+            the .gz suffix to the filename. You cannot use this option with the Ftdl, TDl91, or
+            TSt12 option.
+-compressor_based : This option, which is used in conjunction with the -format binary option, writes out a parallel mode pattern set which is read back into serial mode when
+            running TestMAX ATPG on serializer designs. It is used only for translating parallel
+            mode patterns to serial mode patterns in DFTMAX compression. For details on this flow,
+            see “Translating Parallel Mode Patterns to Serial Mode Patterns” in the DFTMAX Compression User Guide .
+-config_file cfilemame : This option sets the user configuration file to control options in the Ftdl, TDl91, and
+            TSt12 output formats. If you do not set this option, TestMAX ATPG uses a default
+            configuration file from the $SYNOPSYS/auxx/syn/ltran directory. To create a
+            custom configuration file, copy the default file and modify the user-editable fields and
+            controls. For details, see Customizing Ltran Output.
+-cycle_count | -nocycle_count : The cycle count is generated by default when the write_patterns -format stil |
+              stil99 command is specified. If this option causes problems, you can disable
+            it using the -nocycle_count option. The cycle count is only generated when writing STIL patterns. There are two values
+            reported after the patterns are written. The first value identifies the number of V
+            statements encountered in these patterns; this includes counts of the V statements
+            contained in each executed procedure for each call to that procedure. The second value
+            (number of cycles) identifies the number of flattened cycles produced by these
+            operations, which includes the number of cycles in the expanded Loop and Shift
+            statements.
+-exclude <setup | repeat_setup | patterns | chain_test | atpg_patterns | all> : Selects from the following pattern types to exclude from the output: setup — Patterns for the test_setup macro. repeat_setup — Patterns for the test_setup macro when you use the -split option. Note that this option should not be used for WGL
+            patterns. patterns — Includes the test_setup vector; excludes ATPG patterns and
+            chain tests. When chain tests are present, they start at ATPG pattern 0. These patterns
+            are also controlled by options of the set_atpg command. chain_test — Patterns associated with the chain test. atpg_patterns — All patterns NOT associated with the chain test
+            (converse of the chain_test option). all — Excludes all pattern types. You can repeat this option to exclude
+            multiple pattern types. You can use a list with the -exclude option to exclude multiple
+            pattern types. Excluding patterns with compressed designs might result in errors if
+            there are dependencies between the patterns.
+-first d : Specifies the first pattern number that TestMAX ATPG writes. The default is to begin
+            with pattern 0. Note: For Full-Sequential patterns, this option might cause simulation
+            mismatches.
+-format <binary | ftdl | tdl91 | tstl2 | wgl | wgl_flat | stil | stil99> : Specifies the output format for the patterns that TestMAX ATPG writes. The default is
+            binary. The binary option writes patterns in a TestMAX ATPG proprietary binary
+            format. TestMAX ATPG can write and read this format. To read these pattern files, use
+            the set_patterns -external command. The ftdl option writes patterns in the Fujitsu TDL pattern format. You
+            can specify an optional user configuration file using the -config_file option. Note: The FTDL pattern format is supported for write only; TestMAX ATPG cannot
+            read this pattern format. The tdl91 option writes patterns in the Texas Instruments TDL91
+            pattern format. You can specify writing the patterns in a parallel format for parallel
+            TDL simulation.You can specify an optional user configuration file using the -config_file option. The Texas Instruments TDL91 pattern format is
+            supported for write only; TestMAX ATPG cannot read this pattern format. The tstl2 option writes patterns in the Toshiba TSTL2 pattern format.
+            An optional user configuration file can be specified using the -config_file option. The Toshiba TSTL2 pattern format is supported
+            for write only; this pattern format cannot be read back into TestMAX ATPG. The wgl option writes patterns in TSSI's Waveform Generation Language
+            (WGL) pattern format. Note: The set_wgl command controls many aspects of creating WGL pattern
+            output. The subset of the WGL language written by TestMAX ATPG can also be read back
+            in. The wgl_flat option produces a WGL pattern file in which the scan
+            loads have been serialized (flattened) into a series of "vector()" statements. The WGL
+            file contains only vector() statements and does not contain any "scan()", scan cell,
+            scan states, or scan chain information. The stil option writes patterns in the official IEEE Std. 1450.1
+            Standard Test Interface Language (STIL) for Digital Test Vectors format. TestMAX ATPG
+            can both write and read this format; however, it supports only a subset of the language
+            it writes for reading back in. The stil99 option writes patterns in the official IEEE-1450.0 Standard
+            Test Interface Language (STIL) for Digital Test Vectors format. This format can be both
+            written and read, but only the subset of the language written by TestMAX ATPG is
+            supported for reading back in. Note : You must use a 1450.0-compliant DRC procedure as input to
+            write output in the stil99 format. Selecting -format stil or stil99 generates a STIL
+            file which contains a name in the format <pfile>.<ext>, where you specified write_patterns <pfile>.<ext> . The default STIL testbench is
+            serial.
+-internal | -external : Specifies whether to write patterns from the internal or external pattern set. The
+            initial default is to use the internal pattern set, but this can be modified by the set_patterns command.
+-internal_force_clocks | -nointernal_force_clocks : Controls the generation of additional events in the pattern data. If these events are
+            present for the design context, then they are required to properly drive certain
+            internal clocks during VCS or external simulation. The default is
+            -nointernal_force_clocks.
+-internal_scancells | -nointernal_scancells : Controls the generation of data for the ScanCell and ScanClock sections of a STIL file for internal chains if this data is
+            not already provided. For non-compressed designs, the default behavior is not to
+            generate the scan cell and scan clock data (the -nointernal_scancells option). For compressed designs, the default is to generated the scan cell and scan
+            clock data ( -internal_scancells ). If the scan cell data is required
+            (for example, if the -parallel option is specified), the internal scan
+            cell data is written irrespective of this option setting and M479 messages are
+            generated.
+-last d : Specifies the last pattern number for the patterns to be written. The default is to end
+            with the last available pattern.
+-longtokensplit | -nolongtokensplit : The default, the -longtokensplit option, avoids excessively long lines
+            in the STIL file by splitting long scan cell names into several tokens using the
+              " . " (point) STIL statement. This default behavior generates lines
+            containing a maximum of 1024 characters. The -nolongtokensplit option
+            avoids splitting scan cell names and can generate lines longer than 1024 characters.
+            This option is intended to support testers that cannot interpret the
+            " . " (point) STIL statement.
+-measure_forced_bidis : By default, no patterns written will attempt to force and measure bidirectional ports
+            in the same tester cycle. Selecting this option allows writing patterns which can
+            attempt to both force and measure in the same tester cycle. Note :
+            You should not use this option if you are writing WGL output or if your target tester
+            will not support force/measures on the same pin in the same cycle.
+-nocompaction : Applies to STIL format only. By default, compaction is allowed in STIL by replacing
+            repeated character strings using the '\r NN' construct. Using this option disallows this
+            type of compaction.
+-nooverlap_load : Applies to STIL format only. When patterns are written, the scan chain loading for
+            pattern N+1 is overlapped with the scan chain unloading of pattern N. By specifying
+              - nooverlap_load , the patterns are written so that no overlapping
+            occurs. Total number of tester cycles will essentially double when -nooverlap_load is used. The default is to overlap load and unload
+            operations. Note that this option is not supported for Adaptive Scan Technology
+            compression patterns.
+-occ_load_split : This option, which is used in the internal clocking procedures feature, splits patterns
+            into a separate file for each clocking procedure. Note that a new pattern file is saved
+            each time a clocking procedure changes from one pattern to the next, which can result in
+            a large number of pattern files. Because of this, you should you should use the -occ_load_split option only in combination with the set_atpg -group_clk_constraints command.
+            For more information, see "Using Internal Clocking Procedures."
+-order_pins : Selects a special ordering of port data for pattern outputs. The default order of
+            pattern data follows the order in which the ports are defined in the design's top
+            module. Specifying the -order_pins option causes the order of pattern
+            data to be inputs first, then bidirectional ports, then outputs. This option is
+            supported only for WGL patterns.
+-pad_character < 0 | 1 | x > : Selects the padding character to be used on standard WGL patterns when shorter scan
+            chains are padded up to the same size as the longest scan chain, or during the last
+            chain unload operation when padding data is shifted in while checking the last pattern
+            shifted out. The default padding is 0. There is a separate control for WGL patterns
+            found under the set_wgl command
+            for enabling/disable padding when writing WGL patterns.
+-patinfo | -nopatinfo : Applies to STIL format only. The default is -nopatinfo . If -patinfo is specified, a <filename-ext>.patinfo file is generated
+            when STIL patterns are written.
+-patname pat_block_name : Replaces the default STIL pattern block name "_pattern_" with the name specified to
+            this option. Affects -format stil or stil99 files
+            only.
+-replace : Specifies that the pattern file is allowed to replace an existing file. The default is
+            not to replace an existing file and generate an error message indicating the file
+            already exists.
+-scanstructures <all | min> : Controls the generation of scan chain data in the ScanStructures block
+            of a STIL file. The default setting, all , generates all supported
+            fields for all applicable scan chain data. If you specify the min keyword, the scan chain data is truncated for compressed designs that reference internal
+            scan input or scan output ports (internal scan chains). This protects the identification
+            of internal design elements. The following set of examples shows how the -scanstructures option
+            affects the contents of a generated STIL file. The first example shows the scan chain
+            data using the default setting ( -scanstructures all ): ScanChain "1" { ScanLength 11; ScanIn "core_i/ctl/U199/ZN"; ScanOut "core_i/ctl/ctl_de_reg_2_/Q"; ScanInversion 1; ScanCells ! "des_unit.core_i.ctl.ctl_dd_reg_0_.SI"
+              "des_unit.core_i.ctl.ctl_dd_reg_1_.SI" "des_unit.core_i.ctl.ctl_dd_reg_2_.SI"
+              "des_unit.core_i.ctl.ctl_dd_reg_3_.SI" … "des_unit.core_i.ctl.ctl_de_reg_0_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_1_.SI" "des_unit.core_i.ctl.ctl_de_reg_2_.SI" ; ScanMasterClock "clk_st" ; } ScanChain "2" { ScanLength 11; ScanIn "core_i/ctl/U198/ZN"; ScanOut "core_i/ctl/key_dd_reg_5_/Q"; ScanInversion 1; ScanCells ! "des_unit.core_i.ctl.ctl_de_reg_3_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_4_.SI" "des_unit.core_i.ctl.ctl_de_reg_5_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_6_.SI" … "des_unit.core_i.ctl.key_dd_reg_5_.SI" ; ScanMasterClock "clk_st" ; } If the -scanstructures min option is specified, the generated scan
+            chain data is truncated, as shown in the following example: ScanChain "1" { } ScanChain "2" { } Note the following:
+
+EXAMPLES:
+TEST> write_patterns pat.bin -format binary -last 49 -replace    						
+ End writing 50 patterns, CPU_time = 0.72 sec, File_size = 28692
+

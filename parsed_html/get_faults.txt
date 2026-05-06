@@ -1,0 +1,20 @@
+COMMAND: get_faults
+
+TITLE:
+get_faults
+
+DESCRIPTION:
+The get_faults command returns a collection of fault objects.
+
+SYNTAX:
+collection get_faults -filter <expression> | -pinpath <pinpath> | -all | -unsuccessful
+
+OPTIONS:
+-filter <expression> : Filters the collection with the expression. For any fault objects that match patterns,
+            the expression is evaluated based on the fault objects's attributes. If the expression
+            evaluates to true, the fault object is included in the result.
+-pinpath <pinpath> : Returns the fault object for the collapsed fault(s) associated with the specified
+            hierarchical pinpath.
+-all : Returns all fault objects.
+-unsuccessful : Returns all the unsuccessful fault objects.
+

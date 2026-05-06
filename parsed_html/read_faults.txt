@@ -1,0 +1,52 @@
+COMMAND: read_faults
+
+TITLE:
+read_faults
+
+DESCRIPTION:
+This command provides a way for faults defined in a file to be added to or deleted from the current fault list.
+
+SYNTAX:
+read_faults file_name [-retain_code | -force_retain_code | -maintain_detection] [-add | -delete]
+
+OPTIONS:
+file_name : Specifies the file containing a fault list to read.
+-retain_code : Causes the fault codes in the input file to be processed and potentially retained.
+            Without this option, the fault location information is used, but the fault code is
+            ignored. For any NEW fault locations provided in the input file, if the fault code is DS, DI,
+            UU, UT, UB, UR, AN, then the fault is added with the same fault code. For all other
+            fault codes, an analysis is done to determine if the fault location should be classified
+            as one of {UU, UT, UB, DI, AN}. If the fault location is found to be one of these fault
+            classes, the new fault is added and the fault code is changed to the appropriate fault
+            class. For any fault locations provided in the input file that are already in the internal
+            fault list, the fault code from the input file replaces the fault code in the internal
+            fault list. Note: If you wish to restore a previous fault list exactly use the -force_retain_code option.
+-force_retain_code : Causes the fault codes in the input file to be read and retained as found in the input
+            file.
+-maintain_detection : While reading an external fault list, this option allows faults marked detected (with a
+            DT, DS or DI fault class) to be added to the current TestMAX ATPG internal fault list
+            without losing detection status that exists in the current TestMAX ATPG session. Faults
+            added from this file will take on the status from the file, otherwise.
+-add | -delete : Indicates whether to add or delete the faults in the file from the current fault list.
+            The default is to add faults.
+
+EXAMPLES:
+TEST> remove_faults -all
+  Warning: Internal pattern set is now deleted. (M133)
+ TEST> read_faults faults.all
+  88408 faults were read in and 88408 new faults were added to fault list.
+ TEST> report_faults -summary
+        Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class         code #faults
+ ------------------- ---- ---------
+ Detected            DT   11816
+ Possibly detected   PT       0
+ Undetectable        UD     840
+ ATPG untestable     AU    3312
+ Not detected        ND   72440
+ -----------------------------------------------
+ total faults 88408
+ test coverage 13.49%
+ -----------------------------------------------
+

@@ -1,0 +1,75 @@
+COMMAND: write_testbench
+
+TITLE:
+write_testbench
+
+DESCRIPTION:
+This command eases the generation of an equivalent Verilog testbench by allowing you to run MAX Testbench without leaving the TestMAX ATPG environment.
+
+SYNTAX:
+write_testbench -input [ stil_filename | |{-split_in { list_of_stil_files_for_split_in }}] -output testbench_name [-replace] [-config_file config_filename] [-parameters { list_of_parameters }]| [-verbose]
+
+OPTIONS:
+-input [ stil_filename | {-split_in
+            \{ list_of_stil_files_for_split_in \}}] : The stil_filename argument specifies the path name of the previous
+            TestMAX ATPG-generated STIL file requested by the equivalent Verilog testbench. You can
+            use a previously generated STIL file as input. This file can originate from either the
+            current session or from an older session using the write_patterns command. The following syntax is used for specifying split STIL pattern files as input (note
+            that backslashes are required to escape the extra set of curly braces): {-split_in
+              \{ list_of_stil_files_for_split_in \}} The following example shows how to specify a set of split STIL pattern files: write_testbench -input {-split_in \{patterns_0.stil patterns_1.stil\}} -output
+              pat_mxtb
+-output testbench_name : Specifies the names used for the generated Verilog testbench output files. Files
+              are created using the naming convention <testbench_name>.v and <testbench_name>.dat .
+-replace : Forces the new output files to replace any existing output files. The default is to not
+            allow a replacement.
+-config_file config_filename : Specifies the name of a configuration file that contains a list of customized options
+              to the MAX Testbench command line.
+-parameters { list_of_parameters } : Enables you to specify additional options to the MAX Testbench command line. See
+                " MAX Testbench Command-Line
+                Parameters Used With the write_testbench Command for a
+              complete list of parameters you can use with the -parameters option. If you use the -parameters option, make sure it is the last
+              specified argument in the command line, otherwise you might encounter some Tcl UI
+              conversion limitations. A usage example for this option is as follows: write_testbench -parameters { -v_file \”design_file_names\” –v_lib
+                \”library_file_names\” –tb_module module_name –config_file config1} Note: All the parameters must be specified using the Tcl syntax required in the TMAX
+                  shell. For example: -parameters {param1 param2 –param3 \”param4\”} Quotation marks must have a backslash, as required by Tcl syntax, to be
+                  interpreted correctly and passed directly to the MAX Testbench command line. Parameters specified within a -parameters {} list are
+                  order-dependent. They are parsed in the order in which they are specified, and are
+                  transmitted directly to the MAX Testbench command line. These parameters must
+                  follow the order and syntax required for the MAX Testbench command line.
+-verbose : Forces the execution of the stil2verilog tool to be visible in the shell window
+              (instead of the xterm pop-up done by default).
+
+EXAMPLES:
+TEST-T > ...
+ TEST-T > write_patterns pat.stil -formal stil -serial -replace
+ Patterns written reference 7158 V statements, generating 18624 test cycles
+ End writing file 'pat.stil' with 127 patterns, File_size = 207207, CPU_time = 0.0 sec.
+ TEST-T> write_testbench -input pat.stil -output maxtb –replace
+ #################################################################
+ #                                                                                                                                               #
+ #          STIL2VERILOG                                                                #
+ #                                                                                                                                               #
+ #          Copyright (c) 2007-2013 SYNOPSYS INC. ALL RIGHTS RESERVED              #
+ #                                                                                                                                               #
+ ################################################################
+ maxtb> Parsing command line...
+ maxtb> Checking for feature license...
+ maxtb> Parsing STIL file "pat.stil" ...
+ ... STIL version 1.0 ( Design 2005) ...
+ ... Building test model ...
+ ... Signals ...
+ ... SignalGroups  ...
+ ... Timing  ...
+ ... ScanStructures :  "1"  "2"  "3"  "4"  ...
+ ... PatternBurst "_burst_" ...
+ ... PatternExec  ...
+ ... Procedures : "multiclock_capture" "allclock_capture" "allclock_launch" "allclock_launch_capture" "load_unload" ...
+ ... MacroDefs : "test_setup" ...
+ ... Pattern block "_pattern_" ...
+ maxtb> STIL file successfully interpreted (PatternExec: "").
+ maxtb> Detected a Normal Scan mode.
+ maxtb> Test bench files "maxtb.v" and "maxtb.dat" generated successfully.
+ maxtb> Memory usage: 5.15 Mbytes. CPU usage: 0.710 seconds.
+ maxtb> End.
+ TEST-T> …
+

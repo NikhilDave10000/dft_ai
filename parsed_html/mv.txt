@@ -1,0 +1,18 @@
+COMMAND: mv
+
+TITLE:
+mv
+
+DESCRIPTION:
+Use this command to move a file to a selected destination.
+
+SYNTAX:
+mv <source_filename> <destination_filename>
+
+OPTIONS:
+source_filename : Specifies the name of the file to move.
+destination_filename : Specifies the name of the file to which the source file is moved.
+
+EXAMPLES:
+DRC> mv flt_file1 flt_file2
+

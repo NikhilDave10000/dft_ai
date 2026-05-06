@@ -1,0 +1,15 @@
+COMMAND: add_slow_cells
+
+TITLE:
+add_slow_cells
+
+DESCRIPTION:
+This command is used for at-speed testing to modify the behavior of DFF or DLAT cells when these cells drive multi cycle or false paths.
+
+SYNTAX:
+add_slow_cells < instance_path | gate_id >
+
+OPTIONS:
+instance_path | gate_id : Specifies the instance pathname or the gate ID of the DFF or DLAT element whose
+            simulation behavior is being modified.
+

@@ -1,0 +1,57 @@
+COMMAND: analyze_compressors
+
+TITLE:
+analyze_compressors
+
+DESCRIPTION:
+This command enables you to run ATPG by creating a virtual compressor.
+
+SYNTAX:
+analyze_compressors <-num_chains number > <-num_inputs number > <-num_scanouts number > [-num_clockchains number] [-nodiag] [-num_xchains number | auto] [-use_all_unload_nodes | -nouse_all_unload_nodes] [-verbose] [-xchain_analysis] [-xtolerance <default | high>]
+
+OPTIONS:
+-num_chains number : Specifies the number of internal chains used for the analysis.
+-num_inputs number : Specifies the number of scan inputs used for scan compression implementation.
+-num_scanouts number : Specifies the number of scan outputs used for scan compression implementation.
+-num_clockchains number : The default is 0 (no clock-chains). Indicates that number scan
+              chains should be configured as clock chains when designing the load decompressor.
+              Clock chains must have dedicated, load-mode independent scan inputs, and these inputs
+              cannot be used to control X-tolerant mode selection for the unload compressor. Not
+              supported with -streaming_enable as clock chains must be external
+              chains.
+-num_xchains number | auto : The default is 0 (no X-chains). When a non-zero value is given, the first number chains are considered X-chains when creating the
+            unload compressor. There is no effect on the load decompressor. When running analyze_compressors on a scan design, allocation of scan cells into
+            chains during the analysis does nothing special for X-chains. If auto is selected, first the number of X-chains is determined based on X-cells analysis (see
+            the -xchain_analysis option); user-defined capture masks are also
+            considered. Then, internal scan chains are created so that all X-cells (and only
+            X-cells) are placed on X-chains.
+-nodiag : Disables the requirement to generate a compressor with high precision diagnosis. By
+            default, the analyze_compressors command generates a compressor with
+            failure diagnosis; this requires a specific number of scan outputs for a given number of
+            chains.
+-use_all_unload_nodes | -nouse_all_unload_nodes : The -use_all_unload_nodes option has the following effect when
+            generating an unload compressor: Adds a variety of different multiple-observability modes. Fills up unused modes to avoid R21 violations The -nouse_all_unload_modes option is provided only for
+            backward-compatibility.
+-xchain_analysis : Performs X-chain analysis during the TEST command mode of a TestMAX ATPG session. This
+            analysis calculates the probability of X for each gate in the circuit by simulating 1024
+            random patterns under the following conditions: Constrained PIs are set to their constrained value. Clocks are set to their off state. Enable pins are set to their non-shift state, if identified. You can define enable pins
+            using the add_scan_enables command; in this case, the state is assumed
+            to be the shift mode value. Bidirectional pins are set to Z, but are reset to a random binary value for patterns in
+            which the internal driver is at Z. In this case, the -bidi_fill option
+            of the set_simulation command must be specified. All other PIs are set to random values. Constrained scan cells are set to their constrained value. Constant value cells are set to their constant value. Load cells are set to their load values. Transparent latches are initialized to X and updated during simulation. Other scan cells are set to random values. All other state elements are set to X. A report is provided for each scan chain, which indicates the average X-capture
+            probability for its scan cells. After it is calculated, the X-probability can be
+            displayed for reported and displayed gates using the set_pindata -gatedata command. This data is automatically deleted when leaving the TEST command mode. After running the -xchain_analysis option, the X-probabilities of
+            every gate in the design are stored and can be displayed by the set_pindata -gatedata command. The number shown for each gate is the percentage of
+            simulated patterns for which the gate was at X value.
+-xtolerance <default | high> : The default keyword specifies no extra X-tolerance gating, and only
+            includes X-tolerance in an XOR compressor. The high keyword specifies
+            full X-tolerance gating with shared load/unload controls. For multithreading, you must
+            set the -xtolerance option to high. If you don't set this option,
+            non-threaded processing is used for analysis instead of multithreading, and an M729
+            message is issued.
+
+EXAMPLES:
+Data reduction per pattern: 11.81X
+Cycle reduction per pattern: 11.81X
+Compressors area overhead per internal chain: 9.0 equivalent two-input NAND gates
+

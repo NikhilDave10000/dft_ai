@@ -1,0 +1,15 @@
+COMMAND: remove_display_proc
+
+TITLE:
+remove_display_procs
+
+DESCRIPTION:
+This command removes all Tcl procedures or a specific Tcl procedure that was previously defined using the add_display_proc command.
+
+SYNTAX:
+remove_display_proc -all | proc_name
+
+OPTIONS:
+-all : Removes all previously registered procedures or commands.
+proc_name : Specifies the name of the procedure or command to be removed.
+

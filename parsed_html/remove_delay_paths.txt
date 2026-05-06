@@ -1,0 +1,24 @@
+COMMAND: remove_delay_paths
+
+TITLE:
+remove_delay_paths
+
+DESCRIPTION:
+This command removes delay path definitions from TestMAX ATPG memory, thus excluding them from consideration from being used for fault seeding and ATPG.
+
+SYNTAX:
+remove_delay_paths <-all | path_name | -min_cycle d | -min_slack d | -max_cycle d | -max_slack d >
+
+OPTIONS:
+path_name : Remove a specific path from the delay path set currently maintained by TestMAX
+            ATPG.
+-max_cycle d : Removes paths with cycle time more than d.
+-max_slack d : Removes paths with slack more than d.
+-min_cycle d : Removes paths with cycle time less than d.
+-min_slack d : Removes paths with slack less than d.
+-all : Removes all paths from memory.
+
+EXAMPLES:
+TEST> remove_delay_paths -min_slack 0.3
+   58 delay paths were removed due to failure to satisfy minimum slack.
+

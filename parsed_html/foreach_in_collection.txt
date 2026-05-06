@@ -1,0 +1,32 @@
+COMMAND: foreach_in_collection
+
+TITLE:
+foreach_in_collection
+
+DESCRIPTION:
+This command is used to iterate each element in a collection.
+
+SYNTAX:
+string foreach_in_collection itr_var collections body
+
+OPTIONS:
+itr_var : Specifies the name of the iterator variable.
+collections : Specifies a list of collections to iterate.
+body : Specifies a script to execute per iteration.
+
+EXAMPLES:
+TEST-T> foreach_in_collection pin [filter_collection [get_pins] pin_pathname=~*slow_clk* ] {
+? echo [get_attribute $pin pin_pathname]
+? }
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/CP
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/Q
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/QN
+TOTO/slow_clk_clkgt/U2/Z
+TOTO/slow_clk_clkgt/U2/A
+TOTO/slow_clk_clkgt/U2/B
+TOTO/slow_clk_clkgt/cg_latch_reg/Q
+TOTO/slow_clk_clkgt/cg_latch_reg/GN
+TOTO/slow_clk_clkgt/cg_latch_reg/D
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/CD
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/D
+

@@ -1,0 +1,20 @@
+COMMAND: get_candidates
+
+TITLE:
+get_candidates
+
+DESCRIPTION:
+This command returns a collection of defect candidate objects which contain the results of a previous run_diagnosis command.
+
+SYNTAX:
+collection get_candidates -filter expression | -pinpath pinpath | -defect defect_id | -all
+
+OPTIONS:
+-filter expression : Filters the collection with the expression. For any candidates that match patterns,
+              the expression is evaluated based on the candidate's attributes. If the expression
+              evaluates to true, the candidate is included in the result.
+-pinpath pinpath : Returns the fault object for the collapsed fault(s) associated with the specified
+              hierarchical pinpath.
+-defect defect_id : Returns the fault object for the collapsed fault(s) associated with the specified defect_id .
+-all : Returns all defect candidate objects.
+

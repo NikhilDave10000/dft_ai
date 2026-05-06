@@ -1,0 +1,35 @@
+COMMAND: write_netlist
+
+TITLE:
+write_netlist
+
+DESCRIPTION:
+Use this command to write netlist data to an external netlist file in a specified format.
+
+SYNTAX:
+write_netlist file_name [-replace] [-top top_name] [-format <edif [external] | verilog | verilog_tmax | verilog_vcs>] [-stop [edif | verilog | vhdl | design_level]] [-compress <gzip | binary>]
+
+OPTIONS:
+file_name : Indicates the pathname of the file in which the netlist data is written.
+-replace : Indicates that the netlist file is allowed to replace an existing file. The default is
+            to not allow a replacement. Attempting to write over an existing file without the
+            -replace option results in a error.
+-top top_name : Specifies the name of the top-level module whose netlist data is to be written. If a
+            top module is specified, only that module and all subsequently referenced modules are
+            included in the output file. Any other modules in memory but not referenced by the top
+            module or its descendents are not included. If a top module is not specified, the
+            default is to write all modules.
+-format <edif [external] | verilog | verilog_tmax | verilog_vcs> : Selects the netlist output format. If you select edif , no external
+            library is written, unless you specify the external option. The default output format is
+            Verilog. The verilog and verilog_tmax arguments have the same
+            effect: the netlist is written in most compact form, using TMAX netlist primitives (such
+            as _AND, _DFF, _MEMORY, and so forth.). The verilog_vcs argument writes
+            a standard Verilog netlist, using only Verilog primitives, whenever possible. For
+            example, latches and flops are written as UDPs. In some cases, the verilog_vcs option cannot write out an instance in standard Verilog,
+            and will write as Verilog_Tmax instead. An M467 message is issued each time this occurs.
+            M467 messages can be as follows:
+
+EXAMPLES:
+TEST> write_netlist mux81.v -replace -top MUX81
+  End writing Verilog netlist, CPU_time = 0.20 sec, File_size = 500
+

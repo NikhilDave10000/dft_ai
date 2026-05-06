@@ -1,0 +1,14 @@
+COMMAND: all_inputs
+
+TITLE:
+all_inputs
+
+DESCRIPTION:
+The all_inputs command creates a collection of all input or inout ports in the current design.
+
+SYNTAX:
+collection all_inputs
+
+EXAMPLES:
+TEST-T> all_inputs
+

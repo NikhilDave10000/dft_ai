@@ -1,0 +1,11 @@
+COMMAND: report_slow_cells
+
+TITLE:
+report_slow_cells
+
+DESCRIPTION:
+This command is used to report scan DFF or DLAT cells modified with the add_slow_cells command.
+
+SYNTAX:
+report_slow_cells
+

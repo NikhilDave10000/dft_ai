@@ -1,0 +1,44 @@
+COMMAND: add_chain_masks
+
+TITLE:
+add_chain_masks
+
+DESCRIPTION:
+This command generates patterns for masking scan chains using DFTMAX Ultra compression.
+
+SYNTAX:
+add_chain_masks [-name chain_name] [-do_not_mask chain_name] [-compressor compressor_name] [-filename filename] [-percent percentage] [-external] [-diagnosis] [-diagnosis_pattern_count value] [-force_single_fanout_mode] [-reset]
+
+OPTIONS:
+-name chain_name : Specifies the name of the chain or chains for masking. If you specify more than one
+            chain, the names must be provided in Tcl list format. The following example masks the
+            ch1, ch2, and ch3 chains: add_chain_masks –name {ch1 ch2 ch3}
+-do_not_mask chain_name : Specifies the name of the chain or chains that should not be masked under any
+            circumstance. If you specify more than one chain, the names must use Tcl list format.
+            The following example specifies that the ch2, ch4, and ch7 chains are not masked in any
+            unload configuration: add_chain_masks -do_not_mask {ch2 ch4 ch7}
+-compressor compressor_name : Specifies the name of the compressor containing chains for masking. This option applies
+            to multi-codec designs. If you specify -do_not_mask {ch2 ch4 ch6} and -compressor compressor1 , and ch2 and ch4 belong to compressor1 , then all chains of compressor1 are masked, except ch2 and ch4 . add_chain_masks -compressor my_comp In the following example, ch1_of_my_comp and ch10_of_my_comp are chains from the
+            my_comp compressor. In this case, all chains of the my_comp compressor are masked except
+            for these two chains: add_chain_masks -compressor my_comp -do_not_mask {ch1_of_my_comp
+              \ch4_of_different_comp ch10_of_my_comp}
+-filename filename : Specifies the name of a file containing the chain names you want to mask. This file
+            must contain only chain names separated by spaces, tabs, or new lines. The following
+            example masks all chains specified in the abc.txt file: add_chain_masks -filename abc.txt
+-percent percentage : Specifies the total percentage of external patterns for masking. This option must be
+            used with the -external option. The default value is 100.
+-external : Masks only the external patterns. This option can be specified with the -percent option.
+-diagnosis : Masks the external patterns for diagnosis. For more information on using this option,
+            see Chain Diagnosis for Multiple Chain Defects in the TestMAX ATPG and TestMAX Diagnosis
+            User Guide.
+-diagnosis_pattern_count value : Specifies the pattern count for masking each chain when using the -diagnosis option. The default value is
+            50.
+-force_single_fanout_mode : Forces TestMAX ATPG to unload the pattern only in single fanout mode. In this case, all
+            multi-fanout modes are masked for all patterns. You can specify this option with the -compressor option, if needed. The following example forces TestMAX
+            ATPG to unload patterns in a single fanout mode: add_chain_masks -force_single_fanout_mode The following example forces TestMAX ATPG to unload patterns from the my_comp
+            compressor in a single fanout mode: add_chain_masks -force_single_fanout_mode -compressor my_comp
+-reset : Deletes all previously specified chain masks.
+
+EXAMPLES:
+add_chain_masks -name {ch1 ch3 ch4} -do_not_mask {ch2 ch4 ch5}
+

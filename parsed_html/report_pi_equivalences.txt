@@ -1,0 +1,23 @@
+COMMAND: report_pi_equivalences
+
+TITLE:
+report_pi_equivalences
+
+DESCRIPTION:
+This command reports all primary input and bidirectional ports that have been constrained to be equivalent with the add_pi_equivalences command.
+
+SYNTAX:
+report_pi_equivalences [-command_report]
+
+OPTIONS:
+-command_report : Causes the PI equivalences to be reported in the form of add_pi_equivalences commands that would be necessary to define the PI equivalences.
+
+EXAMPLES:
+DRC> add_pi_equivalences NL0 NL1 NL2
+ DRC> add_pi_equivalences ENA_P -inv ENA_N
+ DRC> report_pi_equivalences
+ port_name       equivalent pins
+ --------------- ----------------------------------
+ NL0              NL1 NL2
+ ENA_P            ~ENA_N
+

@@ -1,0 +1,25 @@
+COMMAND: set_toggle_weights
+
+TITLE:
+set_toggle_weights
+
+DESCRIPTION:
+This command is used in the power aware ATPG flow to specify separate toggle weights for both shift and capture cycles.
+
+SYNTAX:
+set_toggle_weights [{ list_of_sequential_elements }] [-capture] [-delete] [-shift] [-weight number]
+
+OPTIONS:
+list_of_sequential_elements : Specifies a list of one or more sequential elements for which the specified weight is
+            to be applied. This list is specified as instance path names. An error is generated if
+            the specified information does not correspond to a valid sequential element.
+-capture : Specifies that the weight should apply to the capture cycle. Can be used in conjunction
+            with the -shift option to specify the same weight for both shift and
+            capture.
+-delete : Deletes any previously specified weight before applying the weight specified in the
+            command (if any) to any specified sequential elements.
+-shift : Specifies that the weight should apply to the shift cycle. Can be used in conjunction
+            to -capture to specify the same weight for both shift and capture.
+-weight number : Specifies the toggle weight as an integer from 0 to 100. Numbers exceeding 100 are
+            accepted but not used.
+

@@ -1,0 +1,44 @@
+COMMAND: analyze_feedback_path
+
+TITLE:
+analyze_feedback_path
+
+DESCRIPTION:
+Use this command for determining whether a selected feedback network has a sensitizable feedback path.
+
+SYNTAX:
+analyze_feedback_path loop_id [-verbose]
+
+OPTIONS:
+loop_id : Specifies the loop ID number of the feedback path network to analyze. The loop ID is
+            assigned during model building and can be displayed with the report_feedback_paths command.
+-verbose : Displays verbose information.
+
+EXAMPLES:
+TEST> report_feedback_path -all
+ id# #gates #sources sensitization_status
+ --- ------ -------- --------------------
+   0   2     1       pass
+   1  10     1       pass
+   2  10     1       pass
+   3  10     1       pass
+   4  10     1       pass
+   5  10     1       pass
+   6   5     1       pass
+   7  10     1       pass
+   8   2     1       fail
+   9 583    17       abort
+
+ TEST> analyze_feedback_path 6
+  Feedback path 6 passed sensitization check.
+
+ TEST> analyze_feedback_path 9
+  Feedback path 9 (408339,408768) aborted sensitization check.
+
+ TEST> report_feedback_path 8 -verbose
+ id# #gates #sources sensitization_status
+ --- ------ -------- --------------------
+  8  2      1        fail
+     BUS core/u1/map/fifo/tsd (7019), cell=_BUS
+     BUF core/gronk/tgh_2 (7020), cell=BKEEP
+

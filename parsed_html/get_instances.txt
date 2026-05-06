@@ -1,0 +1,15 @@
+COMMAND: get_instances
+
+TITLE:
+get_instances
+
+DESCRIPTION:
+The get_instances command returns a collection of instances.
+
+SYNTAX:
+collection get_instances -type <instance_type> | instance_name
+
+OPTIONS:
+-type <instance_type> : Returns a collection of instance objects.
+instance_name : Returns the instance object associated with the specified instance type.
+

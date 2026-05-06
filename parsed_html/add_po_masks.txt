@@ -1,0 +1,31 @@
+COMMAND: add_po_masks
+
+TITLE:
+add_po_masks
+
+DESCRIPTION:
+This command defines masks on output and bidirectional ports. This might be useful when there are circuit outputs that might not be observable in a particular tester or system environment (such as boundary scan).
+
+SYNTAX:
+add_po_masks < port_name | -all>
+
+OPTIONS:
+port_name : Specifies the port whose output is to be masked. The test generator and fault simulator
+            do not give fault detection credit for these ports and the expected value is set to "X".
+            The PO mask is used only for nonshift (system or broadside) cycles and does not mask
+            data from scan chain outputs during scan-shift cycles.
+-all : Indicates that all top-level primary outputs and bidirectional ports is masked. The use
+            of -all is a convenient way to add a PO mask to all output pins.
+
+EXAMPLES:
+DRC> report_po_masks
+  Warning: Requested report contained no entries. (M13)
+ DRC> add_po_masks {D0 D1 D2 D3 }
+ DRC> report_po_masks
+ output port_name
+ ----------------
+ /D0
+ /D1
+ /D2
+ /D3
+

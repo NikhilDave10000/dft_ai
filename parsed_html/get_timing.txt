@@ -1,0 +1,16 @@
+COMMAND: get_timing
+
+TITLE:
+get_timing
+
+DESCRIPTION:
+The get_timing command returns a collection of timing objects associated with the argument specifications.
+
+SYNTAX:
+collection get_timing -proc <proc_name> | -wft <wft_name> | port_name
+
+OPTIONS:
+-proc <proc_name> : Returns the timing on a specified procedure.
+-wft <wft_name> : Returns the timing on a waveform table.
+port_name : Returns the timing base on the specified port name.
+

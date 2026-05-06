@@ -1,0 +1,19 @@
+COMMAND: remove_display_gates
+
+TITLE:
+remove_display_gates
+
+DESCRIPTION:
+Use this command to selectively remove gates displayed in the GSV.
+
+SYNTAX:
+remove_display_gates < pin_pathname | gate_id | -all>
+
+OPTIONS:
+pin_pathname | gate_id |
+          -all : Removes gates associated with the pin_pathname, the gate ID, or all gates from the
+            GSV.
+
+EXAMPLES:
+TEST> remove_display_gates mux3/MUX2_UDP_1/Q
+

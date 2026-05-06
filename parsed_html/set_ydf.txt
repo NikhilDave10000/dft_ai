@@ -1,0 +1,26 @@
+COMMAND: set_ydf
+
+TITLE:
+set_ydf
+
+DESCRIPTION:
+This command sets parameters for the write_ydf command, which creates the Yield Explorer Data Format (YDF) file that stores the physical information for a design loaded into Yield Explorer.
+
+SYNTAX:
+set_ydf file_name [-apply_match_names | -noapply_match_names] [-schema] [-version version]
+
+OPTIONS:
+file_name : Specifies the file name of the header schema file, which inserts a header section into
+            a failure log file.
+-apply_match_names | -noapply_match_names : Applies match name rules to instance and net names and prints the corresponding values
+            in Yield Explorer Data Format (YDF). This option is applicable only if you also specify
+            the set_match_names command and TestMAX ATPG is unable to match the physical instance or net names using the
+            rules specified by this command. When the -apply_match_names option is
+            enabled, TestMAX ATPG forces the set_match_names rules to apply to physical names even if no matches
+            are found. The -noapply_match_names parameter disables this option.
+-schema : Specifies the use of a header schema file, which contains a list of custom columns to
+            add to the DFTCandidates table.
+-version version : Sets the YDF version. The default is 1.2. If you are using class-based diagnosis
+            reporting, the version must be set to 1.2. For more information creating a class-based
+            diagnosis report, see the "Class-Based Diagnosis Reporting" section in the TestMAX ATPG User Guide .
+

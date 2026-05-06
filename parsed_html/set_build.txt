@@ -1,0 +1,146 @@
+COMMAND: set_build
+
+TITLE:
+set_build
+
+DESCRIPTION:
+This command sets the parameters that control how TestMAX ATPG builds a simulation model when you specify the run_build_model command.
+
+SYNTAX:
+set_build [-black_box module_name | -design_box module_name | -empty_box module_name | -nobox module_name | -portfault_box module_name | -reset_boxes]... [-bus_handling <none | pulldown | pullup | keeper>] [-coerce_port_directions | -nocoerce_port_directions] [-delete_unused_gates | -nodelete_unused_gates] [-fault_boundary <lowest | hierarchical>] [-hierarchical_delimiter c] [-inout_force {input_port_names}] [-inout_reset] [-instance_modify {instance_name gate_type_name}| -noinstance_modify {instance_name} | -all] [-limit_fanout d] [-merge  {<bus_keepers | nobus_keepers> |  <cascaded_gates_with_pin_loss | nocascaded_gates_with_pin_loss> | <dlat_from_flipflop | nodlat_from_flipflop> | <equivalent_dlat_dff | equivalent_initialized_dlat_dff | noequivalent_dlat_dff> | <feedback_paths | nofeedback_paths> | <flipflop_from_dlat | flipflop_cell_from_dlat | noflipflop_from_dlat> | <global_tie_propagate | noglobal_tie_propagate> | <mux_from_gates | muxpins_from_gates | muxx_from_gates | nomux_from_gates> | <tied_gates_with_pin_loss | notied_gates_with_pin_loss> | <wire_to_buffer | nowire_to_buffer> | <xor_from_gates | xorpins_from_gates | noxor_from_gates> }]... [-net_connections_change_netlist | -nonet_connections_change_netlist] [-undriven_bidi <pio | pi |po>]
+
+OPTIONS:
+-black_box module_name | -empty_box module_name | -nobox module_name | -design_box module_name | -portfault_box module_name | -reset_boxes : The -black_box option specifies a module to be treated as a black box.
+            This option is mutually exclusive with the -portfault_box option. The -empty_box option specifies a module to be treated as an empty
+            box. The -design_box option specifies the module is to be considered a
+            design library cell. In this case, faults are placed only at the pin boundaries of the
+            module. The -portfault_box option forces the build process to preserve pin
+            names of modules that would normally be flattened in the model. This option can be used
+            as a workaround for the read_sdc command when module pins are accepted as -through points for false and multicycle paths,
+            but flattening during the build process will remove all reference to them so they cannot
+            be found. In this case, the -portfault_box option used for the
+            module(s) whose pins are used as through points. Note that the -portfault_box option is mutually exclusive with the -blackbox option. The -nobox option is used to remove the black box, empty box,
+            portfault box, or design box setting from a module previously set to one of these
+            types. The -reset_boxes option provides a convenient method for doing a -nobox on all of the modules at once. You can see which modules have
+            been assigned the black box or empty box attribute using the report modules command. A
+            (BB) or (EB) indicator appears in the rightmost column to indicate this attribute. You can use a Tcl list to specify more than one module using the -black_box , -empty_box , or -nobox option. For example: DRC-T> set_build -empty_box {MY_MODULE PLL_CORE} For best results, you should read all netlists before declaring any options
+            related to boxes.
+-bus_handling <none | pulldown | pullup | keeper> : When pulldown is selected, a weak pulldown driver is added to all BUS
+            gates that don't already have a TIE connection of any strength. When pullup is selected, a weak pullup driver is added to all BUS gates
+            that don't already have a TIE connection of any strength. When keeper is selected, a bus keeper is added to all BUS gates without bus keepers. In this case, a
+            half-keeper (that is, a bus keeper that holds only 0 or 1) is upgraded to a full-keeper
+            (one that holds both 0 and 1). The default is none and no additional
+            actions are performed. Note: Using a non-default setting of the -bus_handling option
+            might result in the generation of patterns by the ATPG engine that can fail VCS
+            simulation or fail on silicon, if the actual design does not have the same BUS behavior
+            that ATPG considers.
+-coerce_port_directions | -nocoerce_port_directions : Selecting -coerce_port_directions transforms PO gates that connect to
+            nets with one or more other sinks into PI gates and no B7 is issued. This transformation
+            is done hierarchical, bottom-up. The model built reflects the new port direction. The
+            netlist data is also changed: a subsequent write_netlist command will show the module having a PI
+            instead of the PO; also, a subsequent run_build command will not show the transformation again
+            because the internal netlist data has already been changed. At the end of build, message
+            M435 is issued if one or more POs have been transformed into PIs. The default setting is -nocoerce_port_directions , which is
+            the old behavior (that is, if a PO gate is connected to a net with no sources, then a
+            TIEZ drives the PO and a B7 violation is issued).
+-delete_unused_gates | -nodelete_unused_gates : Selects whether unused gates are deleted from the simulation model. An unused gate has
+            no outputs connected to other gate inputs or bidirectional pins. With unused gates
+            deleted, the corresponding fault sites are also deleted. These faults are normally the UD = Undetectable class of faults. Since the UD faults are included
+            in the fault coverage calculation, you should be aware of how unused gates can affect
+            this reported value. The default is to delete all unused gates. By default, all unused gates are deleted during model optimization. An unused gate is
+            defined as a gate that has no fanout to another gate (not even a "black box" or TIEX
+            gate), except possibly to other unused gates. Removal of unused gates during
+            hierarchical, bottom-up model build can significantly improve performance and reduce
+            memory usage. However, all fault sites on pins of unused gates are also removed (these
+            faults could not be detected anyway, because they do not connect to an output). Conversely, -nodelete_unused_gates preserves the undetectable faults,
+            but can significantly degrade performance and increase memory usage. Often, -nodelete_unused_gates is used to facilitate comparison between
+            TestMAX ATPG fault population and the fault population of other ATPG tools that use less
+            optimized models. This has the unfortunate side-effect of degraded performance, yet
+            doesn't provide a fair comparison. Here is why: All faults on unused gates are in the UD category and do not affect test coverage.
+            However, only a fraction of the unused gates are due to unconnected logic in the design;
+            the rest are the result of previous optimizations (for example, replacing equivalent
+            DLAT/DFFs). The latter gates, if not removed, would contribute to both UD and detectable
+            (DT) fault categories, thereby increasing the total fault count, although the pattern
+            set generated would not differ. Therefore, a better method to compare TestMAX ATPG to other tools is to keep the
+            default -delete_unused_gates and compare the numbers of detected
+            faults.
+-fault_boundary <lowest | hierarchical> : Specifies where faults is placed in the absence of any `celldefine, `suppress_faults,
+            or `enable_portfaults directives within a Verilog netlist. A selection of lowest causes faults to be placed on the ports of the lowest-level
+            modules (modules not containing instances of other modules). A selection of hierarchical causes faults to be placed on all modules in the
+            hierarchy that contain at least one instance of a primitive. The default is lowest.
+-hierarchical_delimiter c : Specifies the character to use as the hierarchical delimiter for pin, net, and instance
+            path names. Do not change this character after performing a run_build_model command, or
+            else unpredictable fault lists will result. The default is a forward slash "/".
+-instance_modify { instance_name gate_type_name } | -noinstance_modify
+            { instance_names }| -all : Defines a list of instance modifiers that specify how selected instances are defined in
+            the flattened model. Note that in Tcl mode you must use curly braces to specify a
+            list. The -instance_modify { instance_name gate_type_name } option specifies that instance_name should be replaced with
+            a gate of type gate_type_name . The supported gate types and their
+            respective restrictions are as follows: BUF, INV: the instance must have a single input and no BIDI. AND, NAND, OR, NOR, XOR, XNOR: the instance must have no BIDI. TIEX, TIE0, TIE1, TIEZ: no restrictions. DLATDFF2BUF: all single-port DLAT and DFF primitives (with tied-off set or reset)
+            within the specified instance, if any, are replaced with buffers from the data input to
+            the output; the set, reset and clock inputs are disconnected. Example: set_build -instance_modify {mybuffer TIEX} Note that the command syntax and the instance type are checked immediately when the
+            command is entered; any error will cause the command to be rejected. The restrictions
+            for each instance type are checked at the beginning of build. Error conditions are
+            reported in M496 messages and cause the build process to terminate immediately. Message Examples: Instance_modify instance_name gate_type_name was not found and removed (M496) Explanation: The specified instance was not found. Check the path
+            name entered. Instance_modify instance_name gate_type_name cannot be applied to module module_name with number bidis and was removed (M496) Explanation: The specified instance has BIDI pins and cannot be
+            remodeled as the Boolean gate chosen. Change the instance or model it as a TIE gate. Instance_modify instance_name gate_type_name cannot be applied to module module_name with number inputs and was removed (M496) Explanation: The specified instance has more than one input and
+            cannot be remodeled as the Boolean gate chosen. Change the instance or model it as a
+            multi input gate. Note that all invalid instance modifiers are removed from the list of instance
+            modifiers. You can then add additional instance modifiers and restart the build
+            process. The -noinstance_modify { instance_names } |
+              -all option deletes the selected or all instance modifiers, thus restoring
+            the netlist definition of an instance or all instances. These options can be repeated in the command line to add or remove additional instance
+            modifiers. Boxed modules (see [ -black_box module_name ...]) are considered before instance
+            modifiers, so no instances can be found inside a black/empty-boxed module. The list of all current instance modifiers is displayed as part of the report_settings build command output. The report_instances command output and the block information window in the GSV identify if a particular
+            instance has been modified.
+-inout_force { input_port_names } : Defines a set of input signals in the top-level module that are redefined as
+            bidirectional signals (inout signals). The input_port_names argument
+            can be a single name or a list of port names. Only the input ports in the input netlist
+            can be modified. This modification does not create a full bidirectional signal in the
+            design. Instead, it changes the test program to reference the signal as an inout
+            signal. The -inout_force option only provides a mechanism to uniformly ignore
+            the defined signals as input signals in the test program. Changed signals must be
+            constrained to a single value and you should use the add_po_masks command for these signals. When the -inout_force option is specified, the top module specified
+            for the run_build_model command will change the port names to original_module _inout_force , and the run_build_model command will use this modified interface. Full port names are required; wildcard
+            expansion of these references is not supported. You can replace full vectored ports (buses) by referencing the signal name withoutthe
+            bracket notation. These signal references cannot be validated until the top-level module
+            is identified using the run_build_model command; errors with incorrect names are not
+            reported until after the run_build_model command is executed. The read_netlist -delete command will
+            remove these definitions, so the names must be specified again after specifying this
+            command.
+-inout_reset : Removes any signal names defined using the -inout_force option from
+            subsequent processing when executing the run_build_model command.
+-limit_fanout d : Limits the number of fanouts a gate is allowed to have. You can set this limit using
+            the -limit_fanout d option. The default is
+            256. It can set to any value between 16 and 65536. A higher limit can slightly reduce
+            the number of buffers and inverters in the final model, but can also significantly
+            increase memory and CPU time. This fanout limit applies only to netlist nets and does
+            not apply to internal connections between RPORT, ADRBUS, DATABUS, and MEMORY
+            primitives. Limiting the fanout (for designs that have a large number of gates with very large
+            fanout) results in a small increase in the number of buffers and inverters in the final
+            model, but the peak memory usage is decreased significantly. Reducing the fanout also
+            increases the ATPG performance.
+-merge {<bus_keepers | nobus_keepers> | <cascaded_gates_with_pin_loss |
+          nocascaded_gates_with_pin_loss> | <dlat_from_flipflop | nodlat_from_flipflop> |
+          <equivalent_dlat_dff | equivalent_initialized_dlat_dff | noequivalent_dlat_dff> |
+          <feedback_paths | nofeedback_paths> | <flipflop_from_dlat | flipflop_cell_from_dlat
+          | noflipflop_from_dlat> | <global_tie_propagate | noglobal_tie_propagate>
+          <mux_from_gates | muxpins_from_gates | muxx_from_gates | nomux_from_gates> |
+          <tied_gates_with_pin_loss | notied_gates_with_pin_loss> | <wire_to_buffer |
+          nowire_to_buffer> <xor_from_gates | xorpins_from_gates | noxor_from_gates>} : TestMAX ATPG has 16 model flattening optimization algorithms, of which 11 are under
+            user control. You control them by using the -merge option before you
+            use the run_build_model command. These algorithms are all designed to reduce the number of gates in the final
+            image, allowing larger designs in the same memory and less CPU effort than the original
+            design. These controls are independent of each other. To adjust more than one control,
+            repeat the -merge option as needed. All optimization algorithms are
+            enabled by default except for tied_gates and cascaded_gates .
+-net_connections_change_netlist | -nonet_connections_change_netlist : If -nonet_connections_change_netlist is specified,
+            then net connections only affect the flatten model. The default is -net_connections_change_netlist . All net connections of type -module or -all are
+            resolved during flattening at the netlist level, thus modifying the netlist. Note that, in concordance with existing restrictions in the add_net_connections command, net connections of type -module or -all must
+            be TIEs (no PI, PO, PIO) and moreover, they cannot have a port name or use the -remove
+            argument (-disconnect is supported). Because netlist data can now be changed by net connections of type -module or -all (not just the flatten model), there
+            are several implications:
+
+EXAMPLES:
+BUILD-T> set_build -hierarchy . -nodelete_unused_gates
+

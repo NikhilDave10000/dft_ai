@@ -1,0 +1,34 @@
+COMMAND: filter_collection
+
+TITLE:
+filter_collection
+
+DESCRIPTION:
+This command filters a collection after the collection is created.
+
+SYNTAX:
+collection filter_collection [-regexp] [-nocase] collection1 expression
+
+OPTIONS:
+-regexp : Indicates that TestMAX ATPG regular expressions are used by the following filter
+              operators: =~ and !~ . By default, these filter
+              operators use simple wildcard pattern matching with the ’ * ’ and
+                ’ ? ’ wildcards.
+-nocase : Makes the pattern match case-insensitive.
+
+EXAMPLES:
+TEST-T> foreach_in_collection pin [filter_collection [get_pins] pin_pathname=~*slow_clk* ] {
+? echo [get_attribute $pin pin_pathname]
+? }
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/CP
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/Q
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/QN
+TOTO/slow_clk_clkgt/U2/Z
+TOTO/slow_clk_clkgt/U2/A
+TOTO/slow_clk_clkgt/U2/B
+TOTO/slow_clk_clkgt/cg_latch_reg/Q
+TOTO/slow_clk_clkgt/cg_latch_reg/GN
+TOTO/slow_clk_clkgt/cg_latch_reg/D
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/CD
+TOTO/U_clk_control_i_0/slow_clk_enable_l_reg/D
+

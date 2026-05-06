@@ -1,0 +1,44 @@
+COMMAND: add_distributed_process
+
+TITLE:
+add_distributed_processors
+
+DESCRIPTION:
+Use this command to add machines to the pool of distributed processors.
+
+SYNTAX:
+add_distributed_processors { name_list } [-min_slaves number | -lsf bsub_exec | -nslaves d | -options { options_list } | -grd exec> -nslaves d] [-options { options_list }]
+
+OPTIONS:
+name_list : Specifies up to 50 slave machines by name. For each machine name given, a TestMAX ATPG
+            process launches on that machine during distributed fault simulation. If you have a
+            machine with several processors, you can instruct TestMAX ATPG to use those processors
+            by specifying that machine name again for each subsequent processor. Note : You can execute multiple processes on a uniprocessor
+            machine, but the various processes would have to share processor time. Therefore, you
+            will not be able to take full advantage of the parallelization, and in this case it
+            would be better to use LSF.
+-lsf bsub_exec -nslaves d -options { options_list } : Specifies the path to the LSF job submission executable (bsub), the number of slaves to
+            be spawned, and additional options to LSF. For using LSF to launch the slaves, all of
+            these options must be specified. If you do not have any additional options to pass to
+            bsub, you can pass empty options using -options " ". See your IT support for the proper
+            set of options (like queue, project, and so forth) you need for launching an LSF
+            job.
+-grd exec -nslaves d -options
+            { options_list } : Specifies the path to the GRID job submission executable (qsub), the number of slaves
+            to be spawned, and additional options to GRID. For using GRID to launch the slaves, all
+            of these options must be specified as well as the -script option of the set_distributed command.
+            If you do not have any additional options to pass to qsub, you can pass empty options
+              using -options without an argument. See your IT support for the proper
+            set of options (like project, resource specification, and so forth) you need for
+            launching an GRID job. You can use -options to pass the simple bsub or qsub options. For the
+            more complex options bound by single or double quotation marks, see Passing Complex
+            Options to LSF/GRID.
+-min_slaves number : Enables you to specify the minimum number of slave machines to start with distributed
+            processing. After waiting for the timeout period and after the minimum number of slave
+            machines is met, the distributed processor start with the number of available slaves.
+            After it starts, it does not use more slave machines when more CPUs are available. You
+            can use this option when all of the requested CPUs are not available.
+
+EXAMPLES:
+TEST> add_distributed_processors {himalaya himalaya himalaya}
+

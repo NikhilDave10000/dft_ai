@@ -1,0 +1,20 @@
+COMMAND: report_cell_constraints
+
+TITLE:
+report_cell_constraints
+
+DESCRIPTION:
+Use this command to report cell constraints added with the add_cell_constraints command.
+
+SYNTAX:
+report_cell_constraints
+
+EXAMPLES:
+TEST-T>
+report_cell_constraints
+type chain   pos. site name
+ ---- ------- ---- ---------------------------
+   1   c10     6    MAIN/cat/TP/FI/OFIFO/\regst[3]
+  OX   c34    17    MAIN/dog/PRT/PORTIN_1/\reg3[3]
+  XX   c34     6    ...
+

@@ -1,0 +1,23 @@
+COMMAND: analyze_wires
+
+TITLE:
+analyze_wires
+
+DESCRIPTION:
+Use this command to analyze potential contention problems associated with WIRE primitives.
+
+SYNTAX:
+analyze_wires < id | -all> [-update]
+
+OPTIONS:
+id : Specifies the primitive ID of the WIRE primitive on which analysis is to be performed.
+            An error is reported if the ID specified is not a WIRE primitive.
+-all : Selects all WIRE primitives for analysis. Summary information is displayed upon
+            completion of the analysis.
+-update : Selects updating of the wire contention status based on the results of the analysis.
+            The default is not to update this status.
+
+EXAMPLES:
+TEST> analyze_wires -all
+  Wire Contention results: #pass=32, #fail=0, #abort=0, CPU time=3.21
+

@@ -1,0 +1,14 @@
+COMMAND: clear
+
+TITLE:
+clear
+
+DESCRIPTION:
+Use this command to clear the text in the transcript window.
+
+SYNTAX:
+clear
+
+EXAMPLES:
+DRC> clear
+

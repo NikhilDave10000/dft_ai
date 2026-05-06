@@ -1,0 +1,11 @@
+COMMAND: remove_lbist_seeds
+
+TITLE:
+remove_lbist_seeds
+
+DESCRIPTION:
+Use this command to remove any seed values previously specified using the add_lbist_seeds command.
+
+SYNTAX:
+remove_lbist_seeds
+

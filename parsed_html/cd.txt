@@ -1,0 +1,27 @@
+COMMAND: cd
+
+TITLE:
+cd
+
+DESCRIPTION:
+Use this command to change the current working directory.
+
+SYNTAX:
+cd <directory_path>
+
+OPTIONS:
+directory_path : Specifies the pathname of a directory that is set to be current working directory.
+
+EXAMPLES:
+DRC> pwd
+  E:\BIN
+ DRC> cd e:
+ DRC> pwd
+  E:\BIN
+ DRC> cd ..
+ DRC> pwd
+  E:\
+ DRC> cd regress
+ DRC> pwd
+  E:\regress
+

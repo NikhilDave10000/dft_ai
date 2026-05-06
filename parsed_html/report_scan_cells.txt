@@ -1,0 +1,58 @@
+COMMAND: report_scan_cells
+
+TITLE:
+report_scan_cells
+
+DESCRIPTION:
+This command reports scan cell information for selected scan cells.
+
+SYNTAX:
+report_scan_cells < { chain_names [ position] } | -shadows | -unstable_set_resets | -all > [-clocks] [-ignore_constraints] [-master_only] [-max d] [-physical] [-pins] [-reverse_order] [-shift_clocks] [-verbose]
+
+OPTIONS:
+chain_names [ position ] : Reports the scan cells for the specified scan chain(s). If you do not specify the
+            position within the scan chain, all scan cells of the scan chain are reported. If you
+            specify the position, only the scan cell in that position of the scan chain is reported.
+            Scan cell positions are numbered sequentially, with 0 identifying the scan cell closest
+            to the scan output pin. Note that if you specify the scan cell position, you must
+            enclose both the chain name and the scan cell position within curly braces, as shown in
+            the following example: TEST-T> report_scan_cells { chain0 0 }
+-shadows : Reports only the shadow gates of scan cells.
+-unstable_set_resets : Reports scan cells that have unstable set/reset controls.
+-all : Reports all scan cells.
+-clocks : Reports the capture clocks associated with each scan cell.
+-ignore_constraints : Modifies the -verbose report format so that all clock ports that fan
+            into the scan cell are listed regardless of constraints. This command is valid only if
+            the -verbose option is also specified.
+-master_only : The report normally includes the master cell as well as any associated slave, dependent
+            slave, shadow, or observable shadow cell types. The -master_only option
+            causes only the master cells to be reported.
+-max d : Specifies the maximum number of scan cells to report. By default, there is no
+            limit.
+-physical : Includes physical locations for the reported scan cells. This option requires that
+            physical locations were previously extracted using the extract_pins command.
+-pins : Specifies that the input and output pin information of each scan cell are also to be
+            reported, including the pin pathname and the inversion information relative to the scan
+            chain input and output.
+-reverse_order : By default, the report stars with the scan cell closest to the scan output port (cell
+            0). The -reverse_order option causes the report to start with the scan
+            cell closest to the scan input port.
+-shift_clocks : Reports the shift clock associated with each scan cell. Constraints are taken in
+            account when tracing back the clock ports of each scan cell. Note that this option is
+            incompatible with the -verbose or -ignore_constraints options.
+-verbose : Modifies the report format to include the following additional information: Leading edge (LE) vs. trailing edge (TE) clocking. The capture clock polarity of the cell relative to the top-level clock port, where
+                "+" indicates a 0-to-1 transition (at the top-level port) causes capture, "-"
+                indicates a 1-to-0 transition causes capture, and "?" indicates a scan TLA cell for
+                which polarity is not relevant. A list of capture clocks connected to the scan cell state element. Constraints are
+                taken into account when tracing back the clock ports of each scan cell. Note that the -verbose option is incompatible with the -shift_clocks option.
+
+EXAMPLES:
+TEST-T> report_scan_cells c1 		
+		    chain   cell type    inv gate# 		    instance_name (type) 		
+ ------- ---- ------- --- ------ ------------------------------- 		
+		    c1      0    MASTER 		    IN  147    reg4/r (N_LATCH) 		
+		    c1      1    MASTER 		    IN  145    reg3/r (N_LATCH) 		
+		                 DSLAVE   		   IN  146    reg4/lat1 (P_LATCH) 		
+		    c1      2    MASTER 		     NI 143    reg2/r (N_LATCH) 		
+		                 SCANTLA 		    IN 144    reg3/lat1 (P_LATCH)
+

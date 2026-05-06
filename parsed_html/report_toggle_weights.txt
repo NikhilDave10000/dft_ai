@@ -1,0 +1,20 @@
+COMMAND: report_toggle_weights
+
+TITLE:
+report_toggle_weights
+
+DESCRIPTION:
+This command prints a report of all non-default toggle weights applied using the set_toggle_weights command.
+
+SYNTAX:
+report_toggle_weights
+
+EXAMPLES:
+DRC-T> set_toggle_weights path/to/my/FF -weight 5 -shift -capture
+ DRC-T> report_toggle_weights
+         Non-default Toggle Weights:
+         Shift Weights:
+         a_reg_2_: 5
+         Capture Weights:
+         a_reg_2_: 5
+

@@ -1,0 +1,39 @@
+COMMAND: set_messages
+
+TITLE:
+set_messages
+
+DESCRIPTION:
+Use this command to set the parameters that control message handling.
+
+SYNTAX:
+set_messages [-display | -nodisplay] [-leading_comment | -noleading_comment] [-nolog | -log file_name [-replace | -append]] [-level <expert | standard>] [-transcript_comments | -notranscript_comments]
+
+OPTIONS:
+-display | -nodisplay : Controls the display of text to the command transcript without affecting what is
+            recorded in a logfile. With a setting of -nodisplay , the output of
+            commands are suppressed except those commands entered interactively. The default is -display .
+-leading_comment | -noleading_comment : Specifies whether a leading comment (the pound sign(#) in Tcl mode or a pair of forward
+            slashes "//" in native mode) precedes message text in the command transcript. (This
+            setting has no effect on the output from "report" commands.) The default is -noleading_comment .
+-nolog | -log file_name [-replace | -append] : The -log option records commands and transcript output to a file. If
+            the specified file already exists, an error occurs, unless you use the -replace or -append option. Using -nolog turns off message logging. The default is -nolog . Note that in non-Tcl mode, a dash prefix is not used for the nolog and log options.
+-level <expert | standard> : Selects the general level of message reporting. The default is standard level. With the
+            level set to expert, more information is displayed for many commands.
+-transcript_comments | -notranscript_comments : Selects whether comment lines and blank lines encountered in command files appear in
+            the transcript window as the command file is executed. When you specify -notranscript_comments , only commands are shown in the transcript.
+            Note that -notranscript_comments only works in native mode; it does not
+            work in Tcl mode. When you specify -transcript_comments , both commands
+            and comments from a command file are shown in the transcript; this is the default.
+
+EXAMPLES:
+TEST> report_clocks
+ clock_name    off usage
+ ------------ --- --------------------------
+ /CLK          0  master shift
+ /RSTB         1   master reset
+ TEST> set_messages -nodisplay
+ TEST> report_clocks
+ TEST> report_settings
+ TEST>
+

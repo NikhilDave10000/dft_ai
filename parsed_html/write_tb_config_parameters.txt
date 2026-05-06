@@ -1,0 +1,11 @@
+COMMAND: write_tb_config_parameters
+
+TITLE:
+Customized MAX Testbench Parameters Used in a Configuration File with the write_testbench
+    Command
+
+DESCRIPTION:
+You can use the -config_file option of the write_testbench command to specify a list of
+      customized configuration parameters for running MAX Testbench in the TestMAX ATPG
+      environment.
+

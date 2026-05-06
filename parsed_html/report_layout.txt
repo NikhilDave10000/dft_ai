@@ -1,0 +1,73 @@
+COMMAND: report_layout
+
+TITLE:
+report_layout
+
+DESCRIPTION:
+This command creates a report of the net structure for all nets loaded in TestMAX ATPG.
+
+SYNTAX:
+report_layout identifier net_driver output_file [-bridging_pairs] [-compress gzip | off] [-file] [-format binary | ascii] [-max_reported number] [-replace] [-subnets] [-summary]
+
+OPTIONS:
+identifier : Specifies one of the following: the instance name from layout, the net name from
+            layout, or the cell type from either the TestMAX ATPG design or the layout. This string
+            must be accompanied by an option that indicates the identifier type.
+net_driver : Specifies the name of a net driver for which a report of its structure is printed (the
+            hierarchical pinpath name to a valid pin). This specification must be accompanied by the -subnets option.
+output_file : Specifies the name of the binary and compressed file containing the net structure
+            information.
+-bridging_pairs : Reports all stored bridging pairs. For all net pairs, the report includes the name of
+            the first node and its gate ID. The report also includes a list of all second nodes
+            associated with the first node and its gate ID. An example of the report is provided
+            below: Net pairs of i_addr[1] (9): de_d/U168/O (3599) de_d/U172/O1 (3719) This report indicates that two pairs with the same first node are successfully read in.
+            The pairs are: i_addr[1] de_d/U168/O i_addr[1] de_d/U172/O1 The initial bridging pairs includes either a net name or a pinpath name. TestMAX ATPG
+            automatically converts net names into pinpath names, so only the pinpaths are
+            available.
+-compress gzip | off : Compresses the subnet data in gzip format.
+-file : Writes the subnet data to a file for future reuse.
+-format binary | ascii : Specifies the format of the output file containing subnet data. The default is to use
+            binary format.
+-max_reported number : Reports a maximum of the specified number of nets.
+-replace : Overwrites an existing subnet binary file.
+-subnets : Reports the net structure of the specified net_driver parameter. It is
+            mandatory when the net_driver parameter is specified.
+-summary : When this is the only option specified, the report_layout command
+            reports some characteristics of either the subnet or bridging net pairs loaded. For
+            example: Subnets   : #nets=35192, #subnets=1500342, max_subnets=25, memory=1MB
+Subnet_distribution:  <10(80.00%) <20(90.00%) <30(100.00%)
+Receiver_per_net:     <10(90.00%) <20(90.00%) <30(100.00%) The first line reports the total number of nets ( #nets= ) which has
+            been loaded. It also reports the total number of subnet defined
+              ( #subnets= ) and the number of subnets defined for the net with
+            maximum subnets ( max_subnets= ). Finally, the memory allocated to the
+            subnet definition is reported ( memory= ). The line beginning with “ Subnet_distribution: ” indicates the
+            percentage of nets having less than N subnets defined, where N=10, 20, and so forth. For
+            example: <10(82.26%) means that 82.26% of the nets have less than 10
+            subnets defined. The line beginning with “ Receiver_per_net: ” indicates the percentage
+            of nets that have less than N receivers, where N=10, 20, and so forth. For example: <10(79.43% ) means that 79.34% of the nets have less than 10
+            receivers. If net pairs are loaded, their characteristics are also printed. For instance: Net_pairs : #nets=3650, #pairs=26559, max_pairs=4, memory=1MB
+Pairs_distribution:  <10(80.00%) <20(90.00%) <30(100.00%) The first line reports the total number of net (#nets=) and the total number of pairs
+              ( #pairs= ). A net could be involved in several net pairs. The field
+              “ max_pairs= ” indicates the maximum number of net constituted of the
+            same net. The memory allocated to the net pairs definition is also reported
+              ( memory= ). The line beginning with “ Pairs_distribution: ” indicates the percentage
+            of nets that have less than N pairs defined, where N=10, 20, and so forth. For example: <10(82.26%) means that 82.26% of the nets have less than 10 pairs
+            defined. If -summary is used with -subnets , this option
+            compacts the information for a single net on one line. For instance: report_layout -summary -subnets –max 1
+   net=mic0/ir0/U6/Z #fanouts=12/12 #subnets=10 This line contains the net driver ( net= ), the number of fanout
+            branches for the net driver ( #fanouts= ) and, finally, the number of
+            subnet defined ( #subnets= ).
+
+EXAMPLES:
+TEST-T> report_layout mic0/ir0/U6/Z -subnets
+ .net
+ mic0/ir0/U6/Z
+ mic0/ir0/U9/D, inv_flag=0
+ mic0/ir0/U10/D, inv_flag=0
+ mic0/ir0/U11/D, inv_flag=0
+ mic0/ir0/U12/D, inv_flag=0
+ .subnets
+ 3 4
+ 2 3
+ 1 4 3
+

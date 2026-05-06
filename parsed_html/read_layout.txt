@@ -1,0 +1,72 @@
+COMMAND: read_layout
+
+TITLE:
+read_layout
+
+DESCRIPTION:
+This command reads net topology and net pair data used for diagnostics.
+
+SYNTAX:
+read_layout [-add] [-max_mismatch_report d] [-output file_name] [ bridging_pair_file -all_pairs | -likely_pairs] [ subnet_file <-subnets> [-fault_list]]
+
+OPTIONS:
+-add : Adds the subnet or bridging net pairs information contained in the specified subnet
+            file or bridging pair file to the existing data. If this option is not specified, all
+            existing information is deleted and replaced with the data contained in the subnet file
+            or bridging pair file. This option enables TestMAX ATPG to read multiple subnet or
+            bridging net pairs files without removing the existing data.
+-max_mismatch_report d : Controls the number of warning and error messages reported when reading layout
+            information containing subnet definitions or likely net pairs. By default, after a subnet file is read in, a summary message displays the total number
+            of subnet definitions that have not been read, if any. To print more debug messages, you
+            should use this option with d > 0. When bridging net pairs are read in
+            and incorrect data is present in the input files, a maximum ten mismatches are printed,
+            by default.
+-output file_name : Writes out the subnet topology file for debugging purposes if the read_layout command errors out. If this option is not specified, the
+            temporary subnet topology file is written out to the following location:
+            /tmp/__subnets.<top_module>.<process_id>.
+-subnets : Specifies the type of the subnet file that is read. This option is required when the
+            specified subnet file is a net structure ASCII or binary file or subnet fault definition
+            file. When subnet file is a net structure file, at the completion of the read, the following
+            status line is printed: Read_subnets completed: #nets(total/added/overwritten)=3299/222/12 This message indicates the total number of net structures in memory, the number of net
+            structures that have been added to the existing structure already in memory, and,
+            finally, the number of net structures that were overwritten.
+–fault_list : This option indicates that the specified subnet file to be read, subnet_file , is defining the fault to be ranked. At the end of the
+            fault list reading, the following line is printed: Read_subnet_faults completed: #faults(added/ignored)=N/K Note the following: The “ added ” reference corresponds to integer N . It indicates the
+            number of subnet faults added for the ranking run. The “ ignored ” reference corresponds to integer K . It indicates the
+            number of subnet faults ignored for the ranking run. For example, say the net structure
+            file is read; and, for a particular net, the number of subnet defined is 10, but only 3
+            subnet faults are added. In this case, the number of ignored subnet faults indicated is
+            7.
+subnet_file : Specifies the name of either the net structure ASCII or binary file or subnet fault
+            definition file. For details on how to produce the binary subnet file, see the
+            description of the -file option of the report_layout command.
+bridging_pair_file : This file contains specifications of the bridging net pairs in ASCII format. This file
+            can be an unmodified Star-RCXT coupling capacitance report, or it can contain one node
+            pair per line. The file format is described in detail in the “Bridging Fault ATPG”
+            section of the TestMAX ATPG User Guide . The pairs that are read in from the file are used during diagnosis and can be reported
+            using the report_layout command. If the net pairs are read in and an image is written, then the data is stored
+            by default. See the write_image command for information on how not to store the net pair
+            data. A message is printed after the net pairs are read in. For example: read_net_pairs completed:
+            #net_pairs(total/added/incorrect)=997/997/0 This message indicates the total of net pairs that are successfully read (997, in the
+            example). It also indicates the number of net pairs that were added since the last read
+            (997), and the number of incorrect net pairs that were printed (0). If an incorrect net pair is found, a warning message that points to the faulty line is
+            printed. For example: Warning: Line 1003, cannot find net driver for "u_top_2/n12103" . By default, a maximum of 10 warnings are printed. To change the default, use the -max_mismatch_report d option. When
+            reading in a bridging net pairs file, other options that are dedicated for use with
+            Milkyway libraries (that is, -version , -cell_name , and
+            so forth.) cannot be used.
+-all_pairs | -likely_pairs : These options define the type of bridging net pairs that are read in. The -all_pairs option indicates that only those bridging pairs listed in
+            the bridging pair file are to be considered, and no other possible bridges are to be
+            analyzed. The -likely_pairs option indicates that the bridging file
+            contains the most likely bridging pairs, but allows other possible bridges to be
+            analyzed. In this case, all possible bridges are considered for a fast analysis, but
+            only the likely pairs are considered for the detailed analysis. When adding new bridging pairs using the -add option, the same switch
+              ( -likely_pairs or -all_pairs ) must be specified as
+            when the existing set of bridging pairs was read. Otherwise, the M636 error message is
+            printed. Either the -all_pairs or -likely_pairs option
+            must be specified when the bridging_pair_file specification is used.
+            There is no default.
+
+EXAMPLES:
+TEST-T> read_layout sbnt.file -subnet
+   Read_subnets completed: #nets(total/added/overwritten)=280/280/0, CPU_time=0.01
+

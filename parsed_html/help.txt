@@ -1,0 +1,22 @@
+COMMAND: help
+
+TITLE:
+help
+
+DESCRIPTION:
+This command reports supported command switches and arguments for a specific command or a list of available commands if no arguments are provided.
+
+SYNTAX:
+help [ command_name] [-verbose] [-groups]
+
+OPTIONS:
+command_name : Prints help information for the specified command. You can use any combination of the
+            required characters. You can also use a single wildcard indicator '*' at the end of the
+            command.
+-verbose : Prints syntax information for all commands or the specified command.
+-groups : Displays command groups only.
+
+EXAMPLES:
+DRC> help
+ DRC> help -verbose
+

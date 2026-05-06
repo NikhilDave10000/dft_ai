@@ -1,0 +1,375 @@
+COMMAND: set_drc
+
+TITLE:
+set_drc
+
+DESCRIPTION:
+Use this command to set the TestMAX ATPG parameters that control the DRC process.
+
+SYNTAX:
+set_drc [-allow_unstable_set_resets | -noallow_unstable_set_resets] [-analysis_m464] [-bidi_control_pin <0|1> name | none] [-blockage_aware_clock_grouping | -noblockage_aware_clock_grouping] [-check_multiple_shift_clocks | -nocheck_multiple_shift_clocks] [-check_user_serializer_bits | -nocheck_user_serializer_bits] [-clock < pin_name | -any | -chain_capture | -dynamic | -one_hot | -seq_capture >] [-clockdrc_use_cell_constraints | -noclockdrc_use_cell_constraints] [-clock_constraints block_name] [-compressor_debug_data | -nocompressor_debug_data] [-constraints | -noconstraints] [-controller_clock pin_name | -nocontroller_clock] [-disturb_clock_grouping | -nodisturb_clock_grouping] [-deterministic_z1check | -nodeterministic_z1check] [-dftmax_shift_cycles value] [-dlat_checking_type <stable | hot_clock | transparent >] [-dslave_remodel | -nodslave_remodel] [-dynamic_clock_equivalencing <off | disturb | nodisturb>] [-extract_cascaded_clock_gating | -noextract_cascaded_clock_gating] [-fast_multifrequency_capture < on | off | spf >] [ file_name | -nofile] [-forked_pipes | -noforked_pipes] [-freerunning_expansion | -nofreerunning_expansion] [-independent_sync_clocks | -noindependent_sync_clocks] [-initialize_dff_dlat <0|1|x|random> instance_name] [-internal_clock_timing name | -nointernal_clock_timing] [-limit_shadow d] [-load_nonscan_cells | -noload_nonscan_cells] [-lockup_after_compressor | -nolockup_after_compressor] [-master_slave_pipes] [-max_pll_simulation_passes d] [-max_unidentifiable_scan_chains number] [-multi_captures_per_load | -nomulti_captures_per_load] [-multiframe_paths | -nomultiframe_paths] [-multiple_pipes_per_port | -nomultiple_pipes_per_port] [-num_pll_cycles d] [-observe_invalid_dslaves |-noobserve_invalid_dslaves] [-observe_procedure <master | any>] [-oscillation d] [-pipeline | -nopipeline] [-pipeline_in_compressor | -nopipeline_in_compressor] [-pll_launch_on_shift | -nopll_launch_on_shift] [-pll_simulate_test_setup | -nopll_simulate_test_setup] [-random_z1check | -norandom_z1check] [-reclassify_invalid_dslaves | -noreclassify_invalid_dslaves] [-remove_false_clocks | -noremove_false_clocks] [-regular_scan_shift_cycles value] [-set_unload_mode_ports_to_x | -noset_unload_mode_ports_to_x] [-shadows | -noshadows | -serial_shadows_only] [-skew d] 				[-store_initial_shifts | -nostore_initial_shifts] [-spc_chain spc_chain_name] [-store_setup | -nostore_setup] [-store_stability_patterns | -nostore_stability_patterns] [-store_unload_mode_data] [-tlas | -notlas] [-trace | -chain_trace chain_name | -notrace] [-use_cell_constraints | -nouse_cell_constraints] [-unstable_lsrams | -nounstable_lsrams] [-xchain_threshold_probability n] [-z_check_with_all_constraints | -noz_check_with_all_constraints]
+
+OPTIONS:
+-allow_unstable_set_resets | -noallow_unstable_set_resets : Specifies whether DFF/DLAT devices with unstable sets or resets are considered DRC
+            violations. An unstable set/reset condition exists when the control net is internally
+            generated. The default is to consider an unstable set/reset a DRC violation. Using the -allow_unstable_set_resets option allows the presence of internally
+            generated set/resets, but might result in decreased test coverage and increased pattern
+            count, especially when using scan compression. However, the -allow_unstable_set_resets option might be required in some
+            situations, such as when a primary input is used as both a synchronous and asynchronous
+            set or reset. When -allow_unstable_set_resets is specified, the clock grouping
+            analysis is extended to include flip-flops with set or reset lines controlled by other
+            flip-flops clocked from different clocks. This will increase the disturb flop list and
+            possibly change the clock matrix (specified by report_clocks -matrix ) and clock
+            grouping definitions. This behavior defines more appropriate clock relationships in the
+            clock matrix for these conditions and prevents generating patterns that might violate
+            these additional dependencies. The use of -allow_unstable_set_resets can result in different pattern generation and coverage opportunities.
+-analysis_m464 : You need to set this option before running DRC when debugging m464 errors. This
+              enables the use of the analyze_chain command to report further analysis for tracing.
+              It is supported only for DFTMAX compression.
+-bidi_control_pin <0|1> name | none : Specifies the top-level port that operates as a global enable/disable for bidirectional
+            pins when used in conjunction with a ReflectIO capture procedure; or it can be used
+            before any run_drc command has
+            been performed to cause the write_drc_file command to create a template DRC file
+            containing an example ReflectIO procedure. The value 0 or 1 specifies the state to apply
+            to this port during the ReflectIO procedure so that bidirectional ports are inputs.
+            Specifying none turns off this control.
+-blockage_aware_clock_grouping | -noblockage_aware_clock_grouping : The -blockage_aware_clock_grouping option performs analysis on all
+            previously identified disturb clock groups if any of the clocks in the group connects to
+            a candidate “control cell,” that is, a scan cell that holds value during capture. During
+            this analysis, the effect of setting the control cells first to 0 and then to 1 is
+            simulated, and the scan cells that are undisturbed in both simulations are removed from
+            the disturb list. The -blockage_aware_clock_grouping option is intended
+            to support DFT techniques in which the path between clock domains, or one of the clocks,
+            is blocked. This extra analysis increases DRC run time. If DFT logic is not available to
+            block the disturbed paths in both states of the control cells, then it is unlikely that
+            the number of disturbed cells is reduced.The default is -noblockage_aware_clock_grouping .
+-check_multiple_shift_clocks | -nocheck_multiple_shift_clocks : Enables checking during the scan shift operation. TestMAX ATPG reports a C4 violation
+            for each scan cell with a shift clock that is derived from multiple clocks that are
+            active during shift, or from a single clock which fans out through multiple paths that
+            reconverge. The default is –nocheck_multiple_shift_clocks .
+-check_user_serializer_bits | -nocheck_user_serializer_bits : The -check_user_serializer_bits is the default. It checks the validity
+            of the user-specified load and unload serializer registers in the STL procedure file
+            when the serializers are used during DRC. This check determines if the specified
+            registers have the expected simulation values as the serializer registers. If an invalid
+            bit is specified in the STL procedure file, an M873 message is issued and the
+            specification for that bit is ignored. If a valid bit is specified with incorrect
+            inversion, a M874 message is issued and the user specification is accepted after the
+            inversion is corrected. Validity checking is useful when incorrect registers are unintentionally specified. The -nocheck_user_serializer_bits option overrides the validity check of
+            the load and unload serializer registers. This is useful for debugging R33 errors, which
+            are generated when TestMAX ATPG is unable to find a register that behaves as an unload
+            serializer register. This causes the validity check to fail. If you specify unload
+            serializer registers in the STL procedure file, and specify the -nocheck_user_serializer_bits option, TestMAX ATPG recognizes the
+            specified unload serializer registers without performing the identification process.
+            This enables you to continue the DRC process, which might show additional S or R
+            violations (other than R33 to R38 errors). For more information on specifying serializer registers in the STL procedure file,
+            refer to the “Providing Guidance for R34 and R36 DRC Errors” section in the Adaptive Scan With Serializer User Guide .
+-clock < pin_name | -any | -chain_capture | -dynamic |
+          -one_hot | -seq_capture> : The -clock option specifies restrictions on clock usage for pattern
+            generation. Multiple usage on the same line is allowed, but only the last one
+            encountered will remain in effect. The default is -dynamic , which
+            activates the multiple clocking feature. All PI equivalences are removed (except
+            differential). Dynamic clock grouping will not take effect if the -nomulti_captures_per_load option is used with this option or if
+            clocking constraints are enabled. The -any argument allows pattern generation using any single clock,
+            including patterns where no clock is used. The pin_name argument restricts patterns
+            to using only the specified clock, but this restriction applies only to Basic Scan test
+            generation. However, if the fault model is IDDQ (established when a set_faults -model iddq command has been
+            issued), patterns are generated with the IDDQ capture procedure having pin_name clock pulse. By default,
+            there is no clock pulse in an IDDQ capture procedure. The -chain_capture argument specifies the use of the special retention
+            cell chain test, rather than the usual chain test. This test is applied by the
+            full-sequential test generator. For more information, see Retention Cell Testing. The -one_hot argument restricts patterns to always use one of the
+            defined clocks (while avoiding the non-clocking pattern). Chain test patterns are not
+            generated. Threaded ATPG may generate non-clocking patterns, but this can be prevented
+            by setting add_po_masks -all . The -seq_capture argument selects the special Full-Sequential capture
+            procedure defined in the DRC file for Full-Sequential ATPG. Otherwise, by default, the
+            Full-Sequential algorithm uses the same capture procedures as the Basic-Scan and
+            Fast-Sequential ATPG algorithms. The clock restrictions specified by the -clock option are considered
+            during DRC and can affect the recognition of constant-value nonscan cells. For a clock
+            selection of port_name or -one_hot it will not be
+            possible to create chain test patterns. The TestMAX ATPG silently ignores this option, except when the -dynamic , -one_hot or -any options are specified. For more
+              information, see TestMAX ATPG Multithreading Command Option Support.
+-clock_constraints block_name : This option, which is used in the internal clocking procedures feature, selects the ClockConstraints block in the STL procedure file that is used for
+            DRC. Note that only one ClockConstraints block can be used during a
+            single DRC run. The default is to not use any of the ClockConstraints blocks in the STL procedure file. For more information, see "Using Internal Clocking
+            Procedures."
+-clockdrc_use_cell_constraints | -noclockdrc_use_cell_constraints : Enhances constant value cell identification so the DRC process considers cell
+            constraints affected by the clock (C) rules. Because this analysis is performed before
+            scancell identification, cell constraints are considered only if they are defined by
+            their instance name and not by a position in a scan chain. The default (the -noclockdrc_use_cell_constraints option ) is for the DRC process to
+            use constant value cell identification to consider cell constraints without applying the
+            clock (C) rules. For related information, see the description of the -use_cell_constraints option.
+-controller_clock pin_name | -nocontroller_clock : Specify -controller_clock to generate patterns with capture cycles
+            that always have clock pulses from a controller clock regardless of the existence of any
+            other clock pulses in that particular capture cycle. This option is useful for JTAG
+            designs that guarantee the TCK is pulsing in every capture cycle. The default is -nocontroller_clock , which does not guarantee that every capture
+            cycle has at least one clock pulse.
+-constraints | -noconstraints : DRC simulates the load_unload functionality as part of the scan-shifting validation
+            process, and will apply all constrained signals to their constrained states at the start
+            of that validation. These values are set in WGL output patterns, but the presence of
+            constrained state data in STIL output is not guaranteed unless these signals are
+            explicitly specified in the load_unload procedure. The -noconstraints option identifies if these constrained signals (not otherwise applied in the load_unload
+            procedure) affect the behavior of the shift operation. This will identify missing
+            signals in the definition of the load_unload procedure that should be present to define
+            a self-contained operation. See also the DRC rule V33. The default is -constraints .
+-compressor_debug_data | -nocompressor_debug_data : Provides debug information when DRC fails to find the connection between core scan
+            chains and the unload compressor. This option has no effect when DRC passes.
+-deterministic_z1check | -nodeterministic_z1check : Applies a deterministic approach to find buses that are skipped during the bus
+            contention process. These buses are unlikely to produce bus contention under certain
+            conditions. However, they are checked for contention like all other failing buses. Using
+            the deterministic approach, contention analysis is rerun for Z1 violations using all
+            constraints and other information before analysis is performed for Z8 violations
+            (contention prevention). The default is -nodeterministic_z1check .The
+            buses that were skipped can be reported using the report_buses -contention fail command,
+            as shown in the following example: report_buses -contention fail contention zstate #drivers gate_id status/capture status strong/weak behavior_data ------- -------------- ------ ----------- -------------------- 811 fail stable pass 2 0 3166 fail stable pass 4 1 keep01 clock skip 3171 fail stable pass 4 1 keep01 clock skip
+-dftmax_shift_cycles value : Specifies an overshift scan operation value for DFTMAX compression designs. Overshift
+            provides the ability to write out patterns at a user-specified length greater than the
+            longest chains in the design.
+-disturb_clock_grouping | -nodisturb_clock_grouping : The default, -disturb_clock_grouping , adds parallel clock pairs with a
+            limited number of cells having sequential behavior to a clock group. Together with the -clock -dynamic option, this option controls whether or not the
+            analysis should be performed for these clock pairs during DRC by default.
+-dlat_checking_type <stable | hot_clock | transparent > : By default, a D4 violation check is performed on all clock ports in their off state.
+            When the -dlat_checking_type option is set with the stable argument, a D4 violation is reported when a clock pin of a
+            DLAT is not at the off state. When the hot_clock argument is used, a D4
+            violation is reported if the DLAT clock pin vlaue is X. The default is the transparent argument.
+-dslave_remodel | -nodslave_remodel : Specifies whether to remodel a dependent slave (dslave) in the presence of S29
+            messages. The default is to remodel the dslave (the -dslave_remodel option). The - nodslave_remodel option prevents the switching of devices
+            in a master-slave combination, and forces TestMAX ATPG to use the conventional scan
+            chain ordering that puts a master device before the slave device instead of basing the
+            ordering on their simulated behaviorwhich may lower the test coverage but prevents
+            parallel simulation miscompares. Alternatively, because remodeled/reclassified latches
+            might fail MAX TestBench parallel simulation, you can use the write_patterns -cellnames type command to eliminate parallel simulation errors.
+-dynamic_clock_equivalencing <off | disturb | nodisturb> : Enables the use of pin equivalences for dynamic clock grouping. The off option (the default) automatically deletes pin equivalences for
+            clocks during DRC when dynamic clock grouping is enabled. The disturb option allows the use of pin equivalences for clocks when dynamic clock grouping is
+            enabled using normally calculated disturb cells. In this case, all dynamic clock
+            pairings for equivalent clocks are used with no limits on disturb cells. The nodisturb option allows the use of pin equivalences for clocks when
+            dynamic clock grouping is enabled with no consideration for disturb cells. In this case,
+            all dynamic clock pairings for equivalent clocks are used with no limits on disturb
+            cells.
+-extract_cascaded_clock_gating | -noextract_cascaded_clock_gating : Extracts the entire clock-gating tree structure during DRC and excludes violations on
+            cascaded clock-gating cells. By default, only leaf-level nodes are extracted. Stuck-inactive faults of the scan enable pins of clock-gating cells receive detected by
+            implication (DI) credit. Use the -extract_cascaded_clock_gating option
+            to ensure that DI credit is applied to all cells in the cascade. In the following figure, only the leaf-level nodes are extracted, which results in a
+            series of C8 violations for cascaded clock-gating cells: In the next figure, the -extract_cascaded_clock_gating option is set
+            and the entire clock-gating tree structure is extracted. As a result, no C8 violations
+            are issued for cascaded clock-gating cells. This option removes all cascaded clock-gating cells from the list of DRC violations.
+            All other violations, if present, are still included in the DRC summary report.
+-fast_multifrequency_capture < on | off | spf > : When a ClockTiming block exists in the STL procedure file, this option
+            specifies whether to overlap the clock pulses. The default is to overlap clocks if the ClockTiming block contains one or more MultiCyclePath statements, but not to overlap the clocks otherwise.
+            When off is selected, the clocks are pulsed synchronously, but only at
+            the frequency of the slowest synchronized clock. When on is selected,
+            the clocks are overlapped to achieve single-cycle timing even if there is no MultiCyclePath statement in the STL procedure file. The default, spf , restores the default behavior.
+file_name | -nofile : Specifies the name of the DRC file (also known as the test protocol file or STIL
+            procedure file) used for design rule checking. This setting remains in effect until you
+            use the set_drc command again or you specify a DRC file name in the run_drc command. To cancel a previous setting and use no DRC file,
+            use the -nofile option.
+-forked_pipes | -noforked_pipes : The -forked_pipes option (the default) causes TestMAX ATPG to
+            recognize the use of pipeline registers before and after a fork, and those used for
+            common scan data bits of a distributed processor. You can view an example of the output
+            produced when this option is set in the description of the report_compressors command.
+-freerunning_expansion | -nofreerunning_expansion : Specifies whether or not the clock events defined by a FreeRunning block should be included as part of the pattern data. TestMAX ATPG will assume these
+            clocks always pulse as part of the ATPG assumptions for pattern generation. The default, -freerunning_expansion , will also fold these clocks into the pattern
+            data. ( Some types of patterns do not support some types of FreeRunning timing; see
+            the description of the M669 message.) If these clocks are specified from external
+            sources and should not be part of the pattern data, then you can specify -nofreerunning_expansion . An M669 message is generated for all
+            write_patterns operations for all FreeRunning clocks when -nofreerunning_expansion is specified. If the design simulation flow
+            requires the clocks to be present and you have specified the -nofreerunning_expansion option, then you must manually add the
+            clocks to the simulation. If these clocks are not pulsed, the simulation will fail.
+-independent_sync_clocks | -noindependent_sync_clocks : Accounts for independent synchronized clocks during DRC when a ClockTiming block exists
+            in the STL procedure file. This option modifies the capture matrix for the independent
+            clocks, which allows ATPG to use these clocks to reduce the pattern count. For more
+            information on the capture matrix, see the description of the -capture_matrix option of the report_clocks command. The -independent_sync_clocks option requires the set_drc
+              –fast_multifrequency_capture on command. The -noindependent_sync_clocks option (the default), does not perform
+            this analysis.
+-initialize_dff_dlat <0|1|x|random> instance_name : Specifies the initial simulation value for all sequential devices or for the named
+            sequential device. The default is x . A choice of random results in random initialization to either 1 or 0. Note: In
+            order for a non-X default to be kept for a particular sequential device, that device
+            must have clocks/sets/reset, which are off at T=0. Any initialization effects due to the
+            test_setup procedure at T=0 will override the initial setting defined by this
+            option.
+-internal_clock_timing name | -nointernal_clock_timing : This setting is used when multiple ClockTiming blocks are defined in
+            an STL procedure file when specifying synchronized multi frequency internal clocks in an
+            OCC Controller. By default, the last ClockTiming block defined in an
+            STL procedure file is used. However, you can use the -internal_clock_timing switch to specify the use of a specific block.
+            You can specify the -nointernal_clock_timing switch to ignore all ClockTiming blocks and return to legacy non-synchronized internal
+            clocks behavior. For more information, see "Specifying Synchronized Multi Frequency Internal Clocks for
+            an OCC Controller" in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide . This option switches to non-threaded process. For more information, see TestMAX
+            ATPG Multithreading Command Option Support.
+-limit_shadow d : Causes TestMAX ATPG to not report any shadows in a design that are deeper than the
+            specified d value. For example, if your
+            design has a mulitbit cell length of 500, you can specify DRC to limit the shadow depth
+            to 100.
+-load_nonscan_cells | -noload_nonscan_cells : Enables test generation support and performs constrain value calculation for loadable
+              nonscan state elements. Note that the command set_simulation -shift_cycles must
+              be set to a value greater than 0. For complete information on using this option and
+              related commands, see the topic "Using Loadable Nonscan Cells in TestMAX ATPG and
+              TestMAX Diagnosis User Guide."
+-lockup_after_compressor | -nolockup_after_compressor : The -lockup_after_compressor option causes the DRC process to report
+            all lock-up latches located between compressors and unload pipelines, if unload
+            pipelines are detected. The default, specified by the -nolockup_after_compressor option, is to ignore this check.
+-master_slave_pipes : This option causes the tool to support pipeline stages with master/slave flip-flops.
+            The tool detects a LE (leading edge) flip-flop followed by a TE (trailing edge)
+            flip-flop and considers this as a single stage of pipeline. You can view an example of
+            the output produced when this option is set in the description of the report_compressors command.
+-max_pll_simulation_passes d : Extends simulation of the load procedure to apply a selected number of PLL clock pulses
+            at tester period and procedure boundaries. Simulation continues until all state elements
+            reach a stable value, or until the maximum number of passes specified by d is reached. A warning message is
+            given if the maximum number of passes is reached without stabilization. The default
+            maximum number of passes is set to 100.
+-max_unidentifiable_scan_chains number : Sets a user-specified threshold for unidentifiable scan chain messages (M464). When the
+            limit is reached, DRC stops without further processing. The default limit is 100 scan
+            chains. If you set a value of 0 for the limit, an M464 message is printed for every
+            unidentifiable scan chain. The scan chains are identified in the same order as they are
+            defined in the ScanStructures block of the STIL protocol file (SPF). This means when the
+            limit is reached, all chains without an error that are defined in the ScanStructures
+            block before the last M464 message are successfully identified. But all chains after the
+            last M464 message are unchecked.
+-multi_captures_per_load | -nomulti_captures_per_load : Specifies whether to allow the creation of patterns that have more than one capture
+            clock procedure between scan load and scan unload. The default is to allow this. Use of -nomulti_captures_per_load causes there to be no more than one
+            capture clock procedure between each scan load/unload. Disabling multiple capture clocks
+            can increase total tester cycles and reduce test coverage, so you should do it only if
+            required by your ASIC vendor.
+-multiframe_paths | -nomultiframe_paths : This switch affects clock timing when synchronized multi frequency clocks is enabled.
+            By default, a MultiCyclePath definition inside a SynchronizedClocks group in the STIL procedure file is used only to
+            move clock edges closer together in time. When -multiframe_paths is
+            specified, a MultiCyclePaths definition of greater than 1 can cause
+            clock edges to be moved farther apart. This switch has no effect on the behavior of
+            timing exceptions defined by read_sdc command.
+-multiple_pipes_per_port | -nomultiple_pipes_per_port : When -multiple_pipes_per_port is specified, DRC considers multiple
+            DFFs for each bit of each input and output pipeline stage. This is needed to support the
+            following architecture types: scanin fanout input pipeline stages load decompressor scan chains unload compressor output pipeline stages MUX scanout. The default is -nomultiple_pipes_per port .
+-num_pll_cycles d : Defines the number of PLL clock cycles supported per load. You must define this before
+            defining internal clocks.
+-observe_invalid_dslaves | -noobserve_invalid_dslaves : Improves observability of invalid dependent slaves that are not remodeled. Since an
+            invalid dependent slave (dslave) that is not remodeled, can have a different value than
+            its master device, at the end of the capture cycle, it is X-ed out. This leads to loss
+            of observability and added X’s. This option improves observability by default. The
+            default is - observe_invalid_dslaves . When this option is enabled, extra messages are seen as follows: During DRC: Begin DRC dependent learning... DSLAVE_OBSPT will be used for 8 invalid DSLAVE scan
+            cells. During ATPG: threaded ATPG with 2 threads. (M733) 8 DSLAVES will be used to observe scan cell values.
+-observe_procedure <master | any> : Restricts pattern usage to always apply a master observe procedure.
+-oscillation d : Specifies the number of simulation passes allowed during DRC simulation before
+            oscillation is declared. A simulation pass is the effort required to stabilize the new
+            state element values from the previous pass, where the activity is bounded by state
+            elements. The default is 500.
+-pipeline | -nopipeline : Performs a special pipeline analysis during DRC to identify states of the pipeline
+            during shifting.
+-pipeline_in_compressor | -nopipeline_in_compressor : When enabled, DRC unload pipeline identification allows multi input gates between
+            stages. This is useful if timing optimizations have pushed the unload pipeline DFFs into
+            the XOR network of the unload compressor. Every path must still have the same number of
+            pipeline DFFs.
+-pll_launch_on_shift | -nopll_launch_on_shift : The -pll_launch_on_shift option must be used for transition-fault
+            testing while launch_on_shift uses PLL-controlled internal clocks (the default is -nopll_launch_on_shift ). The design netlist must include pipelined
+            scan enable, and the STL procedure file must include a single shift with scan enable
+            changed to functional mode, following the general shift. DRC performs a special
+            simulation of the load_unload procedure but the correctness of the clock controller must
+            be verified in a timing-sensitive simulator, outside TestMAX ATPG DRC. After run_drc is completed, all
+            POs are masked, all nonclock PIs are constrained, and the transition type is set to
+            last-shift-launch. After running DRC in this mode, run_atpg will issue an error if ATPG is attempted using any
+            fault model other than Transition.
+-pll_simulate_test_setup | -nopll_imulate_test_setup : Extends simulation of the test_setup procedures with the ability to
+            apply a selected number of PLL clock pulses at tester period boundaries. Simulation of test_setup always performs PLL clocking at the beginning and end of
+            the procedure.
+-random_z1check | -norandom_z1check : Applies a random approach to find buses that are skipped during the bus contention
+            process. These buses are unlikely to produce bus contention under certain conditions.
+            However, they are checked for contention like all other failing buses. Using the random
+            approach, contention-free buses are determined based on random pattern generation and
+            the calculation of bus contention for all buses in the failing list. The default is -norandom_z1check . The buses that were skipped can be reported using
+            the report_buses -contention
+              fail command, as shown in the following example: report_buses -contention fail contention zstate #drivers gate_id status/capture status strong/weak behavior_data ------- -------------- ------ ----------- -------------------- 811 fail stable pass 2 0 3166 fail stable pass 4 1 keep01 clock skip 3171 fail stable pass 4 1 keep01 clock skip
+-reclassify_invalid_dslaves | -noreclassify_invalid_dslaves : This option controls the reclassification of a dependent slave (dslave) device that
+            violates the S29 rule because it holds a different state than its master device. The
+            default, -reclassify_invalid_dslaves , reclassifies the appropriate
+            slave devices as master devices if there is a difference in the device states. This
+            reclassification improves the generation of test patterns that validate the behavior of
+            these devices. If you set the -nodslave_remodel option, the slave reclassification is
+            disabled (the -noreclassify_invalid_dslaves option is disabled). Try to
+            avoid simultaneously specifying both the -reclassify_invalid_dslaves option and the -nodslave_remodel option. This combination of options
+            removes the observe X normally placed on master-slave devices, which is intended to
+            prevent bad pattern generation. For parallel STIL pattern generation, you should consider using the -noreclassify_invalid_dslaves option (for details, see the
+            description of the M404 message). The -noreclassify_invalid_dslaves option applies a mask to an invalid master-slave device, which lowers the test coverage
+            but prevents parallel simulation miscompares. This is important since not reclassifying
+            the master-slave operation might violate the sequence of events assumed in basic-scan
+            ATPG. Alternatively, because remodeled/reclassified latches might fail MAX TestBench
+            parallel simulation, you can use the write_patterns -cellnames type command to eliminate parallel simulation errors.
+-regular_scan_shift_cycles value : Specifies an overshift scan operation value for regular scan designs. Overshift
+            provides the ability to write out patterns at a user-specified length greater than the
+            longest chains in the design.
+-remove_false_clocks | -noremove_false_clocks : When a port has been defined as a clock using an add_clocks command, and the circuit
+            analysis indicates that the port cannot capture data into a sequential device, then a C4
+            violation is issued. Specifying -remove_false_clocks causes these false clocks to be
+            removed from the clock list without generating a C4 violation. In addition, the use of
+            the -remove_false_clocks option enables the -allow_unstable_set_resets option and causes an additional search for
+            any defined clock that goes only to set/reset inputs and at least one DFF/DLAT data
+            input but no DFF/DLAT clock inputs. If this condition exists, then these clock
+            definitions are also removed. This control only affects clocks defined by command and not those defined by the test protocol
+              file. The default option is -noremove_false_clocks . Reference clocks, by definition, are false clocks; they do not connect to any real
+            primitives in the design.
+-set_unload_mode_ports_to_x | -noset_unload_mode_ports_to_x : When you specify the -noset_unload_mode_ports_to_x option, the
+            unload-mode ports are placed to binary values when checking the R8, R23, and R31
+            compressor rules. You should use the default setting ( -set_unload_mode_ports_to_x ) first
+            because it performs a more thorough checking. This option is also faster because it runs
+            fewer simulations by leaving inputs unchanged that are unaffected at X. If spurious R8, R23, or R31 violations are reported, use the -noset_unload_mode_ports_to_x option. This option simulates 1024
+            random patterns, which is enough to find problems in most cases, but also takes longer
+            to complete.
+-shadows | -noshadows | -serial_shadows_only : Specifies the type of shadow identification performed. When -shadows is selected (the default), the DRC process attempts to identify shadow registers in both
+            serial and parallel configurations to their master cell. A parallel shadow obtains its
+            value in parallel with the master scan cells during the Shift procedure. The -serial_shadows_only option selects the identification of only
+            serially configured shadow registers . A serial shadow register obtains its value during
+            tje post-amble sequence after the Shift procedure. Using -noshadows disables the identification of shadow cells. For DFMAX Ultra, only the -shadows option is supported.
+-skew d : When the design has two state elements, A and B, with the output of A connected to the
+            input of B, and each element is clocked by a different clock, and those clocks have
+            nearly identical timing, then the two clocks have a parallel grouping relationship only
+            if the capture edge of clock B occurs at or before the capture edge of clock A minus the
+            skew value. Otherwise, the clocks are ungrouped, or have a disturbed grouping. Note that
+            the specified d value uses the same time
+            units used in the protocol file.
+-spc_chain spc_chain_name : Specifies the name of the shift power control (SPC) chain used to control the shift
+            power groups hardware added to DFTMAX compression during DFT insertion. Shift power
+            groups reduce power consumption during scan shift. The -spc_chain option cannot be used if shift power groups are not specified during DFT insertion using
+            the -shift_power_groups true option of the set_scan_compression_configuration DFT Compiler command. If shift
+            power groups are specified, the -spc_chain option is required unless
+            the shift power disable signal is constrained to disable this feature. The spc_chain_name argument is the chain name specified by the -class spc option or the -class occ option of the set_scan_path TestMAX DFT command during DFT insertion. The chain
+            name is written to the SPF file, but it is not identified as a particular entity in that
+            file. When the -spc_chain option is specified, the scan enable signal must
+            be constrained to its inactive state during capture. The following example adds the
+            test_se constraint: add_pi_constraints 0 test_se For more information on configuring shift power groups, see "Reducing Scan Shift Power
+            Using Shift Power Groups" in the TestMAX DFT, DFTMAX, and DFTMAX Ultra
+              User Guide .
+-store_initial_shifts | -nostore_initial_shifts : Specifies whether to store the first simulated vectors of the shift procedure until the
+            first internal shift is performed for serializer. When -store_initial_shifts is selected, the stored values can be displayed
+            with the set_pindata -shift command, followed by run_drc . With -store_initial_shifts selected, TestMAX ATPG DRC is guaranteed to
+            fail. After debugging and fixing serializer DRC violations, you will need to specify set_drc -nostore_initial_shifts before invoking run_drc , to pass TestMAX ATPG DRC.
+-store_setup | -nostore_setup : Specifies whether to store all simulated time periods of the test_setup procedure for
+            potential display in TestMAX ATPG. The default is to store only the final value of the
+            test_setup procedure. The -store_setup option can cause long
+            runtimes.
+-store_stability_patterns | -nostore_stability_patterns : Specifies whether to store the patterns used to determine the values placed on nonscan
+            state elements at the beginning of a pattern for potential display. The default is not
+            to store these patterns.
+-store_unload_mode_data : A schematic is annotated with unload_mode data, that is, shift data plus unload mode
+            pins for the unload mode given as an argument in the set_pindata -drcdata unload_mode <mode_name> command. This data is stored
+            automatically for an R23 violation, or explicit storage can be requested by the set_drc -store_unload_mode_data option. For non-shared X-tolerant
+            compressors, this option stores unload mode data for all unload modes plus R23-like data
+            for unload_enable. For shared X-tolerant compressors, this option only stores R23-like
+            data for unload_enable.
+-tlas | -notlas : Specifies whether transparent latch identification is performed. The default is to
+            identify all potential transparent latches.
+-trace | -chain_trace <chain_name | -notrace> : Specifies whether to display primitives in scan chains that were sensitized during scan
+            chain tracing. The default is -notrace . Using -trace causes all primitives in all scan chains to be traced. Using -chain_trace causes only the specified chain to be traced.
+-use_cell_constraints | -nouse_cell_constraints : Enhances constant value cell identification so the DRC process considers cell
+            constraints (the default). Because this analysis is performed before scancell
+            identification, cell constraints are considered only if they are defined by their
+            instance name and not by a position in a scan chain. This option does not affect clock
+            (C) rules. See the description of the -clockdrc_use_cell_constraints option to control DRC for cells constraints for clock (C) rules.
+-unstable_lsrams | -nounstable_lsrams : Lets level-sensitives RAMS, which are not stable when clocks are off, to be used during
+            Fast-Sequential ATPG. This argument must be active before DRC to have an effect. The
+            default is -nounstable_lsram s .
+-xchain_threshold_probability n : Defines the minimum probability of X-capture of a scancell that causes rule D39 to
+            fail. The default is 0, which indicates that checking will not be performed. The value
+            of n must be between 0 and 100, inclusive. If this analysis is to be performed on a netlist before scan insertion, the following
+            commands are also required: set_scan_ability on -all and run_drc -prescan file_name .
+-z_check_with_all_constraints | -noz_check_with_all_constraints : Specifies whether constrained pins and constant value gates are considered while
+            performing bus checks (specifically Z-rule checking). The default is -noz_check_with_all_constraints .
+
+EXAMPLES:
+DRC> set_drc -oscillation 20 -store_setup
+

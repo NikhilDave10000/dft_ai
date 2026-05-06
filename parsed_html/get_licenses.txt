@@ -1,0 +1,24 @@
+COMMAND: get_licenses
+
+TITLE:
+get_licenses
+
+DESCRIPTION:
+Use this command to manually check out selected licenses.
+
+SYNTAX:
+get_licenses { license }
+
+OPTIONS:
+test-analysis | test-compression-atpg | test-faultsim | test-atpg-max | test-diagnosis |
+          test-fault-max | test-power : Specifies the license that is to be checked out. You can request multiple licenses in
+            one command.
+-quantity : Checks out multiple licenses for a specified license name. This option is supported
+            with the following licenses: test-compression-atpg, test-faultsim, test-atpg-max,
+            test-diagnosis, test-fault-max, and test-physical. You can use the -quantity option of the report_licenses command to report how many
+            copies of each license are currently checked out.
+-wait time : This option attempts to get a license multiple times until time seconds have passed. The time argument is an integer in seconds. It
+            does not have a default. If time < 60, ATPG will retry every second.
+            If time > 60, ATPG retries every 60 seconds until the time left is less
+            than 60 seconds. It then retries every second before it times out.
+

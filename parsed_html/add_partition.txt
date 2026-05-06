@@ -1,0 +1,23 @@
+COMMAND: add_partition
+
+TITLE:
+add_partition
+
+DESCRIPTION:
+This command allows you to partition the design.
+
+SYNTAX:
+add_partition <partition_name> <hierarchical names of instances>
+
+OPTIONS:
+partition_name : Indicates the name of the partition.
+hierarchical names of instances : Indicates regions to be added to the partition.
+
+EXAMPLES:
+DRC-T> add_partition p1 {design/A}
+274 DFFs/DLATs added for partition p1.
+DRC-T> add_partition p2 { design/P design/Q }
+274 DFFs/DLATs added for partition p2.
+DRC-T> add_partition p3 { design/X design/Y}
+419 DFFs/DLATs added for partition p3.
+

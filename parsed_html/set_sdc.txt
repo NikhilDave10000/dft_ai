@@ -1,0 +1,67 @@
+COMMAND: set_sdc
+
+TITLE:
+set_sdc
+
+DESCRIPTION:
+This command controls how TestMAX ATPG interprets an SDC file used for specifying setup timing exceptions.
+
+SYNTAX:
+set_sdc [-case_paths | -nocase_paths] [-delete_common_clock_exceptions | -nodelete_common_clock_exceptions] [-disable_paths | -nodisable_paths] [-environment < sdc_case_analysis | tmax_drc | none >] [-false_paths | -nofalse_paths] [-hold | -nohold] [-instance instance_path] [-mark_gui_gates|-nomark_gui_gates] [-multicycle_paths | -nomulticycle_paths] [-setup | -nosetup] [-show_all_matches | -noshow_all_matches] [-verbose | -noverbose]
+
+OPTIONS:
+-case_paths | -nocase_paths : Creates -through exceptions for paths blocked by the set_case_analysis settings in the SDC file. The set_case_analysis is still used for clock
+            tracing regardless of how this switch is set. The -nocase_paths option
+            restores the default.
+-delete_common_clock_exceptions | -nodelete_common_clock_exceptions : Removes the timing exceptions between the clocks that are defined with the same source
+            objects. All set_clock_group , set_false_path , or set_multicycle_path SDC commands are removed, but only when the two
+            points specified are clock objects. The default is -nodelete_common_clock_exceptions .
+-disable_paths | -nodisable_paths : The default ( -disable_paths ) uses set_disable_timing commands in the SDC file for exceptions. You can set the -nodisable_paths option to make sure these commands are not used for
+            exceptions.
+-environment < sdc_case_analysis | tmax_drc | none > : Causes clocks to be traced without reference to logic values either defined in the SDC set_case_analysis commands or found by the TestMAX ATPG run_drc command. This causes the clock
+            to propagate to the maximum possible number of registers. The default is none . Use the sdc_case_analysis argument to trace clocks based on the SDC set_case_analysis commands.
+            This is useful for SDC constraints created for the functional mode of a design in which
+            the test mode clocks are different. If you specify the set_sdc -environment sdc_case_analysis command, but
+            the SDC file read by the read_sdc command does not contain any set_case_analysis commands, then the -environment switch is reset to none during the run_drc process. The only
+            observable effect of this change occurs if you go back to DRC mode and read additional
+            SDC files in the same TestMAX ATPG session. You should use the tmax_drc argument to trace clocks based on the
+            TestMAX ATPG run_drc results. This
+            is useful for SDC created specifically for test mode, which will give the most accurate
+            results.
+-false_paths | -nofalse_paths : The default ( -false_paths ) creates timing exceptions for a false path.
+            Use the -no_false_paths option to make sure timing exceptions are not
+            created for a false path.
+-hold | -nohold : The -hold option (the default) enables you to use the SDC file to
+            specify hold timing exceptions. Transitions that violate a hold time requirement during
+            a clock pulse are masked during good machine simulation. If you require different
+            behavior for a particular SDC file, you can change this setting before specifying the read_sdc command again. If
+            TestMAX ATPG reads the SDC file when the -hold option is enabled, the
+            DRC process also uses this setting.
+-instance instance_path : Prepends the specified argument ( instance_path ) to all instances in
+            the SDC file. This option should be used in case the SDC file was written for a
+            submodule of the top-level design. For example: # First SDC is for instance "a" inside top-level instance "top" set_sdc
+              -instance /top/a read_sdc my.sdc # Second SDC is for the top-level design set_sdc
+              -instance "/" read_sdc second.sdc
+-mark_gui_gates|-nomark_gui_gates : Causes cells and primitives that are affected by timing exceptions to be displayed in a
+            distinctive color in graphical schematic viewer (GSV). Cells that begin or end a timing
+            exception are displayed in green, and cells within a timing exception path are displayed
+            in orange. This marking has no effect on ATPG or simulation, but might take substantial
+            time during the run_drc process
+            for multicycle paths. Patterns generated without the -mark_gui_gates option setting can be debugged by saving them and then reading them into a TestMAX ATPG
+            session that uses this option. The GUI marking is not saved in image files. The default
+            is -nomark_gui_gates .
+-multicycle_paths | -nomulticycle_paths : The default ( -multicycle_paths ) uses set_multicycle_path commands in the SDC file for exceptions. The -nomulticycle_paths option prevents creating timing exceptions for
+            multicycle paths.
+-setup | -nosetup : The -setup option (the default) enables you to use the SDC file to
+            specify setup exceptions. Transitions that violate a setup requirement during a clock
+            pulse are masked during good machine simulation. If you require different behavior for a
+            particular SDC file, you can change this setting before specifying the read_sdc command again. If TestMAX ATPG
+            reads the SDC file when the -setup option is enabled, the DRC process
+            also uses this setting.
+-show_all_matches | -noshow_all_matches : Specifies that for each SDC command, all TestMAX ATPG database objects that match the
+            specified points are reported. This results in an extremely verbose listing. The -noshow_all_matches option (the default) makes sure that these
+            database objects are reported.
+-verbose | -noverbose : Prints messages for SDC commands and options not supported by TestMAX ATPG. The -noverbose option (the default) restores the default messaging. The -verbose option does not enable printing of all messages in all
+            situations. To print all messages, you need to redirect the output using the redirect
+            command: read_sdc >...
+

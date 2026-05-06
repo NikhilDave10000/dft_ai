@@ -1,0 +1,75 @@
+COMMAND: set_learning
+
+TITLE:
+set_learning
+
+DESCRIPTION:
+Use this command to set the parameters that control the learning process.
+
+SYNTAX:
+set_learning [-atpg_equivalence | -noatpg_equivalence] [-common_input | -nocommon_input] [-disable_time_limit | -nodisable_time_limit] [-equivalent_latches | -noequivalent_latches] [-implication [low | medium | high] | -noimplication] [-max_feedback_sources d] [-num_threads d] [-sim_passes d] [-test_passes d] [-verbose | -noverbose]
+
+OPTIONS:
+-atpg_equivalence | -noatpg_equivalence : Specifies whether the ATPG equivalence analysis is to be performed. The default is to
+            perform this learning analysis.
+-common_input | -nocommon_input : Specifies whether the common input analysis is to be performed. The default is to
+            perform this learning analysis.
+-disable_time_limit | -nodisable_time_limit : Enables these two time limiting learning options (removes the time limits and finishes
+            the learning to completion): set_learning -max_implication 0 and set_learning -max_atpg_learning 0 . The default option is -nodisable_time_limit .
+-equivalent_latches | -noequivalent_latches : Specifies whether the equivalent latch analysis is to be performed. When this analysis
+            is enabled, TestMAX ATPG performs a search for latches with common clock and data
+            relationships (with potential inversions). The default is to perform this learning
+            analysis.
+-implication [low | medium | high] | -noimplication : Specifies whether the implication learning analysis is to be performed. The default is
+            to perform this learning analysis with an effort of medium.
+-max_feedback_sources d : Specifies the limit on the number of sources in a combinational feedback path. The
+            default is 100.
+-num_threads d : Specifies the number of threads to use for multithreading during model build. This
+              option works if you have installed TestMAX ATPG. By default, the number of threads is
+              set to 8. If you set this option to 0, multithreading is disabled and the previous,
+              non-threaded processing is used. Other learning switches are ignored when using threaded learning. Threaded learning
+              performs much more learning than old learning, especially for large designs. This
+              additional learning can require more memory and CPU time than old learning, however it
+              is expected to improve ATPG results.
+-sim_passes d : Specifies the number of simulation passes to be performed during the ATPG equivalence
+            analysis. The default is to perform 32 passes.
+-test_passes d : Specifies the number of test generation passes to be performed during the ATPG
+            equivalence analysis. The default is to perform 5000 passes.
+-verbose | -noverbose : Specifies the amount of detail in the ATPG equivalence analysis report. The default is -noverbose .
+
+EXAMPLES:
+BUILD> set_messages -level expert
+ BUILD> set_learning -atpg_equivalence
+ BUILD> run_build_model flight_sim
+ --------------------------------------------------------------------------
+ Begin build model for topcut = flight_sim ...
+ --------------------------------------------------------------------------
+ Primitive elimination results: #tied=239, #unused=6079, #BUF=18456 (3 added), #inv=5202
+ Number common input primitives=11533
+ Ranking completed: #ranked_gates=77591, #feedback_paths=0, CPU time=0.34
+ End build model: #primitives=101071, CPU_time=3.00 sec, Memory=34529279
+ --------------------------------------------------------------------------
+ Begin learning analyses...
+ Fanout-free region identification completed: #regions=37758, CPU time=2.44
+ Begin ATPG equivalence analysis: #sim_passes=16, #max_test_passes=1000 ...
+ Random simulation results: #pos_ties=496/1882, #pos_equiv=41051 (#groups=15601), CPU time=4.33
+ ATPG learned equiv relationship: 11802 (MUX) == 11804 (WIRE).
+ ATPG learned equiv relationship: 11816 (WIRE) == 11817 (WIRE).
+ ATPG learned equiv relationship: 11819 (WIRE) == 11820 (WIRE).
+ ATPG learned equiv relationship: 40187 (TSD) == 40402 (TSD).
+ ATPG learned equiv relationship: 12975 (NAND) == 12977 (NAND).
+ ATPG learned equiv relationship: 12978 (NAND) != 12979 (AND).
+ ATPG learned equiv relationship: 13048 (OR) == 13051 (OR).
+ ATPG learned equiv relationship: 13957 (OR) == 13963 (NAND).
+ ATPG learned equiv relationship: 13916 (XOR) != 13929 (XOR).
+ ATPG learned equiv relationship: 13955 (NAND) == 13958 (NAND).
+ ATPG learned equiv relationship: 69502 (MUX) == 69505 (AND).
+ ATPG learned equiv relationship: 14293 (NOR) != 14300 (OR).
+ ATPG learned tied relationship: 14347 (OR) = 1.
+ ATPG learned tied relationship: 15774 (AND) = 0.
+ ATPG learn analysis aborted after 1000 test generation analyses.
+ ATPG equiv learning completed: #ties=5, #equiv=90, #abort=3/2, CPU time=10.21
+ Tied analysis completed: #tied_gates=11716, #blocked_gates=71/0, #blocked_inputs=431
+ End learning analyses, total learning CPU time=10.25
+ --------------------------------------------------------------------------
+

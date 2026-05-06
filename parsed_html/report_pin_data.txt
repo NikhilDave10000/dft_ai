@@ -1,0 +1,18 @@
+COMMAND: report_pin_data
+
+TITLE:
+report_pin_data
+
+DESCRIPTION:
+Use this command to report the current pin data for a selected pin pathname.
+
+SYNTAX:
+report_pin_data pin_pathname
+
+OPTIONS:
+pin_pathname : Specifies the pin of an instance.
+
+EXAMPLES:
+TEST> report_pin_data sdr_clk_iopad/CIN
+ 010
+

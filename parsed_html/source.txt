@@ -1,0 +1,22 @@
+COMMAND: source
+
+TITLE:
+source
+
+DESCRIPTION:
+Use this command for executing commands contained in an external file.
+
+SYNTAX:
+source file_name [-continue_on_error] [-echo] [-verbose]
+
+OPTIONS:
+file_name : Specifies the path name of a file containing commands to be executed.
+-continue_on_error : Causes the script to continue running even if errors have occurred.
+-echo : Used during Tcl Mode, echoes the commands in the file_name and
+            displays them in the GUI transcript or shell xterm.
+-verbose : Displays all results, such as variable assignments, as they appear.
+
+EXAMPLES:
+DRC> source noabort
+ DRC> source my_setup.cmd
+

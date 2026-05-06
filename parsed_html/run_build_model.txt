@@ -1,0 +1,40 @@
+COMMAND: run_build_model
+
+TITLE:
+run_build_model
+
+DESCRIPTION:
+This command builds the in-memory simulation model from the design modules that have been read in.
+
+SYNTAX:
+run_build_model [ top_module] [-weakgates] [-remove_pio_pull]
+
+OPTIONS:
+top_module : Specifies the name of the module from which to create the simulation model. The default
+            is to use the last unreferenced module encountered while reading the netlist. If there
+            is more than one unreferenced module, the one defined last is used and a warning message
+            is issued indicating the choice.
+-weakgates : Specifies that when a non-three-state driver occurs on the same net as one or more
+            three-state drivers, the non-three-state driver is considered to have weak drive
+            strength. The default is not to assume a weak drive under these conditions and to issue
+            a B18 violation.
+-remove_pio_pull : Removes pull-type connections from PIO gates. A pull-type connection is a weak input to
+            a BUS gate driven by TIE1/TIE0 or by a TSD (tri-state driver) or a SW (switch) gate
+            whose data input is driven by TIE1/TIE0. Only pull-type connections of BUS gates
+            connected to a PIO gate are removed.
+
+EXAMPLES:
+BUILD> run_build_model asic_top
+ ------------------------------------------------------------------------
+ Begin build model process on topcut = asic_top ...
+ ------------------------------------------------------------------------
+ Warning: Rule B6 (undriven module inout pin) failed 2 times.
+ Warning: Rule B7 (undriven module output pin) failed 178 times.
+ Warning: Rule B8 (unconnected module input pin) failed 923 times.
+ Warning: Rule B13 (undriven instance pin) failed 2 times.
+ End build model: #primitives=101004, CPU_time=8.12 sec, Memory=34702381
+ ------------------------------------------------------------------------
+ Begin learning analyses...
+ End learning analyses, total learning CPU time=12.3
+ ------------------------------------------------------------------------
+

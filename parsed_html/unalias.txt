@@ -1,0 +1,33 @@
+COMMAND: unalias
+
+TITLE:
+unalias
+
+DESCRIPTION:
+This command is used to remove alias definitions.
+
+SYNTAX:
+unalias <alias_name | -all>
+
+OPTIONS:
+alias_name : Deletes the alias definition alias_name. If no alias exists with this name, you get an
+            error message.
+-all : Deletes all defined aliases.
+
+EXAMPLES:
+BUILD> alias
+ alias name  alias text
+ ----------- --------------------------------
+ readnet     read_netlist -delete
+ restart     build -force
+ compile     run_build_model
+ status      report_summaries
+ BUILD> unalias compile
+ BUILD> alias
+ alias name  alias text
+ ----------- --------------------------------
+ readnet     read_netlist -delete
+ restart     build -force
+ compile     run_build_model
+ status      report_summaries
+

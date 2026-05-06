@@ -1,0 +1,16 @@
+COMMAND: write_physical_db
+
+TITLE:
+write_physical_db
+
+DESCRIPTION:
+This command creates and validates the PHDS database. You can use options of the set_physical_db command to perform only a PHDS validation run or only a PHDS creation run.
+
+SYNTAX:
+write_physical_db [-replace] [-verbose]
+
+OPTIONS:
+-replace : Overwrites any previously loaded device with the same name and version.
+-verbose : Prints an additional set of information messages for the LEF/DEF reader and Yield
+            Explorer PHDS loader.
+

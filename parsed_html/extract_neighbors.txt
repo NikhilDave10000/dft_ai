@@ -1,0 +1,48 @@
+COMMAND: extract_neighbors
+
+TITLE:
+extract_neighbors
+
+DESCRIPTION:
+Extracts the net pair data for all nets in the design.
+
+SYNTAX:
+extract_nets [-all] [-keep_physical | -nokeep_physical] [-names { driver_pins }] [-verbose]
+
+OPTIONS:
+-all : Extracts the net pair data for all nets in the design.
+-keep_physical | -nokeep_physical : The -keep_physical option (the default) extracts and saves the neighboring
+              nets and bridgeable areas for each specified net. The -nokeep_physical option excludes this information during extraction.
+-names { driver_pins } : Extracts neighboring nets and bridgeable areas for nets based on the specified name(s) of a
+              driver pin or pins. You can print the extracted information using the report_physical –net command.
+-verbose : Prints a verbose report of the neighbor extraction.
+
+EXAMPLES:
+extract_neighbors -names [list "I_RISC_CORE/I_DATA_PATH/U83/Z"]
+Connecting to physical database.//
+Successfully connected to physical database.//
+Extracting neighbors and neighbor geometries for the following nets:
+I_RISC_CORE/I_DATA_PATH/U83/Z
+Closing connection to physical database.//
+…CPU_time = 13.00
+TEST-T> extract_neighbors -all
+Connecting to physical database.
+Successfully connected to physical database.
+Continuing extraction, 9.40% of extractions completed
+Continuing extraction, 18.79% of extractions completed
+Continuing extraction, 28.62% of extractions completed
+Continuing extraction, 38.01% of extractions completed
+…
+extract_neighbors -all -verbose
+Connecting to physical database.
+Successfully connected to physical database.
+Could not map physical neighbor driver pin 'scan_en_iopad/VSS' to
+logical gate.
+Could not map physical neighbor driver pin 'scan_en_iopad/VDD' to
+logical gate.
+…
+Successfully extracted logical net pairs.
+Finished neighbor extraction: #net_pairs(added/total)=2776/2776
+Closing connection to physical database.
+CPU_time = 8.23
+

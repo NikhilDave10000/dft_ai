@@ -1,0 +1,31 @@
+COMMAND: set_environment_viewer
+
+TITLE:
+set_environment_viewer
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes that can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment_viewer [-auto_scroll | -noauto_scroll] [-buf_inv | -nobuf_inv] [-color {<background | bidi | block | bufinv_removed | edge_connector | highlight | id | instance_name | net | pindata_text | pinname_text | rubberband | tie | title_background | title_text | type_name_text> <red_value> <green_value> <blue_value> }]... [-design_symbols <block | primitives>] [-dff_dlat_symbol <mode1 | mode2 | mode3>] [-font <system | hershey>] [-instance_names | -noinstance_names] [-left_justify_pis | -noleft_justify_pis] [-max_gates d] [-max_pindata_length d] [-primitive | -noprimitive] [-redraw <always | if_necessary>] [-scheme <default | black_on_white | synopsys>] [-time_out d] [-truncate | -notruncate]
+
+OPTIONS:
+-auto_scroll | -noauto_scroll : This option turns on the ability to scroll to the newly added gate when GSV is open
+              and the schematic already has many gates displayed or when clicking forward or
+              backwards to add gates. The default option is off.
+-buf_inv | -nobuf_inv : Selects whether buffers and inverters are removed from the schematic and replaced
+              with collapsed buf/inv symbols. This applies only if the view is "primitive". The
+              default is to show all buffers and inverters.
+-color {< object >
+            < red_value >
+          < green_value >
+          < blue_value >} : This option sets the display color for a type of object or text label. The object is one of the field names as illustrated in the
+            following diagram. The color values are specified as a color triplet of red, green, and
+            blue values, with a range of 0 to 255 for each value. For example, 0 0
+              0 = black, 255 255 255 = white, and so forth. Make sure you
+            specify the object and color values enclosed within curly braces, for example: set_environment_viewer -color { block 0 255 0 }
+
+EXAMPLES:
+BUILD> set_environment_viewer -max 50 -time_out 25
+ BUILD> set_environment_viewer -dff_dlat_symbol mode3
+

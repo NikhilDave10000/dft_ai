@@ -1,0 +1,45 @@
+COMMAND: list_attributes
+
+TITLE:
+list_attributes
+
+DESCRIPTION:
+This command displays an alphabetically sorted list of currently defined attributes.
+
+SYNTAX:
+list list_attributes [-application] [-class class_name] [-nosplit]
+
+OPTIONS:
+-application : Lists the application attributes.
+-class class_name : Lists only attributes of the class_name , which can be any of the
+            following: Clock, ScanChains, Cell, Primitive, Pin, Port, Modules, Instances, Timings,
+            Settings, Faults, Patterns, Candidates, DiagFile.
+-nosplit : Prevents split lines when columns overflow.
+
+EXAMPLES:
+TEST-T> list_attributes -class clock
+****************************************
+Report : List of Attribute Definitions
+Version: F-2011.09-SP4
+Date   : Mon Apr 16 18:01:03 2012
+****************************************
+Properties:
+   A - Application-defined
+Attribute Name       Object            Type              Properties          Constraints
+--------------------------------------------------------------------------------
+clock_id                              Clock            int                U
+clock_name                          Clock              string           U
+disturbed_clocks              Clock              collection   U
+is_differential                Clock             boolean         U
+is_internal          Clock              boolean         U
+is_pll                                  Clock              boolean         U
+is_reference                      Clock              boolean         U
+nonscan_connections        Clock              int                 U
+object_class                      Clock              string           U
+off_state                            Clock          string           U
+parallel_clocks                Clock              collection   U
+pll_pin_name                      Clock              string           U
+scan_connections              Clock              int                 U
+ungroupable_clocks   Clock         collection   U
+usage                                    Clock              string           U
+

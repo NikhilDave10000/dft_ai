@@ -1,0 +1,38 @@
+COMMAND: report_delay_paths
+
+TITLE:
+report_delay_paths
+
+DESCRIPTION:
+This command generates individual paths for viewing with the GSV and exports a delay path list.
+
+SYNTAX:
+report_delay_paths <-all | path_name > [-verbose] [-display] [-pindata]
+
+OPTIONS:
+-all | path_name : Reports all valid delay paths in TestMAX ATPG delay path definition format. If you
+            provide a path_name , TestMAX ATPG reports only the single
+            path associated with the path_name .
+-display : Displays the specified path_name in the GSV.
+-verbose : Reports detailed data about each path including: fault status, transition direction,
+            number of launch clocks, launch clock, launch clock node (ID), number of capture clocks,
+            capture clock, capture clock node (ID), and node IDs and gate types for nodes defined
+            along the path.
+-pindata : Uses the pindata setting to delay data, and allows pindata to be annotated to the path
+            view in the GSV, or reports pindata in a primitive report if requested.
+
+EXAMPLES:
+TEST> report_delay_paths path1 -v
+
+  $path {
+     $name path1 ;
+     # #launch_clocks=1, launch_clock=CK (1), launch_node=DFF (22)
+     # #capture_clocks=1, capture_clock=CK (1), capture_node=DFF (21)
+     # slow-to-rise fault class = DR
+     # slow-to-fall fault class = DR
+     $transition {
+        reg_fd1/Q = ; # 22 (DFF)
+        reg_fd2/D1 = ; # 18 (MUX)
+     }
+  }
+

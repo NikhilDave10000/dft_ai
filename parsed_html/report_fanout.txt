@@ -1,0 +1,22 @@
+COMMAND: report_fanout
+
+TITLE:
+report_fanout
+
+DESCRIPTION:
+This command reports fanout paths from a specific pin.
+
+SYNTAX:
+report_fanout -from pin_name -to pin_name [-hide_sequential] [-shift] [-test_setup] [-pi_constraints]
+
+OPTIONS:
+-from pin_name : Specifies the hierarchical pin name in the top-level netlist to be used as the starting
+            point for reporting fanout paths. Wildcard pin names are supported, although they do not
+            apply to instance names.
+-to pin_name : Specifies the pin name to be used as the end point or sink for mapping/tracing. You can
+            specify wildcard characters for specifying pin names, but not instance names.
+-hide_sequential : Hides printing flip-flops or latch endpoints, and outputs only the PIs and POs.
+-shift : Outputs endpoints after the shift constraints are applied.
+-test_setup : Outputs endpoints after applying the test_setup sequence.
+-pi_constraints : Outputs endpoints after applying the pin constraints.
+

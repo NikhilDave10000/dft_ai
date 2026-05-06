@@ -1,0 +1,26 @@
+COMMAND: update_wft
+
+TITLE:
+update_wft
+
+DESCRIPTION:
+This command is used to change any of the period, force-event timing, or measure-event timing parameters within a specific named WaveformTable.
+
+SYNTAX:
+update_wft -wft { list_of_wft_names } [-period integer] [-force integer] [-strobe integer] [-unit <ps|ns>]
+
+OPTIONS:
+-wft { list_of_wft_names } : Specifies the required name or list of the specific WaveformTable(s) you want to
+            modify. At least one -wft option must be provided. You may specify a
+            list of names if you want to change a list of WaveformTables with a single command.
+-period integer : Specifies the value for the period of the specified WaveformTable.
+-force integer : Specifies the timing offset value to drive all inputs and bidirectionals. The specified
+            value is applied to all 0, 1, N, and Z waveforms to define the assert time of the drive
+            edge for these waveforms across all signals that have these waveforms defined (in the
+            affected WaveformTables).
+-strobe integer : Specifies the measure time for all outputs and bidirectionals. The specified value is
+            applied across all H, L, T, and X waveforms to define the measure-strobe time for these
+            waveforms across all signals that have these waveforms defined (in the affected
+            WaveformTables).
+-unit <ps|ns> : Identifies the unit for all specified time values.
+

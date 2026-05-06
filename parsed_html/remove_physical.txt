@@ -1,0 +1,20 @@
+COMMAND: remove_physical
+
+TITLE:
+remove_physical
+
+DESCRIPTION:
+This command deletes specific data from the physical model created by the run_diagnosis command.
+
+SYNTAX:
+remove_physical [-all] [-pairs] [-pins] [-subnets] [-tolerance]
+
+OPTIONS:
+-all : Removes all extracted data from the physical database.
+-pairs : Removes all net pairs extracted during diagnosis or all net pairs loaded by the read_layout command.
+-pins : Removes all pin and instance coordinates extracted during diagnosis, including pins
+            extracted by the extract_pins command.
+-subnets : Removes subnet topologies extracted during diagnosis by the extract_nets command or subnet
+              data loaded by the read_layout command.
+-tolerance : Resets all tolerances specified by the -tolerance option of the set_physical command. Note that the -all option does not reset tolerances.
+

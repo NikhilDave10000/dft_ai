@@ -1,0 +1,14 @@
+COMMAND: all_outputs
+
+TITLE:
+all_outputs
+
+DESCRIPTION:
+The all_outputs command creates a collection of all output or inout ports in the current design.
+
+SYNTAX:
+collection all_outputs
+
+EXAMPLES:
+TEST-T> all_outputs
+

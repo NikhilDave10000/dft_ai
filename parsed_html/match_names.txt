@@ -1,0 +1,48 @@
+COMMAND: match_names
+
+TITLE:
+match_names
+
+DESCRIPTION:
+This command builds a lookup table and establishes a link between logical and physical instances or pin names for physical diagnostics.
+
+SYNTAX:
+match_names [-all] [-file file_name] [-max_errors number] [-report <unmatched  | matched | all>] [-sample  [ percentage] [-verbose]
+
+OPTIONS:
+-file file_name : Specifies a file that contains logical names to match to the corresponding physical
+            names. Each line in this file is an individual logical driver pin name.
+-max_errors number : Prints only the specified number of either modules, instances, or pins.
+-report <unmatched | matched | all> : Specifies the type of names to include in the name matching report. The unmatched argument prints only the unmatched names and the matched argument prints matched names. The all argument, the default, prints both unmatched and matched names.
+-sample [ percentage ] : Checks a single name for each level of hierarchy in the design against the physical
+            design store (PHDS) database. If you include the percentage parameter, TestMAX ATPG
+            matches the specified percentage of logical names.
+-verbose : Prints additional name matching information, including a list of the mismatched modules
+            and instances, the CPU time, and the memory usage.
+
+EXAMPLES:
+TEST-T>
+match_names
+Setting top-level physical design name to 'RISC_CHIP'
+ Performing Pin Level Analysis
+        Matched 564 of 884 instance pins
+ Checking for logical wrapper
+ Checking for physical wrapper
+ Checking for differences in the lowest hierarchy levels
+ Performing Hierarchy Level Analysis
+         Module                        Inst Count Matched Unmatched Unmatched Names
+   ------------ ------------ ------- --------- --------------
+      STACK_TOP                                                    1                   0                 1                                   320
+-------------------------------------------------------------
+Name Match Summary
+-------------------------------------------------------------
+Number of instance names matched: 564
+Number of mismatches found: 320
+Percent Correct = 63.80%
+CPU_time: 0.02 sec
+Query_time: 2.61 sec
+Total_time: 2.62 sec
+Memory usage summary: 0MB
+--------------------------------------------------------------
+Closing connection to physical database.
+

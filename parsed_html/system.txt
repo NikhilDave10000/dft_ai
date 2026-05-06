@@ -1,0 +1,36 @@
+COMMAND: system
+
+TITLE:
+system
+
+DESCRIPTION:
+Use this command for executing UNIX shell commands.
+
+SYNTAX:
+system <command_string>
+
+OPTIONS:
+command_string : Specifies the command to be passed to a separate shell interpreter.
+
+EXAMPLES:
+DRC> system ls\line
+ DRC> system "ps -elf > ps_snapshot.txt"
+ ATPG> system "cd $MYLIB/verilog/models ; ls"
+ ATPG> system A_$TEST_ENV1.C
+ ATPG> system cp $VAR1/xxx $VAR2/yyy
+ BUILD> system "ls -al $MYVAR > junk"
+ BUILD> system "this ; and ; that"
+
+ ATPG> system "touch $\{VAR1\}_$VAR2/done" # expanded before passing
+ ATPG> system 'touch $\{VAR1\}_$VAR2/done' # not expanded before passing
+
+ # Bad form, the file 'snapshot' is empty as the "> snapshot" is not
+ # passed to the system but interpreted by TestMAX ATPG command parser.
+ DRC> system ps -fu $USER > snapshot
+ # proper forms, the '> snapshot' is passed as part of the command
+ DRC> "system ps -fu $USER > snapshot"
+ DRC> 'system ps -fu $USER > snapshot'
+
+ BUILD> system "date > tempfile" # save output in a file
+ BUILD> cat tempfile # record that file into TestMAX ATPG log
+

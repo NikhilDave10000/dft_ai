@@ -1,0 +1,36 @@
+COMMAND: report_feedback_paths
+
+TITLE:
+report_feedback_paths
+
+DESCRIPTION:
+Use this command to get a report on the feedback paths in the design.
+
+SYNTAX:
+report_feedback_paths < path_id | -summary | -all | -gate < id | pin_pathname | instance_name > > [-verbose]
+
+OPTIONS:
+path_id : Specifies the feedback network to report by its specific loop ID number.
+-summary : Selects display of a summary of feedback paths showing the number of feedback paths
+            which exists.
+-all : Selects all feedback paths for reporting. This displays the loop ID, number of
+            contributing gates, number of sources, and sensitization status.
+-gate < id | pin_pathname | instance_name > : Displays the feedback path that contains the specified primitive. You can identify the
+            gate by its primitive ID number, by a pin pathname of a pin connected to the gate, or by
+            its instance name. An error is reported if the selected gate is not in a feedback
+            path.
+-verbose : Reports verbose data for the selected feedback paths. In addition to the general
+            feedback path information, the verbose data identifies all instances in the feedback
+            path network. The source gates appear at the top of the list, and the remaining gates
+            are rank ordered and should appear in a physical order. The default is not to display
+            this additional information.
+
+EXAMPLES:
+TEST> report_feedback_paths -all
+ id# #gates #sources sensitization_status
+ --- ------ -------- --------------------
+  0     2          1       pass
+  1    10          1       pass
+  2     5          1       pass
+  3     8          1       pass
+

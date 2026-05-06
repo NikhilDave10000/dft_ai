@@ -1,0 +1,16 @@
+COMMAND: remove_waveform_signals
+
+TITLE:
+remove_waveform_signals
+
+DESCRIPTION:
+Removes gates associated with the pin pathname, gate ID, net names, or all gates from the GSV.
+
+SYNTAX:
+remove_waveform_signals < pin_pathname | gate_id | net_names | -all>
+
+OPTIONS:
+pin_pathname | gate_id | net_names | -all : Specifies the pin pathname or the gate ID of the element whose simulation behavior is
+            being modified. If you specify the -all option, TestMAX ATPG removes
+            all gates from the GSV.
+

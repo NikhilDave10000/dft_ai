@@ -1,0 +1,15 @@
+COMMAND: get_scan_chains
+
+TITLE:
+get_scan_chains
+
+DESCRIPTION:
+The get_scan_chains command returns a collection of scan chain objects associated with the specified chain_name.
+
+SYNTAX:
+collection get_scan_chains chain_name | -all
+
+OPTIONS:
+chain_name : Specifies the name of the chain_name to return.
+-all : Returns all scanchain objects.
+

@@ -1,0 +1,23 @@
+COMMAND: set_environment
+
+TITLE:
+set_environment
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes which can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment [gui | transcript | viewer | reports | info] options ...
+
+OPTIONS:
+gui options : This option selects the GUI subset of the set environment controls. For details,
+            see: set_environment_gui
+transcript options : This option selects the Transcript subset of the set environment controls. For details,
+            see: set_environment_transcript
+viewer options : This option selects the Viewer subset of the set environment controls. For details,
+            see: set_environment_viewer
+Reports options : This option selects the Reports subset of the set environment controls. For details,
+            see: set_environment_reports
+info options : This option selects the Info subset of the set environment controls. These are detailed
+            on the page: set_environment_info
+

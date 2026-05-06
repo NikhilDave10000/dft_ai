@@ -1,0 +1,35 @@
+COMMAND: remove_scan_enables
+
+TITLE:
+remove_scan_enables
+
+DESCRIPTION:
+Use this command to delete scan enables previously defined with the add_scan_enables command.
+
+SYNTAX:
+remove_scan_enables < pin_name | -all>
+
+OPTIONS:
+pin_name | -all : Specify the scan enable initialization to be removed by the top-level design port
+              name previously used to define the scan enable when a prior add_scan_enables command
+              was issued. Use of the -all option will remove all scan enable
+              definitions from previous add_scan_enables commands.
+
+EXAMPLES:
+DRC> add_scan_enables 1 SCAN_EN
+ DRC> add_scan_enables Z bidi[0] bidi[1] bidi[2]
+ DRC> report_scan_enables
+ value  port
+ ----- -----------------------------
+   1    SCAN_EN (6)
+   Z    bidi[0] (3210)
+   Z    bidi[1] (3211)
+   Z    bidi[2] (3212)
+DRC> remove_scan_enables bidi[1]
+DRC> report_scan_enables
+ value  port
+ ----- -----------------------------
+   1    SCAN_EN (6)
+   Z    bidi[0] (3210)
+   Z    bidi[2] (3212)
+

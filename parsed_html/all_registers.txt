@@ -1,0 +1,14 @@
+COMMAND: all_registers
+
+TITLE:
+all_registers
+
+DESCRIPTION:
+The all_registers command creates a collection of cells related to registers.
+
+SYNTAX:
+collection all_registers
+
+EXAMPLES:
+TEST-T> all_registers
+

@@ -1,0 +1,32 @@
+COMMAND: add_nofaults
+
+TITLE:
+add_nofaults
+
+DESCRIPTION:
+Use this command to inhibit the placement of faults at specific locations.
+
+SYNTAX:
+add_nofaults < instance_name | pin_pathname |  -module { module_name [ optional_pin_names]} | -instance instance_name > [-stuck <0 | 1 | 01> | -slow <r | f | rf>]
+
+OPTIONS:
+instance_name : Adds the nofault attribute to all faults associated with the hierarchical instance
+            pathname. The instance_name argument must be a fixed string.
+pin_pathname : Adds the nofault attribute to faults on the pin pathname.
+-module { module_name [ optional_pin_names ]} : Adds the nofault attribute to one or more pins of every instantiation of a given
+            module. The module_name argument can be a
+            fixed string or a limited regular expression. If an optional pin name or names is
+            specified, then only the faults associated with that module and pin are added. If no
+            pins are specified, then all pins of the module are used.
+-instance instance_name : Adds the nofault attribute to all faults associated with the instance_name argument. The instance_name argument
+            can be a fixed string or a limited regular expression limited regular expression,
+            however only one instance_name can be specified.
+-stuck <0 | 1 | 01> | -slow <r | f | rf> : Specifies faults based upon their stuck or slow values. Note that these options do not
+            work with instances names, but do work for pinpath names and module names.
+
+EXAMPLES:
+# nofault stuck-at-1 fault of pin 'SL' of every instance
+ # of module MUX2H
+ TEST> add_nofaults -module MUX2H -stuck 1 SL
+  4 faults were added to nofault list.
+

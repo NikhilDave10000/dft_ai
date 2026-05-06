@@ -1,0 +1,63 @@
+COMMAND: write_ydf
+
+TITLE:
+write_ydf
+
+DESCRIPTION:
+This command writes a Yield Explorer Data Format (YDF) file.
+
+SYNTAX:
+write_ydf file_name [-append | -replace] [–all | –candidates] [-apply_match_names] [-branch] [-bridge] [–cell] [-cell_pin] [–cell_instance_pin_net] [-chain_def] [-custom_field file_name] [-device name] [-diex number] [-diey number] [-fab fab_name] [-include_scan_path | -noinclude_scan_path] [–instance_cell] [-lot number] [-nets] [-net_contact_position] [-net_layer] [-net_path] [-replace] [-test_condition { condition_list }] [-version string] [-via] [-via_position] [-wafer number]
+
+OPTIONS:
+file_name : Specifies the file name of the Yield Explorer Data Format (YDF) file.
+-append | -replace : The -append option appends the YDF data to an existing YDF file. If a
+            YDF file does not exist, it is created. The -replace option replaces an
+            existing YDF file. There is no default; you must specify one of these two options if
+            there is an existing YDF file.
+-all | -candidates : The -all option writes physical information for all instances and
+            nets. The -candidates option writes data only for diagnostics
+            candidates. If you specify any table name, except for an EDCT table, all physical
+            information is written for the specified tables by default. The following example generates Via and Cell physical data tables for all elements: TEST-T> write_ydf file.ydf –cell –via –replace The previous example is equivalent to the following example: TEST-T> write_ydf file.ydf –cell –via –replace -all If you don’t specify a table name, all tables are written with only the physical
+            information for the diagnostics candidates. The following example generates Via, Cell,
+            CellPin, InstanceCell, CellInstancePinNet, Net, NetPath, ViaPosition, NetLayer, EDCT,
+            ChainDef, Branch, and Bridge physical data tables for diagnostic candidates: TEST-T> write_ydf file.ydf –replace In this case, the default is the -candidates option. The command in
+            the previous example is equivalent to the following command: TEST-T> write_ydf file.ydf –candidates -replace
+-apply_match_names : Applies match name rules to instance and net names, and prints the corresponding values
+            in YDF. This option is applicable only if you also specify the set_match_names command.
+-branch : Writes a subnet information table. You must also specify the -candidate option when using this option.
+-bridge : Writes a bridge information table for the physical diagnostics flow. You must also
+            specify the -candidate option when using this option.
+-cell : Writes a cell information table.
+-cell_instance_pin_net : Writes an information table for cells, instances, pins, and nets.
+-cell_pin : Specifies a Yield Explorer data segment that reports the pin geometries for individual
+            MACRO cells defined in the LEF file.
+-chain_def : Writes a table that describes the chains in a design.
+-custom_field file_name : Specifies the name of a custom fields file that contains descriptions of custom fields
+            to add to the DFTCandidate table. The format of this file is the same as a schema file
+            (see the description of the -schema option of the set_ydf command). For example, to add equipment information to the DFTCandidate table of the YDF
+            file:
+
+EXAMPLES:
+write_ydf top_chip.all.ydf
+
+ write_ydf top_chip.ydf
+
+ write_ydf –candidates –cell top_chip.ydf
+
+ write_ydf top_chip.Cell.ydf -all -replace -cell
+
+ write_ydf top_chip.CellPin.ydf -all -replace -cell_pin
+
+ write_ydf top_chip.InstanceCell.ydf -all -replace -instance_cell
+
+ write_ydf top_chip.CellInstancePinNet.ydf -all -replace -cell_instance_pin_net
+
+ write_ydf top_chip.NetPath.ydf -all -replace -net_path
+
+ write_ydf top_chip.ViaPosition.ydf -all -replace -via_position
+
+ write_ydf top_chip.NetLayer.ydf -all -replace -net_layer
+
+ write_ydf top_chip.Via.ydf -all -replace -via
+

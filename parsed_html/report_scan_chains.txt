@@ -1,0 +1,32 @@
+COMMAND: report_scan_chains
+
+TITLE:
+report_scan_chains
+
+DESCRIPTION:
+Use this command to report scan chain information.
+
+SYNTAX:
+report_scan_chains [-command_report] [-shift_clocks] [-verbose] [-xchains]
+
+OPTIONS:
+-command_report : Causes the scan chains to be reported in the form of add_scan_chains commands that
+            would be necessary to define these same scan chains.
+-shift_clocks : Reports the shift clocks for each scan chain while taking constraints into account.
+-verbose : Selects reporting additional information about each scan chain such as all the clocks
+            connected to state elements in the scan chain (these clocks can function as shift,
+            capture, set, reset), the number of leading-edge (LE), trailing-edge (TE), or
+            level-sensitive (LS) devices. Also reported is the number of dependent slaves, shadows,
+            and nonscan transparent latches found in the scan chain, if any.
+-xchains : Reports only the scan chains designated as X-chains.
+
+EXAMPLES:
+TEST> report_scan_chains
+ chain   group length input_port output_port
+ ------- ----- ------ --------------- ----------------
+ c1      sg0   230    a_scanin1 a_scanout1
+ c2      sg0   225    a_scanin2 a_scanout2
+ c3      sg0   230    a_scanin3 a_scanout3
+ c4      sg0   224    a_scanin4 a_scanout4
+ c5      sg0   175    a_scanin5 a_scanout5
+

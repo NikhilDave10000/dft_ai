@@ -1,0 +1,44 @@
+COMMAND: report_violations
+
+TITLE:
+report_violations
+
+DESCRIPTION:
+Use this command to report rule violation data.
+
+SYNTAX:
+report_violations < violation_id | rule_id | rule_type | -all> [-instance < name | id >] [-max d]
+
+OPTIONS:
+violation_id : Reports only the rule violation with the selected violation ID.
+rule_id : Reports all rule violations of the selected rule ID.
+rule_type : Reports all rule violations of the selected rule type.
+-all : Reports all rule violations.
+-instance < name | id > : This option reports violations on a given instance. The instance can be specified with
+            a name or a TestMAX ATPG primitive id. The name can also contain a wildcard character
+            “*”. This option can be combined with other options to filter out certain type of
+            violations. For example, report violations S1 -instance scan_cell* reports all S1 violations on instances with names that start with “scan_cell”.
+-max d : Specifies the maximum number of violations allowed to be reported. By default, there is
+            no limit.
+
+EXAMPLES:
+TEST> report_rules -fail
+ rule severity #fails description
+ ---- -------- ------ ---------------------------------
+ C17  warning  3      clock connected to PO
+ C19  warning  1      clock connected to non-contention-free BUS
+ V7   warning  1      unsupported construct
+ Z4   warning  3      bus contention in test procedure
+ Z9   warning  2      bidi bus driver enable affected by scan cell
+ TEST> report_violations -all
+ Warning: Clock prun is connected to primary output D[15]. (C17-1)
+ Warning: Clock prun is connected to primary output D[14]. (C17-2)
+ Warning: Clock prun is connected to primary output D[13]. (C17-3)
+ Warning: Clock prun is connected to at least one non-contention-free BUS (430). (C19-1)
+ Warning: Line 99 (job.spf), unsupported construct (Procedure "test_setup" should be defined and is used as a Macro). (V7-1)
+ Warning: Bus contention on my_asic/Lic03 (373) occurred at time 0 of test_setup procedure. (Z4-1)
+ Warning: Bus contention on my_asic/Lic03 (373) occurred at time 10 of test_setup procedure. (Z4-2)
+ Warning: Bus contention on my_asic/Lic03 (373) occurred at time 20 of test_setup procedure. (Z4-3)
+ Warning: Enable of bidi bus driver my_asic/Logic30 (73) connected to scan cell gate (191). (Z9-1)
+ Warning: Enable of bidi bus driver my_asic/Logic32 (374) connected to scan cell gate (199). (Z9-2)
+

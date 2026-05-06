@@ -1,0 +1,71 @@
+COMMAND: analyze_faults
+
+TITLE:
+analyze_faults
+
+DESCRIPTION:
+This command prints a series of reports that are used to analyze why faults are not detected.
+
+SYNTAX:
+analyze_faults << pin_pathname -stuck <0 | 1> [-observe gate_id]> | delay_path_name -slow <r|f> [-observe gate_id]> | instance_name .. >> < bridge_location1 bridge_location2 <-bridge <0|1> |-dynamic_bridge <r|f>  >> [-class fault_class] [-display] [-fast_sequential | -full_sequential] [-fault_simulation] [-max max_faults] [-source_points min_percent max_points] [-verbose]
+
+OPTIONS:
+pin_pathname -stuck <0 | 1> : The pin_pathname argument
+            specifies the fault site to be analyzed by its pin pathname. The analysis consists of a
+            controllability check, and a detectability check. TestMAX ATPG does not use the fault
+            simulation engine to validate fault detection unless the -fault_simulation option is also specified. This means that even
+            though a fault is found to be controllable and detectable by ATPG, it might be rejected
+            by the fault simulation engine if it is not also detected by that analysis. The -stuck argument specifies the stuck value of the selected
+            fault.
+-observe gate_id : Indicates the fault is only considered detected if it propagates to the specified
+            primitive ID. This option is ignored for fault classes. The default behavior considers
+            all potential observe points.
+instance_name : Specifies the names of the instances for analysis.
+-class fault_class ... : Selects a specific class of faults for analysis. You can use this option multiple times
+            in the command. This option is not supported for path delay or IDDQ faults.
+delay_path_name -slow <r | f> : The delay_path_name argument specifies the name of the path to be
+            analyzed when the fault model is set to Delay_path. The analysis proceeds by attempting
+            to satisfy all off-path inputs, and stops when these cannot be satisfied. The -slow option specifies either the slow-to-rise ( r )
+            or the slow-to-fall ( f ) fault for analysis when analyzing Delay path
+            faults. Note that you can use the -slow option with the pin path
+            name.
+bridge_location1 bridge_location2 < -bridge <0|1> | -dynamic_bridge
+          <r|f> > : bridge_location1 , 2 - Specifies the victim and aggressor nodes,
+            respectively. -bridge - Specifies the type of bridging fault. The type can be
+            either: 0 - ba0 (bridging fault at 0) 1 - ba1 (bridging fault at 1) -dynamic_bridge - Specifies the type of dynamic bridging fault. The
+            type can be either: r - bsr (bridge slow to rise) f - bsf (bridge slow to fall)
+-fast_sequential : Selects Fast-Sequential ATPG methods for the analysis. The default behavior is to
+            perform the analysis using Basic-Scan (combinational) ATPG methods unless either this
+            option or the -full_sequential option is selected.
+-full_sequential : Selects Full-Sequential ATPG methods for the analysis. The default behavior is to do
+            the analysis using Basic-Scan (combinational) ATPG methods unless either this option or
+            the -fast_sequential option is selected.
+-fault_simulation : Specifies that in addition to the normal fault analysis, a fault simulation should also
+            be performed to ensure that any fault detection credit given during the fault analysis
+            is validated by fault simulation. By default, this simulation is not performed. During the ATPG process, fault classification comes from detection due to generated
+            patterns but is also double-checked by performing a fault simulation on the potential
+            pattern. So to get an equivalent analysis of the fault site to what would occur during
+            the ATPG process, it is necessary to both analyze the fault from an ATPG pattern
+            generation perspective and also check the resulting pattern with a fault simulation. It
+            is sometimes the case that ATPG pattern generation succeeds and the fault would be
+            considered class=DS, but fault simulation fails and the fault cannot be classified as
+            detected.
+-max max_faults : Specifies the maximum number of faults to report for a verbose fault class analysis for
+            each potential problem type. The default is to report all faults with the -verbose option.
+-source_points min_percent max_points : Prints a list of blockage points, blockage value source points, and constraint value
+            source points based on the order of their effect on explained faults. The parameters for
+            this option control the length of the report. The min_percent parameter is the minimum percentage of
+            explained faults for the point to be reported. The max_points parameter is the maximum number of points to
+            list in each category; 0 specifies that there is no limit. This option must be used with
+            the -class option. The fault classes are supported: Undetectable (UD)
+            and ATPG Untestable (AU), and any of their subclasses.
+-verbose : Selects detailed information reporting during the analysis.
+
+EXAMPLES:
+TEST> analyze_faults -class no
+  Fault analysis summary: #analyzed=106, #unexplained=95.
+  11 faults are connected to CLKPO.
+  3 faults are connected to CLOCK.
+  11 faults are connected to TS_ENABLE.
+  8 faults are connected from CLOCK.
+

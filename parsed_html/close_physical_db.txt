@@ -1,0 +1,15 @@
+COMMAND: close_physical_db
+
+TITLE:
+close_physical_db
+
+DESCRIPTION:
+This command closes the server process that accesses physical data from a PHDS database for physical diagnostics.
+
+SYNTAX:
+close_physical_db [-verbose]
+
+OPTIONS:
+-verbose : Prints detailed information on the server process while closing the data access to the
+            PHDS database.
+

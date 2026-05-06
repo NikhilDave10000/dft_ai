@@ -1,0 +1,42 @@
+COMMAND: read_image
+
+TITLE:
+read_image
+
+DESCRIPTION:
+Use this command to read and restore the TestMAX ATPG database created by the write_image command.
+
+SYNTAX:
+read_image file_name [-password string] [-optimized]
+
+OPTIONS:
+file_name : Specifies the pathname to the file containing the database.
+-password string : Enables the reading of a secure image written by a write_image -password command. You must provide the password used during image
+            creation; otherwise, an error results. You can use double quotation marks (" ") to
+            enclose your password. After a successful read, TestMAX ATPG operates in a secure state and allows only the
+            specified allowed commands. The list of allowed commands is displayed after the image is
+            read. Any commands not on the list are not executed and a warning message displays.
+            Commands that write an image file are prohibited. Distributed ATPG cannot be run in a
+            secure state. Schematic viewing is permitted if the -schematic_view option of the write_image command is used
+            when the secure image is created. The default is to read unprotected image files.
+-optimized : The -optimized option is used to reduce the memory usage and
+              improve throughput during diagnosis. This is done by skipping DRC patterns and clock
+              driven relation extraction during read_image . This option is only
+              used for diagnosis scenario.
+
+EXAMPLES:
+BUILD> read_image i044_image.dat
+  Warning: All netlist and library module data are now deleted. (M41)
+  End read image: #bytes=1830406, CPU time=5.00 sec.
+
+ TEST> read_image image_enc.gz -password secret
+  Warning: All netlist and library module data are now deleted. (M41)
+  End read image: #bytes=11511, CPU time=0.02 sec.
+  Secure image read with schematic viewing enabled and allowing the \
+   following commands:
+ exit
+ help
+ run_diagnosis
+ set_patterns
+ run_simulation
+

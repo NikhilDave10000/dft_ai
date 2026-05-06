@@ -1,0 +1,16 @@
+COMMAND: add_waveform_signals
+
+TITLE:
+add_waveform_signals
+
+DESCRIPTION:
+Adds waveforms associated with the pin_pathname , gate ID , or net_name , or all gates to the simulation waveform viewer.
+
+SYNTAX:
+add_waveform_signals < pin_pathname | gate_id | net_names | -all>
+
+OPTIONS:
+pin_pathname | gate_id | net_names | -all : Specifies the pin pathname or the gate ID of the element whose simulation behavior is
+            being monitored. If you specify the -all option, TestMAX ATPG adds all
+            gates to the simulation waveform viewer.
+

@@ -1,0 +1,31 @@
+COMMAND: analyze_chain
+
+TITLE:
+analyze_chain
+
+DESCRIPTION:
+This command provides information on single- and multi-observe mode simulation values.
+
+SYNTAX:
+analyze_chain <chain_name> [-unload_mode d1] [-load_mode d2] [-display]
+
+OPTIONS:
+chain_name : Indicates the name of the compressed chain.
+-unload_mode d1 : The d1 argument specifies the unload mode.
+-load_mode d1 : The d2 argument specifies the load mode.
+-display : Shows the associated gates in GSV. This option is valid only when the -load_mode and -unload_mode options are
+            specified.
+
+EXAMPLES:
+DRC-T> analyze_chain des_unit_3_26
+Analyzing chain des_unit_3_26 ...
+Simulating single observe mode for unload_mode = 6, load_mode = 0, pin = test_so3 Warning: Reconvergence path detected!
+Warning: Multiple scan chain outputs in compressor single observe mode
+Simulating single observe mode for unload_mode = 6, load_mode = 1, pin = test_so3
+Simulating multiple observe mode for unload_mode = 1, load_mode = 0, pin = test_so3
+Simulating multiple observe mode for unload_mode = 3, load_mode = 0, pin = test_so3
+Simulating multiple observe mode for unload_mode = 7, load_mode = 0, pin = test_so3
+Simulating multiple observe mode for unload_mode = 1, load_mode = 1, pin = test_so3
+Simulating multiple observe mode for unload_mode = 3, load_mode = 1, pin = test_so3
+Simulating multiple observe mode for unload_mode = 7, load_mode = 1, pin = test_so3
+

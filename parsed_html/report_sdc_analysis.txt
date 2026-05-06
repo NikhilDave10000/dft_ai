@@ -1,0 +1,296 @@
+COMMAND: report_sdc_analysis
+
+TITLE:
+report_sdc_analysis
+
+DESCRIPTION:
+Reports on gates are marked during exception tracing. To report on static SDC
+              analysis before running ATPG or simulation, the set_sdc
+                -mark_gui_gates command option must be set before running DRC.
+
+SYNTAX:
+report_sdc_analysis [-all] [-summary] [-verbose] [-static] [-dynamic] [-endpoint] [-data_exception_matrix] [-to_gate] [exception]
+
+OPTIONS:
+-static : Reports on gates are marked during exception tracing. To report on static SDC
+              analysis before running ATPG or simulation, the set_sdc
+                -mark_gui_gates command option must be set before running DRC. -all When used with the -static option; it reports the exception
+                    ID, SDC file line number, and the number of affected gates for each exception.
+                    There is also a percentage of gates in the design marked by this exception.
+                    Since multiple exceptions can sometimes be created from the same line in an SDC
+                    file, multiple exceptions can share the same line number. exception When used with the -static option; it reports the exception
+                    type, the number of from gates, number of through gates, number of to gates, and
+                    number of affected gates as well as the line number of the exception in the SDC
+                    file. The percentage after the number of affected gates is the percent of all
+                    gates in the design that were marked by the exception. -summary When used with the -static option; it reports a summary of
+                    static exception tracing. Breaking up the report into number of
+                    clock_exceptions, data_exceptions, total_exceptions, from_points,
+                    through_points, to_points, startpoints, endpoints and affected_gates. It also
+                    reports a number of optimized clock and data exceptions. Endpoints here are
+                    DLAT/DFF/MEM/PIO/PO/TIEX. -verbose When used with the -static option; this adds the exception to
+                    the report for an individual exception and adds the type, the number of from
+                    gates, the number of through gates, and number of to gates for the -all option. -to_gate Reports the exception number that impacts the gate_id. Adding -verbose prints the full exception associated with the
+                    exception number. -data_exception_matrix This option reports the different combinations of number of from and to gates
+                    as well as how many exceptions there are of each type.
+-all : When used with the -static option; it reports the exception
+                    ID, SDC file line number, and the number of affected gates for each exception.
+                    There is also a percentage of gates in the design marked by this exception.
+                    Since multiple exceptions can sometimes be created from the same line in an SDC
+                    file, multiple exceptions can share the same line number.
+exception : When used with the -static option; it reports the exception
+                    type, the number of from gates, number of through gates, number of to gates, and
+                    number of affected gates as well as the line number of the exception in the SDC
+                    file. The percentage after the number of affected gates is the percent of all
+                    gates in the design that were marked by the exception.
+-summary : When used with the -static option; it reports a summary of
+                    static exception tracing. Breaking up the report into number of
+                    clock_exceptions, data_exceptions, total_exceptions, from_points,
+                    through_points, to_points, startpoints, endpoints and affected_gates. It also
+                    reports a number of optimized clock and data exceptions. Endpoints here are
+                    DLAT/DFF/MEM/PIO/PO/TIEX.
+-verbose : When used with the -static option; this adds the exception to
+                    the report for an individual exception and adds the type, the number of from
+                    gates, the number of through gates, and number of to gates for the -all option.
+-to_gate : Reports the exception number that impacts the gate_id. Adding -verbose prints the full exception associated with the
+                    exception number.
+-data_exception_matrix : This option reports the different combinations of number of from and to gates
+                    as well as how many exceptions there are of each type.
+-dynamic : Reports dynamically after the usage of the run_atpg command on the
+              number of X’s created at endpoints by each exception. If two or more exceptions share
+              an endpoint the X is considered shared and if the exception is the only exception with
+              an endpoint, an X on the endpoint is considered confirmed. -all When used with -dynamic option; reports on all exceptions in order of combined
+                    confirmed and shared Xs. exception When used with the -dynamic option; this reports on the
+                    exception with the ID specified and the reported fields are the confirmed and
+                    shared X’s propagated to the exception’s endpoints during timing exception
+                    simulation. Confirmed X’s are on endpoints that are unique to the exception
+                    while shared X’s are on endpoints that are common between more than one
+                    exception, -summary When used with -dynamic option; reports a logarithmic summary
+                    of the number of X’s produced by each exception. The number of X’s is the
+                    combination of confirmed and shared X’s for each exception. -verbose When used with -dynamic option; prints the full exception
+                    along with the ID, confirmed X’s, and shared X’s.
+-all : When used with -dynamic option; reports on all exceptions in order of combined
+                    confirmed and shared Xs.
+exception : When used with the -dynamic option; this reports on the
+                    exception with the ID specified and the reported fields are the confirmed and
+                    shared X’s propagated to the exception’s endpoints during timing exception
+                    simulation. Confirmed X’s are on endpoints that are unique to the exception
+                    while shared X’s are on endpoints that are common between more than one
+                    exception,
+-summary : When used with -dynamic option; reports a logarithmic summary
+                    of the number of X’s produced by each exception. The number of X’s is the
+                    combination of confirmed and shared X’s for each exception.
+-verbose : When used with -dynamic option; prints the full exception
+                    along with the ID, confirmed X’s, and shared X’s.
+-endpoint : Reports on the number of X’s added during simulation for endpoints. Threaded
+              simulation is required for this report. The number of X’s added is for all patterns
+              simulated with timing exception simulation. For ATPG, basic scan patterns do not run
+              timing exception simulation and patterns that are discarded by ATPG are included in
+              the number of X’s and pattern count. -all When used with the -endpoints option; reports on all exception
+                    endpoints in order of number of Xs. Endpoint ID Reports on the endpoint with the ID specified. The endpoint ID is the gate ID
+                    of the timing exception endpoint. The values reported are the number of Xs at
+                    the endpoint during timing exception simulation and the percentage of patterns
+                    where the endpoint was masked as X. -summary When used with -endpoints option; Gives a logarithmic scale
+                    summary of the number of endpoints and how many X’s are propagated to them
+                    during timing exception simulation. -verbose When used with the -endpoint option; it reports the exceptions
+                    IDs for all exceptions that include the endpoint. The option set_simulation -map_exception_endpoints must be set before
+                    running simulation using run_sim or else the error is reported
+                    and N/A is printed for exception IDs. Error: " set_simulation -map_exception_endpoints " when not
+                    set, cannot map X's from endpoints to exceptions.
+-all : When used with the -endpoints option; reports on all exception
+                    endpoints in order of number of Xs.
+Endpoint ID : Reports on the endpoint with the ID specified. The endpoint ID is the gate ID
+                    of the timing exception endpoint. The values reported are the number of Xs at
+                    the endpoint during timing exception simulation and the percentage of patterns
+                    where the endpoint was masked as X.
+-summary : When used with -endpoints option; Gives a logarithmic scale
+                    summary of the number of endpoints and how many X’s are propagated to them
+                    during timing exception simulation.
+-verbose : When used with the -endpoint option; it reports the exceptions
+                    IDs for all exceptions that include the endpoint. The option set_simulation -map_exception_endpoints must be set before
+                    running simulation using run_sim or else the error is reported
+                    and N/A is printed for exception IDs. Error: " set_simulation -map_exception_endpoints " when not
+                    set, cannot map X's from endpoints to exceptions.
+
+EXAMPLES:
+Example Script:
+
+read_netlist lib.v -lib
+read_netlist test.v
+run_build top
+set_delay -launch_cycle system_clock
+set_drc test.spf
+set_fault -model transition
+set_sdc -mark_gui_gates -verbose
+read_sdc <file_name>
+set_delay -nopi_changes
+set_delay -nopo_measures
+add_po_mask -all
+set_delay -common_launch_capture_clock
+set_delay -allow_multiple_common_clocks
+add_pi_constraints 0 scan_en
+run_drc
+report_sdc_analysis -static -summary
+report_sdc_analysis -static -all -verbose
+report_sdc_analysis -static 0 -verbose
+report_sdc_analysis -data_exception_matrix
+set_simulation -map_exception_endpoints
+add_faults -all
+set_atpg ..
+run_atpg
+
+report_sdc_analysis -endpoint -summary
+report_sdc_analysis -dynamic -summary
+report_sdc_analysis -endpoint -all -verbose > endpoint.rpt
+report_sdc_analysis -dynamic -all -verbose  > dynamic.rpt
+
+
+TEST-T> report_sdc_analysis -summary -static 
+------------------------------------------- 
+Report sdc static summary 
+------------------------------------------- 
+#clock_exceptions 0
+#clock_optimized_exceptions 0 
+#data_exceptions 8 
+#data_optimized_exceptions 0 
+#total_exceptions 8 
+#from_points 2 
+#through_points 1 
+#to_points 8 
+#startpoints 62 
+#endpoints 8 
+#affected_gates 481(2.91%) 
+
+
+TEST-T> report_sdc_analysis -all -static -verbose 
+
+Report sdc static information 
+------------------------------------- 
+ID line  #type   #from #through #to #affected_gates 
+------------------------------------------------ 
+0 	1 	data 	0 	1 	1 	26 (0.16%) 
+1 	2 	data 	0 	1 	1 	106 (0.64%) 
+2 	3 	data 	0 	1 	1 	162 (0.98%) 
+3 	4 	data 	0 	1 	1 	402 (2.43%) 
+4 	5 	data 	0 	1 	1 	450 (2.72%) 
+5 	6 	data 	0 	1 	1 	  3 (0.02%) 
+6 	8 	data 	1 	1 	1 	10 (0.06%) 
+7 	9 	data 	1 	1 	1 	10 (0.06%) 
+
+
+
+
+TEST-T> report_sdc_analysis -data_exception_matrix 
+FROM / TO #exceptions 
+------------------------------- 
+0 / 1 	6 
+1 / 1 	2 
+
+
+
+
+TEST-T> report_sdc_analysis 4 -static -verbose 
+Exception: 
+---------- 
+ID:4 line:(5) SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_56_/D (2475) (through(0)) coreA_inst/q_reg_56_ (15859) (to) 
+#type #from #through #to #affected_gates 
+------------------------------------------------------- 
+data 0 1 1 450 (2.72%) 
+
+
+
+
+TEST-T> report_sdc_analysis -summary -dynamic 
+#Exceptions #Xs 
+------------ -------------------- 
+8           100-999 
+
+
+
+
+
+
+
+
+
+
+
+
+
+TEST-T> report_sdc_analysis -dynamic -all 
+ID Confirmed X's Shared X's 
+------ ------------- ------------ 
+5 	478		  0 
+0 	471 		 0 
+1 	463 		 0 
+2 	463 		 0 
+3 	463 		 0 
+4 	459 		 0 
+6 	280 		 0 
+7 	269 		 0 
+
+
+
+TEST-T> report_sdc_analysis -dynamic -all -verbose 
+ID Confirmed X's Shared X's Exception 
+------ ------------- ------------ --------- 
+5 	478 		0 	SRC:FALSE_PATH TYPE:SETUP HOLD coreB_inst/q_reg_0_/D (8952) (through(0)) coreB_inst/q_reg_0_ (16470) (to) 
+0 	471 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_3_/D (2075) (through(0)) coreA_inst/q_reg_3_ (15912) (to) 
+1 	463 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_13_/D (2145) (through(0)) coreA_inst/q_reg_13_ (15902) (to) 
+2 	463 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_20_/D (2194) (through(0)) coreA_inst/q_reg_20_ (15895) (to) 
+3 	463 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_50_/D (2415) (through(0)) coreA_inst/q_reg_50_ (15865) (to) 
+4 	459 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_56_/D (2475) (through(0)) coreA_inst/q_reg_56_ (15859) (to) 
+6 	280 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreA_inst/q_reg_256_ (15659) (from) coreA_inst/q_reg_257_/D (4435) (through(0)) coreA_inst/q_reg_257_ (15658) (to) 
+7 	269		 0 SRC:FALSE_PATH TYPE:SETUP HOLD coreB_inst/q_reg_256_ (16214) (from) coreB_inst/q_reg_257_/D (11511) (through(0)) coreB_inst/q_reg_257_ (16213) (to) 
+
+TEST-T> report_sdc_analysis 5 -dynamic -verbose 
+ID Confirmed X's Shared X's Exception 
+------ ------------- ------------ --------- 
+5 	478 		0 SRC:FALSE_PATH TYPE:SETUP HOLD coreB_inst/q_reg_0_/D (8952) (through(0)) coreB_inst/q_reg_0_ (16470) (to) 
+
+
+
+
+TEST-T> report_sdc_analysis -endpoint -summary
+ #End Points  #Xs
+ ------------ --------------------
+ 2330         1-9
+ 40905        10-99
+ 18457        100-999
+
+
+
+
+
+TEST-T> report_sdc_analysis -endpoint -all 
+Gate 	X's 	Pattern X(%) 
+---------- ------- ------------ 
+16470 478 	100.00 
+15912 471 	98.54 
+15865 463 	96.86 
+15902 463 	96.86 
+15895 463 	96.86 
+15859 459 	96.03 
+15658 280 	58.58 
+16213 269 	56.28 
+
+
+
+TEST-T> report_sdc_analysis -endpoint -all -verbose 
+Gate 		X's Pattern X(%) Exception IDs 
+---------- ------- ------------ ------------- 
+16470 	478 	100.00 	5 
+15912 	471 	98.54		0 
+15865 	463 	96.86 	3 
+15902 	463 	96.86 	1 
+15895 	463 	96.86 	2 
+15859 	459 	96.03 	4	 
+15658 	280 	58.58 	6 
+16213 	269 	56.28 	7 
+
+
+
+TEST-T> report_sdc_analysis -endpoint 15658 -verbose 
+Gate   X's    Pattern X(%)  Exception IDs 
+-----  -----  -----------   ------------ 
+15658  280         58.58       6
+

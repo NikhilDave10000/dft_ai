@@ -1,0 +1,24 @@
+COMMAND: pwd
+
+TITLE:
+pwd
+
+DESCRIPTION:
+Use this command to display the current working directory.
+
+SYNTAX:
+pwd
+
+EXAMPLES:
+DRC> pwd
+  E:\BIN
+ DRC> cd e:
+ DRC> pwd
+  E:\BIN
+ DRC> cd ..
+ DRC> pwd
+  E:\
+ DRC> cd regress
+ DRC> pwd
+  E:\regress
+

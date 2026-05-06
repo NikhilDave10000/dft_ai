@@ -1,0 +1,28 @@
+COMMAND: report_partitions
+
+TITLE:
+report_partitions
+
+DESCRIPTION:
+This command allows you to report the partitions that were added using the add_partition command.
+
+SYNTAX:
+report_partitions
+
+EXAMPLES:
+DRC-T> report_partitions
+			Partition name: snps_default (0)
+					Partition name: p1 (1)
+					Instance names: design/A
+
+				Partition name: p2 (2)
+
+					Instance names: design/P
+
+					design/Q
+					Partition name: p3 (3)
+					Instance names: design/X
+					
+ design/Y
+					.
+

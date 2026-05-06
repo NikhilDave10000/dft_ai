@@ -1,0 +1,25 @@
+COMMAND: man
+
+TITLE:
+man
+
+DESCRIPTION:
+Specifies a command for which online help information is displayed.
+
+SYNTAX:
+man [<command> | <rule_id> | <rule_violation_id> | <message_id> | commands | getting_started | fault_classes | stil_examples | ram_examples]
+
+OPTIONS:
+command : Specifies a command for which online help information is displayed.
+rule_id : Specifies the name of a rule for which online help information is displayed.
+rule_violation_id : Specifies the name of a rule violation for which online help information for the
+            associated rule is displayed.
+message_id : Specifies the ID number of a warning or error message for which online help information
+            is displayed.
+commands | getting_started | fault_classes | stil_examples | ram_examples : Indicates a specific topic for which online help information is displayed.
+
+EXAMPLES:
+BUILD> man
+ DRC> man add_clocks
+ TEST> man getting_started
+

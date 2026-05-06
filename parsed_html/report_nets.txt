@@ -1,0 +1,40 @@
+COMMAND: report_nets
+
+TITLE:
+report_nets
+
+DESCRIPTION:
+This command reports the net name and pin pathnames connected to the net or subnet.
+
+SYNTAX:
+report_nets net_name [-candidates <all | candidate_id >] [-garble | -ungarble] [-subnet subnet_id]
+
+OPTIONS:
+net_name : Specifies the net to report. This can be a pin pathname on the net, the net name, or
+            the primitive ID driving the net.
+-candidates <all | candidate_id > : Reports detailed net connectivity information for all candidates or just a specific
+            candidate, as part of class-based diagnostics reporting. This information can also be
+            reported using the -verbose option of the set_diagnosis command. Note that this
+            option is not supported for the default fault-based diagnostics reporting. For more
+            information on creating a class-based diagnostics report, see the "Class-Based Diagnosis
+            Reporting" section in the TestMAX ATPG User Guide .
+-garble | -ungarble : The -garble option displays the garbled net name to which that the
+            given original net name is mapped in a garbled image created by the -garble option of the write_image command. This can be done only with an
+            ungarbled design database.
+-subnet subnet_id : Reports only the receiver pin pathnames that are connected to the physical subnet ID of
+            the specified net, and the driver pin pathname of the net. To use the candidate subnets
+            IDs with this option, you must enable the physical subnet IDs by specifying the set_diagnosis -show physical_subnet_id command prior to the run_diagnosis command.
+
+EXAMPLES:
+TEST-T> report_nets I_RISC_CORE/I_ALU/U14/ZN -subnet 20
+      Net connections:
+      -----------------------
+      I_RISC_CORE/I_ALU/n16 (218)
+      O     I_RISC_CORE/I_ALU/U14/ZN
+      :
+      I     I_RISC_CORE/I_ALU/Lachd_Result_reg_11__U3/S
+      I     I_RISC_CORE/I_ALU/Lachd_Result_reg_12__U3/S
+      I     I_RISC_CORE/I_ALU/Lachd_Result_reg_13__U3/S
+      :
+      -----------------------
+

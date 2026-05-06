@@ -1,0 +1,16 @@
+COMMAND: report_defects
+
+TITLE:
+report_defects
+
+DESCRIPTION:
+Use this command to view candidates for all defects or a specific defect after issuing the run_diagnosis command.
+
+SYNTAX:
+report_defects [-defect <all | defect_number >] [-faults]
+
+OPTIONS:
+-defect <all | defect_number > : Selects to view either candidates for all defects or a specific defect. The default is
+            to view all defects.
+-faults : Generates a fault list for high-resolution ATPG.
+

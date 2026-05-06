@@ -1,0 +1,17 @@
+COMMAND: rm
+
+TITLE:
+rm
+
+DESCRIPTION:
+Use this command to delete an existing file.
+
+SYNTAX:
+rm filename
+
+OPTIONS:
+filename : Specifies the name of the file to delete.
+
+EXAMPLES:
+DRC> rm flt_file1
+

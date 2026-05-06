@@ -1,0 +1,118 @@
+COMMAND: set_faults
+
+TITLE:
+set_faults
+
+DESCRIPTION:
+Use this command to set the parameters that control the fault manager.
+
+SYNTAX:
+set_faults [-atpg_effectiveness | -noatpg_effectiveness] [-au_credit d] [-ax_credit d] [-bridge_input | -nobridge_input] [-delete_dictionary] [-equiv_code code_name | -noequiv_code] [-interval_fault_coverage | -nointerval_fault_coverage] [-fault_coverage | -nofault_coverage] [-model <stuck | iddq | iddq_bridging | transition | path_delay | hold_time | bridging | dynamic_bridging | dual_transition_bridging>] [-multi_fanout_di_faults | -nomulti_fanout_di_faults] [-persistent_fault_models | -nopersistent_fault_models] [-pt_credit d] [-report <collapsed | uncollapsed>] [-store_dictionary max_num_fail_pat] [-summary <verbose | noverbose>] [-test_coverage_exclude { ud_class_fault_list }] [-test_coverage_include { ud_class_fault_list }] [-use_dictionary | -nouse_dictionary]
+
+OPTIONS:
+-atpg_effectiveness | -noatpg_effectiveness : Indicates whether the fault summary reports the ATPG effectiveness coverage. The
+            default is not to report this information.
+-au_credit d : Defines the percentage of credit given to AN (ATPG Untestable Not-Detected) faults
+            during the calculation of test coverage. The default is 0, which gives 0% credit. This
+            option accepts integer values from 0 to 100, which are interpreted as a percentage.
+-ax_credit d : Defines the percentage of credit given to AX (ATPG Untestable Timing Exceptions)
+            faults. The default is 0. This option accepts integer values from 0 to 100, which are
+            interpreted as a percentage.
+-bridge_input | -nobridge_input : Supported for distributed ATPG; not supported for Full-Sequential ATPG and
+            Full-Sequential fault simulation. Selecting -bridge_input accepts input pins for both the victim and the
+            aggressor nodes. For the victim node, the specified pin is used to propagate the fault
+            effect. For the aggressor node, an attempt is made to map the input pin to the driving
+            output pin. If this mapping fails, a warning is issued. The default is -nobridge_input .
+-delete_dictionary <internal | external |both> : Deletes all internal or external diagnostics dictionaries or both.
+-equiv_code c ode_name | -noequiv_code : Selects the equivalence code to use when reporting uncollapsed faults. The default is
+            to use a double dash "--". Use of -noequiv_code suppresses the use of
+            this character string and uses instead the fault class of the fault to which this fault
+            is equivalent. When specifying an alternative equivalence code, use a 2-character
+            string. Also note that the current setting of the equivalence code can affect fault
+            lists read using the read_faults command.
+-fault_coverage | -nofault_coverage : Indicates whether the fault summary reports the fault coverage. The default is not to
+            report this information. The calculation of the fault coverage is affected by the
+            inclusion or exclusion of faults for unused gates. By default, unused gates and their
+            associated faults are removed from the design during flattening to extend gate capacity.
+            If you want an accurate fault coverage report, you can have TestMAX ATPG retain the
+            unused gates during the circuit flattening process. This is controlled with the -nodelete_unused_gates option of the set_build command.
+-interval_fault_coverage | -nointerval_fault_coverage : Prints the fault coverage to standard output and log file for each pattern when the -interval_fault_coverage option is set during the processing of the run_atpg command. In each
+            interval summary line, the test coverage is always printed first for each interval,
+            followed by the fault coverage. The default is the -nointerval_fault_coverage option.
+-model <stuck | iddq | iddq_bridging | transition | path_delay | hold_time | bridging |
+            dynamic_bridging | dual_transition_bridging> : Indicates the type of fault model to be used. The choices are as follows: stuck — Generates standard ATPG patterns (the default). iddq — Uses the IDDQ model to generate patterns to measure IDDQ. iddq_bridging — Uses the IDDQ bridging model to generate patterns to
+            increase IDDQ coverage. transition — Applies the transition fault model for using last shift
+            or system clock to launch a transition. path_delay — Applies the Path delay fault model, which enables pattern
+            generation that targets a list of path delay faults. hold_time — Applies the hold time fault model,which targets hold time
+            faults during pattern generation. bridging — Applies the bridging fault model for detecting bridge
+            defects. In this case, the faults cannot be collapsed, so the collapsed and uncollapsed
+            fault counts will always be the same. This is supported for distributed ATPG; but not
+            supported for full-sequential ATPG and fault simulation. dynamic_bridging — Applies the dynamic bridging fault model. In this
+            case, there is no fault collapsing, and full-sequential ATPG and fault simulation are
+            not supported. Note that the IDDQ measurement criteria is adjusted by specifying a separate set_iddq command. The criteria
+              selections are valid for both IDDQ and IDDQ_bridging fault models. If you use this
+              option, make sure you either turn off the chain test with the set_atpg -chain_test command, or add 1 to
+              your maximum pattern limit using the set_atpg -patterns command. Also note that the full-sequential pattern generation algorithm does not support the
+              IDDQ fault modes and IDDQ bridging fault models. These models are supported by the
+              basic scan and fast-sequential ATPG algorithms. dual_transition_bridging — Applies the dual transition bridging
+              fault model. This is where both aggressor and victim nodes transition at the same
+              time, in opposite directions. Note that (node1, node2) and (node2, node1) is not be
+              identical because observation is always of the victim node, not the aggressor
+                node. Note: Format of the fault file is the same as for the dynamic_bridging fault model.
+                  This affects ATPG (pattern generation) and fault simulation . Diagnosis is not
+                  supported. The transition , path_delay , hold_time , bridging , iddq_bridging ,
+            and dynamic_bridging options all require a Test-Fault-Max license.
+-multi_fanout_di_faults | -nomulti_fanout_di_faults : In default mode ( -multi_fanout_di_faults ), faults in the scan chain
+            path which have multiple fanouts is assigned as detected by implication (DI) faults.
+            Note that this action is valid only if the set_faults command is run
+            before the add_faults command.
+            If -nomulti_fanout_di_faults is specified, then these same faults will
+            not be assigned as DI faults.
+-persistent_fault_models | -nopersistent_fault_models : Turns on ( -persistent_fault_models ) or off
+              ( -nopersistent_faults_models ) the persistent fault model flow, which
+            automatically maintains fault lists for all supported fault models in both DRC and TEST
+            modes. The default is -nopersistent_faults_models . For more
+            information, see "Persistent Fault Model Support " in the TestMAX ATPG
+              User Guide .
+-pt_credit d : Defines the percentage of credit given to possible detected faults (PT) during
+            calculation of test coverage, fault coverage, or ATPG effectiveness. The default is 50,
+            which results in 50% credit. If this credit is set to zero, no patterns are saved during
+            pattern generation. When this credit is nonzero, one pattern is saved during pattern
+            generation which shows the faulty machine simulates an X where the good machine
+            simulates a 1 or 0. If you set this credit to zero, you should not change this setting
+            after patterns have been created.
+-report <collapsed | uncollapsed> : Indicates whether fault counts, test coverages, and reports are given in terms of
+            collapsed or uncollapsed faults. The default is uncollapsed.
+-store_dictionary max_num_fail_pat : Enables the creation of a diagnostics dictionary during fault simulation, The max_numb_fail_pat parameter specifies the maximum number of failing
+            patterns per pin (the default is 0).
+-summary <verbose | noverbose> : Indicates the type of fault summary report to display. The default is noverbose .
+-test_coverage_exclude { ud_class_fault_list} : This option is used to identify and exclude a class or subclass of undetectable faults
+            that you do not want to subtract from the total number of faults. By default, the test
+            coverage calculation subtracts all undetectable faults from the total number of faults,
+            since these faults cannot be detected and bias this calculation. This will reduce the
+            calculated test coverage based on the number of undetectable faults that remain in the
+            total fault count. The classes you can specify are UU, UO, UR, UB, and UT. For complete
+            descriptions of these classes, see Fault Classes.
+-test_coverage_include { ud_class_fault_list} : This option is used to add classes back into the test coverage calculation after the -test_coverage_exclude option is used to remove a class or classes.
+            By default, the calculation subtracts all undetectable faults from the total number of
+            faults, since these faults cannot be detected and bias the calculation. The classes you
+            can specify are UU, UO, UR, UB, and UT. For a complete description of these classes, see
+            Fault Classes.
+
+EXAMPLES:
+TEST> set_faults -report collapsed
+ TEST> report_faults -summary
+ Uncollapsed Fault Summary 		   Report 		
+ ----------------------------------------------- 		
+ fault 		   class                    		   code #faults 		
+ ------------------------------ ---- --------- 		
+ Detected                        		   DT   121025 		
+ Possibly 		   detected               		   PT     4003 		
+ Undetectable                    		   UD     1443 		
+ ATPG 		   untestable                 		   AU    7193 		
+ Not 		   detected                    		   ND    5754 		
+ ----------------------------------------------- 		
+ total 		   faults                         		   139418 		
+ test 		   coverage                        		   89.17% 		
+ -----------------------------------------------
+

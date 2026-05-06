@@ -1,0 +1,92 @@
+COMMAND: set_contention
+
+TITLE:
+set_contention
+
+DESCRIPTION:
+Use this command to specify the types of contention checking performed and the reporting of these conditions.
+
+SYNTAX:
+set_contention [abus | noabus] [bidi | nobidi] [bus | nobus] [dff_dlat | nodff_dlat] [float | nofloat] [ram | noram] [wire | nowire] [-atpg | -noatpg] [-capture | -nocapture] [-capture_constraint_check | -nocapture_constraint_check] [-preclock | -nopreclock] [-multiple_on | -nomultiple_on] [-retain_bidi | -noretain_bidi] [-severity <error | warning | ignore>] [-verbose | -noverbose]
+
+OPTIONS:
+abus | noabus : Specifies whether contention checking is performed for address ports on RAMs. ABUS
+            contention occurs when an illegal address appears at an address ports of a RAM during
+            write operation for this address port. When you select the abus option,
+            any patterns generated that have ABUS contention are identified and discarded. The
+            default is noabus .
+bidi | nobidi : Specifies whether contention checking is performed for bidirectional ports.
+            Bidirectional port contention occurs when both the device under test and the testbench
+            drive values onto the same pin, whether or not they are driving the same value. Patterns
+            that cause contention are discarded in favor of other patterns. The default is bidi , which causes this type of contention checking to be
+            performed.
+bus | nobus : Specifies whether contention checking is performed for buses. Bus contention occurs
+            when there are opposing strong values driven on a BUS primitive. When you select the bus option, any patterns generated that have bus contention are
+            identified and discarded. The point in the cycle at which the bus contention check is
+            performed (preclock, clock-on, postclock) is affected by the -capture and -preclock settings. The default is bus .
+dff_dlat | nodff_dlat : Specifies whether contention checking is performed for clock/set/reset pins on latches
+            and flip-flops. Contention occurs when more that one clock/set/reset pin is active at
+            the same time on a DLAT or DFF primitive. When you select the dff_dlat option, any patterns generated that have port contention are identified and discarded.
+            The default is nodff_dlat , which means that this type of contention
+            checking is not performed.
+float | nofloat : Specifies whether a floating bus condition is considered a form of contention that is
+            to be avoided. Contention occurs when there are no drivers for an internal BUS gate.
+            With a selection of float , patterns generated with a floating bus
+            condition are discarded and additional pattern generation is attempted. The point in the
+            cycle at which the floating check is made (preclock, clock-on, postclock) is affected by
+            the -capture and -preclock settings. The default is nofloat .
+ram | noram : Specifies whether contention checking is performed for write ports on RAMs. RAM
+            contention occurs when more than one write port of a RAM is active at the same time on a
+            RAM primitive. When you select the ram option, any patterns generated
+            that have RAM contention are identified and discarded. The default is noram .
+wire | nowire : Specifies whether contention checking is performed for wire gates. Wire contention
+            occurs when there are opposing values driven on a wire primitive. When you select the wire option, patterns that have wire contention are identified and
+            discarded. The default is nowire .
+-atpg | -noatpg : Specifies whether ATPG methods are used to avoid preclock and clock-on contention. When -noatpg is selected, patterns are generated and then checked for
+            contention, and if contention is found, the pattern is discarded. With atpg selected,
+            patterns are generated while considering contention so that there is no need to discard
+            patterns. Use of ATPG methods to avoid contention while patterns are being generated is
+            more CPU intensive. The ATPG avoidance algorithm is only available for the preclock and
+            clock-on contention checks. postclock contention is not supported by the ATPG contention
+            avoidance algorithm. The default is -atpg .
+-capture | -nocapture : Specifies whether contention checking is performed after a capture clock is applied
+            (postclock). The default is to check for contention due to the application of a capture
+            clock. If any pattern has this type of contention, it is discarded and other patterns is
+            attempted. (See the following figure.) Note : This option is not yet implemented for Full-Sequential ATPG,
+            which defaults to -capture behavior.
+-capture_ constraint_check |
+            -nocapture_ constraint_check : Specifies whether to check for ATPG constraints after a capture clock is applied. The
+            default ( -nocapture_constraint_check ) does not check for ATPG
+            constraints after applying a capture clock.
+-preclock | -nopreclock : Specifies whether contention checking is performed from the point at which inputs are
+            changed (before any optional capture clocks). The default is to check for contention
+            from the start of a cycle. If any pattern has this type of contention, it is discarded
+            and other patterns are attempted. This figure shows the different portions of a typical capture clock cycle and where
+            contention checking occurs. The preclock contention checking is the portion of the cycle
+            from the force PI events until the clock-on event. The clock-on contention checking
+            occurs at the instant the clock is asserted, but before the changes which would occur
+            from propagating sequential gate inputs to their outputs. The postclock contention
+            checking is done after the clock event and after the sequential gate outputs are updated
+            due to the clock. preclock and postclock contention checking have individual controls.
+            Clock-on contention checking is generally controlled with the bus/nobus option. Note : This option is not yet implemented for Full-Sequential ATPG,
+            which always uses -preclock behavior.
+-multiple_on | -nomultiple_on : Specifies whether bus contention is considered to occur when more than one strong
+            driver is active, even if they drive the same value. Selecting -multiple_on means that multiple drivers on with the same value are
+            allowed and not considered contention. Selecting -nomultiple_on means
+            that having multiple drivers on is considered contention, regardless of the driven
+            value. The default is -multiple_on .
+-retain_bidi | -noretain_bidi : Specifies whether the bidirectional ports must retain their original direction after a
+            clock is applied. The default is not to require the signal direction to remain the
+            same.
+-severity <error | warning | ignore> : Indicates the handling of a contention condition. If you select error and a contention condition occurs, the simulation is terminated and an error message
+            reports the contention site and the number of rejected patterns. You can view the
+            contention pattern by using the error_data option of the set_pindata command. If you select warning and a contention condition occurs, a warning message reports
+            the contention site and the number of rejected patterns, and the simulation continues.
+            If you select ignore and a contention condition occurs, no message is
+            given and the simulation continues. The default is warning .
+-verbose | -noverbose : Specifies whether all contention conditions are reported. The default is -noverbose , where only a single contention message per simulation
+            generation pass is reported.
+
+EXAMPLES:
+DRC> set_contention bus -atpg -capture -multi -severity warn -verbose
+

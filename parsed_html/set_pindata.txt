@@ -1,0 +1,141 @@
+COMMAND: set_pindata
+
+TITLE:
+set_pindata
+
+DESCRIPTION:
+This command controls the type of information displayed by the report_primitives command or displayed within the graphical schematic viewer.
+
+SYNTAX:
+set_pindata [-bidi_control_value  | -clock_cone port_name | -clock_off | -clock_on port_name | -constrain_data | -debug_sim_data | -delay_data | -error_data  |-fault_sim_results < pin_pathname gate pin_number > <0|1> pattern | -fault_data | -full_seq_scoap_data | -full_seq_tg_data |  -good_sim_results pattern | -load | -master_observe | -none | -pattern < d |   all | fast_sequential> | scoap_data | -seq_sim_data | -shadow_observe | -shift | -slack | -stability_patterns | -test_setup | -tie_data] [-constrain_character c] [-drcdata {unload_mode d }] [-gatedata] [-lfsr_shift | -lfsr_load] [-prpg_shadow_shift | -prpg_shadow_load>] [-refresh] [-scoap_data] [-sdc_case_analysis] [-seq_sim_data] [-setup_cycles { n1 n2 }] [-shadow_observe] [-shift] [-shift_character c] [-slack] [-stability_patterns] [-test_setup] [-tie_data]
+
+OPTIONS:
+-bidi_control_value : This option displays the simulated values that occur when the bidi_control pin is set
+            to its off state (as defined by the set_drc command).
+-clock_cone port_name : Displays clock cone information for the specified clock. This information includes: C indicates the pin is in the clock cone. E indicates the pin is in the effect cone. CE indicates the pin is in both clock and effect cones. N indicates the pin is not in either clock or effect
+            cone.
+-clock_off : Displays the simulated value that results when all clocks are off.
+-clock_on : Displays the simulated value that results when all clocks are on.
+-constrain_character : Specifies the constrain character to be used when displaying X values for constrain
+            value data.
+-constrain_data : Six fields are displayed that show the tied values and constrained values for both
+            combinational and sequential ATPG, and the detection blockages that result from these
+            constraints. The characters are displayed in the format "T/B1,C/B2,S/B3" where: T = constant value due to tied logic B = fault blockage due to tied value "T", if any C = constrained value during combinational ATPG, if any B = fault blockages due to C, if any S = constrained value during sequential ATPG B = fault blockages due to S, if any An "X" indicate there is no constant or constrained value. A "-" indicates there is no
+            blockage. A "~" in front, for example "~1Z", means constrained to "not 1 or Z", that is,
+            values of 0 and X.
+-debug_sim_data : Displays mapping error simulation values, either a single selected simulation source or
+            a comparison of two simulation sources. When two sources are shown, the data is
+            separated by a slash, as in "AAA / BBB ". For a Fast-Sequential simulation source, a
+            scan load is shown by "#", and a dash "-" is used to separate different capture
+            procedures. For Full-Sequential or VCD simulation sources, a single continuous stream of
+            characters is shown. A VCD source may not contain data for all circuit points; the
+            absence of data is shown with a single dash as in "-" or " AAA / - ".
+-delay_data : The delay path (path_name) currently loaded by the report_delay path path_name
+              -p or set_delay -data path_name is available for display in
+            the GSV or reporting in a primitive report. See Understanding Pin Data for more
+            details.
+-drcdata {unload_mode d } : Annotates the schematic with unload mode data (stores both shift data and unload mode
+            pins). The unload mode is specified by the d argument. This data is stored
+            automatically for R21 and R23 violations. You can specify explicit storage using the set_drc -store_unload_mode_data command. The set_pindata -unload_mode and set_pindata -drcdata
+              unload_mode all commands have the same effect: data for all patterns is shown
+            at the same time (32 values) for each gate. This is verbose and typically unnecessary,
+            unless you are an expert user in unusual circumstances, such as comparing all unload
+            modes at the same time.
+-error_data : The pin data associated with the current error condition is displayed.
+-fault_data : The current fault codes for the pin stuck 0 (first field) and stuck 1 (second field)
+            are displayed. If there is no fault on a pin, two dashes "--" are displayed. Pins with a
+            nofault attribute appear as "##".
+-fault_sim_results < pin_pathname | gate
+            pin_number > <0|1> pattern : This displays the good machine value and faulty machine value for a selected fault and
+            a selected pattern. If they are different, the good machine value is given first
+            followed by the faulty value separated by a slash "/". If there is no difference, only
+            the good machine value is displayed. Selecting fault_sim_results is not
+            supported if the -nobasic_scan option of the set_simulation command has been
+            used.
+-full_seq_scoap_data : If you set the pin data display mode to -full_seq_scoap_data , the pin
+            data field shows the set of SCOAP controllability and observability numbers for the pin.
+            For a three-state node, the data display format is: c0.c1.cZ.obs In this case, c0 is the control-to-0 measure, c1 is
+            the control-to-1 measure, cZ is the control-to-Z measure, and obs is the observability measure. For an ordinary (not three-state)
+            node, the data display format is the same, except that there is no control-to-Z
+            field: c0.c1.obs
+-full_seq_tg_data : This displays the Full-Sequential test generator logic values for the pin. For example,
+            the pin data for a nonscan DFF element could be displayed as " ?0x0 "
+            before justification and " #010-010 " after justification. The question
+            mark ( ? ) means the need for a scan load has not yet been determined,
+            while a pound sign ( # ) indicates a scan load will occur at this
+            position.
+-gatedata : This option displays the X probability for reported and displayed gates associated with
+            the analyze_compressors -xchain_analysis command.
+-good_sim_results pattern : This option displays the good machine value for the selected Basic scan or
+            Fast-Sequential ATPG pattern. The selected pattern is resimulated and the results are
+            made available for display on the schematic or by use of the report_primitives command. For
+            Full-Sequential or functional patterns that require sequential simulation, use the seq_sim_data pindata option. Also refer to “Viewing Pattern Data in
+            the Graphical Schematic Viewer” for more details.
+-lfsr_shift | -lfsr_load : The simulation values for the linear feedback shift register (LSFR) shift and load are
+            displayed.
+-load : The simulation event values for all time periods of the load_unload test procedure are
+            displayed. The position of the shift period is denoted by "{}" characters.
+-master_observe : The simulation event values for all time periods of the master_observe procedure are
+            displayed.
+-none : Specifying -none turns off the display of pin data in the report_primitives command as
+            well as future updates of the graphical schematic viewer.
+-pattern < d | all | fast_sequential> : There is a general-purpose pattern simulation buffer that holds 32 patterns. It is used
+            for a number of purposes, including generation of ATPG patterns, holding patterns to
+            illustrate DRC violations as a result of an analyze_violation command, holding the successful or
+            unsuccessful results from a run_justification command, and other operations. You can select and display a single pattern from this buffer by providing an integer
+            number between 0 and 31, or all 32 patterns by specifying all . If there
+            are any Fast-Sequential patterns in the buffer, the time events of the last
+            Fast-Sequential pattern is selected by specifying fast_sequential . For Basic-Scan patterns, the analysis time of the displayed data can be changed from
+            preclock, to clock, to postclock, plus other combinations. This is controlled with the -time option of the set_primitive_report command. Note : Due to the general reuse of this buffer by many commands,
+            the data contents cannot always be what you expect. The best time to view the pin data
+            is immediately after you use the command that saves data to the buffer.
+-prpg_shadow_shift | -prpg_shadow_load : The simulation values for the pseudo random pattern generator (PRPG) shadow shift and
+            load are displayed.
+-refresh : This option causes the displayed values on any gates in the graphical schematic viewer
+            to be updated with the newly selected pindata values. By default, no update will take
+            place.
+-scoap_data : This option displays the SCOAP controllability and observability numbers. Two sets of
+            numbers are displayed. The first set is for combinational ATPG, shown in the form of
+            "A-B-C". The fields indicate the minimum number of: A = PIs and scan cells needed to place a 0 at the pin. B = PIs and scan cells needed to place a 1 at the pin. C = PIs and scan cells needed to observe the value on the pin. The second set is for sequential ATPG, shown in the form of "A-B-C-D". These fields
+            indicate the minimum scan depth needed to: A = place a 0 at the pin. B = place a 1 at the pin. C = to propagate the value to an observe point. D = to sensitize the gate to an observe point. An asterisk "*" indicates the value exceeds the 254 limit the program can track.
+-sdc_case_analysis : Controls the display of the SDC pindata type. The format of the data is: N/M ,
+            where N is the case analysis setting from the SDC, and M is the
+            TestMAX ATPG constraint value. Unconstrained values are printed as X . You can
+            also specify the display of this pindata type directly from the GSV Setup menu. Note
+            that this option is valid only in Tcl mode. For more information, see "Specifying Setup Timing Exceptions From an SDC File" in the TestMAX ATPG User Guide .
+-seq_sim_data : If you have previously performed a run_simulation -sequential command with data collection enabled by a set_simulation -data option, then the -seq_sim_data option presents
+            that data for review in the schematic or by the report primitives command.
+-setup_cycles { n1 n2 } : Selects a range of cycles for display when test_setup procedure
+            patterns are stored using the -store_setup option of the set_drc command. The n1 argument is the first zero-based test_setup procedure cycle; this specification must be
+            greater than or equal to 0. The n2 argument is the last zero-based
+            test_setup procedure cycle; this specification must be greater than or equal to the n1 specification. The range of cycles available for display is also
+            affected by the -store_setup_cycles option of the set_drc command.
+-shadow_observe : Displays the simulation event values for all time periods of the shadow_observe
+            procedure.
+-shift : Displays the simulation event values for all time periods of the shift test
+            procedure.
+-shift_character c : Specifies the shift character to be used when displaying X values for shift data on the
+            scan path.
+-slack : Displays the slack data that is used in small delay defect testing. The first number
+            displayed is the smallest slack for any rising transition through the indicated pin, and
+            the second number is the smallest slack for any falling transition through the pin.
+-stability_patterns : The simulated event values for all time periods of the load_unload, shift, and capture
+            cycle are displayed. This display shows the data used to determine the stable state
+            element values. The stability pattern is only stored if there is at least one DLAT/DFF
+            non-X at the end of test_setup. These values are normally not stored unless the -store_stability option of the set drc command has been performed before the run_drc command.
+-test_setup : The simulation event values for all time periods of the test_setup procedure are
+            displayed. By default, the ATPG tool retains only the last simulated value of the test_setup procedure. to make full use of this displayed data, you
+            need to use the set_drc -store_setup command and rerun DRC checks.
+-tie_data : The simulated value that results from tied circuitry is displayed.
+
+EXAMPLES:
+TEST> set_pindata -clock_cone CLK
+ TEST> report_primitives /e006/reg2/r
+ e006/reg2/r (104) DLAT (N_LATCH)
+    !SB I () (TIE_1)
+    !RB I (N) 18-
+     CK I (C) 13-
+     D I (E) 103-e006/reg2/lat1/Q
+     Q O (E) 53-
+ scan_behavior: MASTER(LS/-) chain=c1 cell_id=2 invert_data=NN obs=noproc
+

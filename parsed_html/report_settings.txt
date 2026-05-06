@@ -1,0 +1,258 @@
+COMMAND: report_settings
+
+TITLE:
+report_settings
+
+DESCRIPTION:
+This command reports the current settings defined by the set commands, such as the set_contention , set_atpg , and set_build commands. For a complete list of the
+        set commands in TestMAX ATPG, see Set Commands .
+
+SYNTAX:
+report_settings -help Usage: report_settings # REPort SEttings [-all] () [-command_report] () < command_type | atpg | bist | build | buses | contention | delay | diagnosis | drc | distributed | faults | iddq | learning | messages | netlist | patterns | physical_db | pindata | primitive_report | random_patterns | sdc | simulation | vsv | wgl | workspace_sizes >
+
+OPTIONS:
+-all : Reports all command type settings for current session
+-command_report : Formats the report to match the applied commands for the session so that they can be
+              applied as part of a command file
+-command_type : You can use any of the command type options that are mentioned and the details to
+              see. If you do report_setting you can see all commands listed.
+
+EXAMPLES:
+BUILD> report_settings contention
+  contention =            multiple_on=yes, atpg=yes, bidi=yes, bus=yes,
+                       dff_dlat=no, float=no, preclock=yes,
+                       post_capture_clock_check=yes, ram=no, retain_bidi_direction=no,
+                       severity=warning, verbose=no, wire=no,
+                       capture_constraint_check=no;
+BUILD> report_settings atpg
+  atpg =               allow_clockon_measures=no, abort_limit=10, analyze_untestable_faults=no, capture_cycles=0,
+                       checkpoint=none, save_patterns=none,
+                       coverage=100.00, decision=norandom, di_analysis=yes,
+                       full_seq_abort_limit=10, full_seq_atpg=no, full_seq_time=(10.0,0.0),
+                       full_seq_merge=off, merge=off 5000, basic_min_detects_per_pattern=(0,40),
+                       fast_min_detects_per_pattern=(0,40), full_min_detects_per_pattern=(0,40),
+                       lete_fastseq=no, min_ateclock_cycles=none,
+                       new_capture=no, patterns=0, prevention=norandom, reset_bidis=yes,
+                       store=yes, resim_atpg_patterns=off,
+                       summary=yes, time=(0.0,0.0), verbose=no,
+                       post_capture_contention_prevention=no,
+                       fill=random, adjacent_fill_range=0,
+                       optimize_bridge_strengths=no, min_patterns_threshold=0,
+                       power_budget=0,
+                       domain={},
+                       partition={},
+                       power_effort=low,
+                       seq_comp_optimizations=yes, misr_measure=once_per_pattern, seq_comp_chain_test=no,
+                       seq_comp_shift_power=100, xtol_enable_equivalence=no,
+                       shift_power_budget=none, shift_power_effort=none,
+                       chain_test=0011, xtol_chain_diagnosis=OFF, single_load_per_pattern=no,
+                       quiet_chain_test=no, load_mode=0, load_value=0,
+                       fast_path_delay=yes,
+                       timing_exceptions_au_analysis=no, calculate_power=no, parallel_strobe_data_file=none,
+                       replace_parallel_strobe_data_file=0, num_processes=0;
+
+BUILD> report_settings
+   atpg =              allow_clockon_measures=no, abort_limit=10, analyze_untestable_faults=no, capture_cycles=0,
+                       checkpoint=none, save_patterns=none,
+                       coverage=100.00, decision=norandom, di_analysis=yes,
+                       full_seq_abort_limit=10, full_seq_atpg=no, full_seq_time=(10.0,0.0),
+                       full_seq_merge=off, merge=off 5000, basic_min_detects_per_pattern=(0,40),
+                       fast_min_detects_per_pattern=(0,40), full_min_detects_per_pattern=(0,40),
+                       lete_fastseq=no, min_ateclock_cycles=none,
+                       new_capture=no, patterns=0, prevention=norandom, reset_bidis=yes,
+                       store=yes, resim_atpg_patterns=off,
+                       summary=yes, time=(0.0,0.0), verbose=no,
+                       post_capture_contention_prevention=no,
+                       fill=random, adjacent_fill_range=0,
+                       optimize_bridge_strengths=no, min_patterns_threshold=0,
+                       power_budget=0,
+                       domain={},
+                       partition={},
+                       power_effort=low,
+                       seq_comp_optimizations=yes, misr_measure=once_per_pattern, seq_comp_chain_test=no,
+                       seq_comp_shift_power=100, xtol_enable_equivalence=no,
+                       shift_power_budget=none, shift_power_effort=none,
+                       chain_test=0011, xtol_chain_diagnosis=OFF, single_load_per_pattern=no,
+                       quiet_chain_test=no, load_mode=0, load_value=0,
+                       fast_path_delay=yes,
+                       timing_exceptions_au_analysis=no, calculate_power=no, parallel_strobe_data_file=none,
+                       replace_parallel_strobe_data_file=0, num_processes=0;
+
+   bist =              dbist=yes, debug=off, hex=yes, hex_diag_data=no,
+                       max_intervals=1000, max_pattern_cells=250,
+                       max_seed_patterns=16, max_total_cells=250, min_lfsr_length=20,
+                       multi_seeds_per_interval=no, num_dbist_patterns_per_interval=32,
+                       num_patterns_per_interval=256, randomize_pis=no, chain_test=no,
+                       sim_misr=yes, verbose=no, dump=none, max_routing=4
+                       pi_assumed_scan=no, po_assumed_scan=no, assume_bist_setup=no,
+                       force_lfsr_load=no, force_xdbist_scalable_selector=no,
+                       use_cell_constraints=no, use_constant_value_cells=yes,
+                       optimize_fault_sim=yes, trailing_edge_checking=yes;
+
+   build =             add_buffer=yes, delete_unused_gates=yes, fault_boundary=lowest,
+                       hierarchical_delimiter='/', limit_fanout=256, undriven_bidi=PIO,
+                       net_connections_change_netlist=yes, coerce_port_directions=no,
+                       merge: bus_keepers=yes
+                       cascaded_gates_with_pin_loss=no
+                       equivalent_dlat_dff=on
+                       feedback_paths=yes
+                       flipflop_from_dlat=on
+                       mux_from_gates=pin-preserve
+                       tied_gates_with_pin_loss=no
+                       global_tie_propagate=yes
+                       wire_to_buffer=yes
+                       xor_from_gates=pin-preserve
+                       bus_handling=none
+                       instance_modify=none
+                       black_box=none design_box=none portfault_box=none
+                       empty_box=none tie0_box=none tie1_box=none nobox=none;
+
+   buses =                       external_z=Z, fault_contention=TIEX,
+                       contention_status=noignore all, zstate_status=noignore all;
+
+   colors =            user_commands=0,0,0  file_commands=0,128,0
+                       error=0,0,220  warning=220,0,220
+
+   commands =                 abort=yes, history=yes;
+
+   contention =             multiple_on=yes, atpg=yes, bidi=yes, bus=yes,
+                       dff_dlat=no, float=no, preclock=yes,
+                       post_capture_clock_check=yes, ram=no, retain_bidi_direction=no,
+                       severity=warning, verbose=no, wire=no,
+                       capture_constraint_check=no;
+
+   delay =                       diagnostic_propagation=no, launch_cycle=clock_launch, mask_nontarget_paths=no,
+                       pi_changes=yes, po_measures=yes, relative_edge=no, robust_fill=yes,
+                       simulate_hazards=yes, allow_reconverging_paths=no,
+                       common_launch_capture_clock=no, allow_multiple_common_clocks=yes,
+                       slow_equivalence=no, two_clock_transition_optimization=yes, extra_force=yes
+                       data=none, disturb_clock_grouping=yes, transition_clocking_checks=no,
+                       slackdata_for_atpg=no, slackdata_for_faultsim=no
+                       infinite_slack_checks=no, negative_slack_checks=no
+                       max_delta_per_fault=0, max_tmgn=100%,
+                       sdql_exponential_function=yes,
+                       allow_functional_sensitization=no, allow_nonrobust_tests=yes, multicycle_length=0;
+
+   diagnosis =         time_limit=0, sample=(100000:96), check_expected_data=yes,
+                       verbose=no, incomplete_failures=no, layout_data=yes,
+                       show_version=off, show_cycles=off,
+                       internal_cell_type=no, max_defective_chains=3, min_report_score=1
+                       report_net_data=no, max_report_failures=10, cycle_offset=0,
+                       failure_memory_limit=0, composite=no,  auto=yes,
+                       dftmax_chain_format=no, per_pin_limit=no,
+                       num_processes=0, post_procedure=none, process_fail=stop
+                       pattern=all on,
+                       mapping_report=no, subnet_type=yes, delay_type=no;
+                       use_phds=all
+
+   drc =                           test_proc_file=none,
+                       allow_unstable_set_resets=no, bidi_control_pin=no, clock=dynamic,
+                       controller_clock=no, disturb_clock_grouping=yes, disturb_limits=1000 20,
+                       initialize_dff_dlat=X, multi_captures_per_load=yes, oscillation=500,
+                       remove_false_clocks=no, chain_trace=none, extract_cascaded_clock_gating=no,
+                       shadows=on, limit_shadow=none,
+                       skew=1, TLAs=yes, trace=off,
+                       store_setup=no, store_stability_patterns=no, store_unload_mode_data=no,
+                       store_setup_cycles=no,
+                       unstable_lsrams=no, compressor_debug_data=no,
+                       dslave_remodel=yes, reclassify_invalid_dslaves=yes,
+                       constraints=yes, z_check_with_all_constraints=no,
+                       use_cell_constraints=yes, clockdrc_use_cell_constraints=no,
+                       clock_constraints=none, internal_clock_timing=default,
+                       seq_comp_accumulator_mode=no,
+                       seq_comp_extend_test_setup=no,
+                       set_unload_mode_ports_to_x=yes,
+                       seq_comp_jtag_lbist_mode=off,
+                       multiple_pipes_per_port=no,
+                       dftmax_shift_cycles=0,
+                       load_nonscan_cells=no,
+                       store_full_cycles=NO_PROC,
+                       analyze_drc_violation=off
+                       blockage_aware_clock_grouping=no,
+                       regular_scan_shift_cycles=0,
+                       seq_comp_power_mode=no -all,
+                       dynamic_clock_equivalencing=off, scan_shift_clocks=none,
+                       fast_multifrequency_capture=spf, multiframe_paths=no,
+                       observe_procedure=any, clock_gating_init_cycles_integer=0,
+                       pll_launch_on_shift=no, num_pll_cycles=0,
+                       check_multiple_shift_clocks=no,
+                       max_pll_simulation_passes=100, pll_simulate_test_setup=no,
+                       pipeline=no, pipeline_in_compressor=yes,
+                       report_x_sink=no, xchain_threshold_probability=0,
+                       freerunning_expansion=yes,
+                       allow_clocks_as_scan=no;
+                       check_user_serializer_bits=yes;
+                       lockup_after_compressor=no;
+                       independent_sync_clocks=no;
+                       distributed =     shell_timeout=30, slave_setup_timeout=100, print_stats_timeout=30,
+                       script=none, work_dir=none,
+                       verbose=-noverbose,
+                       shell=rsh;
+
+   faults =                     atpg_effectiveness=no, au_credit=0, ax_credit=0, equiv_code=(--),
+                       fault_coverage=no, model=stuck, report=uncollapsed,
+                       bridge_inputs=no, persistent_fault_models=no,
+                       multi_fanout_di_faults=yes, summary=noverbose;
+
+   iddq =                         atpg=no, float=yes, strong=yes, toggle=no, weak=yes, write=yes, bridge_equivalence=yes,
+                       exclude_ports=all,
+                       interval_size=1;
+
+   learning =                atpg_equivalence=on(sim_passes=32, test_passes=5000),
+                       common_input=yes, equivalent_latches=yes, implication=medium,
+                       module_learning=yes, disable_time_limits=no,
+                       max_feedback_sources=100, verbose=no;
+
+   messages =                 display=yes, leading_comment=no, level=standard, transcript_comments=yes,
+                       logfile=off
+
+   netlist =                   celldefine=yes, check_only_used_udps=yes, dominance_detection=on, conservative_
+                       mux=combinational_udp,enable_portfaults=yes, escape=cond,
+                       max_errors=10, v2k=no, work_dir=".", pin_assign=no, redefined_module=last, scalar_net=no,
+                       sequential_modeling=no, suppress_faults=yes, xmodeling=yes;
+
+   patterns =                 source=internal,
+                       split_patterns=none,
+                       histogram_summary=no, load_summary=no, verilog_last_scan=yes,
+                       netlist_independent=no, measure_forced_bidis=no, verbose=no;
+
+   physical_db =           hostname=none, port_number=none,
+                       device=none, version=none,
+                       lef_directory=none,
+                       def_directory=none,
+                       database=none,
+                       top_def_file=none,
+                       technology_lef_file=none;
+
+   pindata =                  none;
+                       -shift_character=S, -constrain_character=X;
+                       primitive_report= interval=0, max_fanout=2, time=all, verbose=no;
+                       random_patterns = clock=none, length=1024, observe_type=master;
+
+   sdc =                            verbose=no, setup=yes, hold=yes, mark_gui_gates=no, show_all_matches=no
+                       case_paths=no, false_paths=yes,
+                       multicycle_paths=yes, disable_paths=yes,
+                       delete_common_clock_exceptions=no,
+                       instance=none,
+                       environment=none;
+
+   simulation =             basic_scan=yes, bidi_fill=off, data=(0:-1), measure=pat,
+                       analyze_x_sources=no, analyze_x_effects=no,
+                       xclock_gives_xout=no, xfill_out_of_range_write=no,
+                       pipeline_cells=yes, timing_exceptions_for_stuck_at=no,
+                       oscillation=(10,2), store_memory_contents=no,
+                       shift_cycles=0,
+                       progress_message=0,
+                       words_per_pass=32, verbose=no,
+                       dominance_use=off, two_clock_resim=no, num_processes=0;
+
+   wgl =                           chain_list=shift, forces_during_load=previous, group_bidis=no, initial_zx=as_is,
+                       inversion_reference=master, last_scan=yes, macro_usage=no, pad=no,
+                       scan_map=dash, scan_data_format=pre_measured,
+                       bidi_map=(Z0,-0)(Z1,-1)(0X,0-)(1X,1-)(XX,X-)(ZX,-X)(-X,--)(ZZ,-Z)(Z-,--)
+                       workspace_sizes = atpg_gates=1024, connectors=20000, decisions=10000,
+                       DRC_buffer_size=1000, line=50000, string=2048, command_line=50000, command_words=10000;
+TEST-T> report_settings match_names
+                     match_names =      name_manipulation_flag=ON.
+                     Prefix 'risc1' to be substituted by 'risc2'.
+

@@ -1,0 +1,55 @@
+COMMAND: analyze_buses
+
+TITLE:
+analyze_buses
+
+DESCRIPTION:
+Use this command to analyze potential problems associated with buses.
+
+SYNTAX:
+analyze_buses < gate_id ... | -all> [-exclusive [first | all] | -prevention | -zstate] [-patterns number] [-random] [-store] [-update]
+
+OPTIONS:
+gate_id : Specifying one or more numeric BUS gate IDs indicates that the BUS analysis should be
+            performed for those primitive IDs. Detailed information of the analysis is given. An
+            error is reported if the primitive ID is not an ATPG BUS primitive.
+-all : Specifies that the BUS analysis is to be performed for all BUS devices. When the
+            analysis is completed, a summary message is displayed.
+-exclusive [first | all] : Specifies that the BUS analysis is to check for mutually exclusive control circuitry
+            among BUS driver sources. If a mutually exclusive condition is identified, the BUS
+            device can never be in contention and can be moved to the PASS category. This
+            exclusivity checking is the default BUS analysis. You can select what happens if the analysis fails, in other words, if a pattern is
+            found which proves that more than one BUS driver is turned on at the same time. Use of
+            First causes the analysis to stop on the first BUS device that fails this check. Use of all causes analysis to continue on to the next BUS device until all
+            BUS devices have been processed and reported. The default is first . Combining -exclusive all with - all for the list of
+            BUS devices to analyze and report is not advised as it might consume significant amounts
+            of CPU time and produce a large report. For this reason, combining these two options is
+            prohibited and attempting to use them will result in an error message. Use of First is
+            recommended except for experienced debugging.
+-prevention : Specifies that the BUS analysis should try to prevent contention on all BUS devices
+            simultaneously.
+-zstate : Specifies that the BUS analysis should check for the ability of a BUS to have no
+            drivers turned on, causing a floating net or Z-state condition.
+-patterns number : Specifies the number of random patterns to be used for identifying contention-free
+            buses.
+-random : Specifies that random patterns are to be used for identifying contention-free
+            buses.
+-store : Causes the random patterns used for identifying contention-free buses to be stored in
+            the internal pattern buffer.
+-update : Specifies that the information learned from the BUS analysis for contention or Z-state
+            status should be used to update the results of the DRC BUS analysis. Without this
+            option, the BUS analysis results are reported to the transcript but are not used to
+            update the DRC results.
+
+EXAMPLES:
+TEST> report_buses -contention fail
+           contention   zstate   #drivers
+ gate_id status/capture status   strong/weak behavior_data
+ ------- -------------- ------   ----------- --------------------
+   85346 fail unstable    bidi      5 0
+   85359 fail unstable    bidi      5 0
+ TEST> analyze_buses 85359
+  Bus 85359 (47526,47461) failed contention check (values available in pattern 0).
+ TEST> analyze_buses 85346
+  Bus 85346 (47537,47512) failed contention check (values available in pattern 0).
+

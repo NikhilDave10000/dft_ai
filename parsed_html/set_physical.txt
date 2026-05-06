@@ -1,0 +1,29 @@
+COMMAND: set_physical
+
+TITLE:
+set_physical
+
+DESCRIPTION:
+This command sets options for the report_physical and run_diagnosis commands for physical diagnostics..
+
+SYNTAX:
+set_physical [-num_processes number] [-tolerance { metal tolerance }] [-via_bridges | -novia_bridges]
+
+OPTIONS:
+-num_processes number : Enables multicore static extraction from a PHDS database. This option is supported by the
+              following commands: match_names , extract_nets -all , and extract_pins -scan_path .
+-tolerance { metal distance } : Specifies a tolerance distance, in nanometers, for extracting neighbor nets for
+            specific layers. The default tolerance per layer is equal to the pitch if this
+            information can be found in the technology information. If not, the default is 1000nm.
+            You can determine the appropriate tolerance by analyzing technology data, such as pitch
+            distance. You must use a Tcl list to specify each layer and its tolerance, as shown in
+            the following example: set_physical -tolerance {METAL 50 METAL2 100 METAL3 200 } For details on using this option, see "Setting Up and Running Physical Diagnosis."
+-via_bridges | -novia_bridges : When the -via_bridges option is specified, metal layer shapes included
+            in via definitions are considered when extracting net neighbors for bridge candidates.
+            The runtime is affected when metal layer shapes are included. However, net neighbors are
+            more thoroughly extracted and bridge defects between a net and a via or between two vias
+            are more accurately diagnosed. This option requires that the PHDS database was created
+            using TestMAX ATPG version J-2014.09-SP1 or later, or Yield Explorer version
+            J-2014.03-SP3 or later. The default, the –no_viabridges option, does
+            not consider metal layer shapes included in the via definitions.
+

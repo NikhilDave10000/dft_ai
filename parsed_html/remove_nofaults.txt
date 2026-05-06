@@ -1,0 +1,45 @@
+COMMAND: remove_nofaults
+
+TITLE:
+remove_nofaults
+
+DESCRIPTION:
+Use this command to remove nofault attributes for faults.
+
+SYNTAX:
+remove_nofaults <-all | instance_name | pin_pathname | -instance_name instance_name | -module  { module_name [ optional_pin_names]}> [-stuck <0|1|01>] [-slow <r|f|rf>]
+
+OPTIONS:
+-all : Specifies that all nofaults are to be removed.
+instance_name : Removes all nofault attributes for faults associated with the selected instance name
+            from the nofault list. The instance_name argument must be a fixed
+            string.
+pin_pathname : Removes all nofault attributes for faults associated with the selected
+            pin_pathname.
+-instance instance_name : Removes the nofault attribute for all faults associated with the instance_name argument. The instance_name can be a
+            fixed string or a limited regular expression.
+-module { module_name [ optional_pin_names ]} : Removes the nofault attribute on one or more pins of every instantiation of a given
+            module. The module_name argument can be a fixed string or a limited
+            regular expression. If an optional pin name or names is specified, then only the faults
+            associated with that module and pin are used. If no pins are provided, then all pins of
+            the module are used.
+-slow <r|f|rf> : Removes faults with the specified slow value.
+-stuck <0|1|01> : Selects either stuck 0, stuck 1, or both. The default is both stuck 0 and stuck 1.
+
+EXAMPLES:
+TEST> report_nofaults -all
+ sa1 ** mux0/SL
+ sa0 ** buf0/Y
+ sa1 ** mux1/SL
+ sa0 ** buf1/Y
+ sa1 ** mux2/SL
+ sa0 ** buf2/Y
+ sa1 ** mux3/SL
+ sa0 ** buf3/Y
+ TEST> remove_nofaults mux2/SL
+  1 faults were removed from nofault list.
+ TEST> remove_nofaults /mux0
+  2 faults were removed from nofault list.
+ TEST> remove nofaults /buf2/Y -stuck 0
+  1 faults were removed from nofault list.
+

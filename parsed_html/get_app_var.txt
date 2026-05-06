@@ -1,0 +1,17 @@
+COMMAND: get_app_var
+
+TITLE:
+get_app_var
+
+DESCRIPTION:
+The get_app_var command returns the value of an application variable.
+
+SYNTAX:
+collection get_app_var [-default] [-details] [-list] var
+
+OPTIONS:
+-default : Gets the default.
+-details : Gets additional variable information.
+-list : Returns a list of variables matching pattern.
+var : The application variable to get.
+

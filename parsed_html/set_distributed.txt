@@ -1,0 +1,42 @@
+COMMAND: set_distributed
+
+TITLE:
+set_distributed
+
+DESCRIPTION:
+Use this to control the amount of time the system is given to perform various distributed processor-related communications.
+
+SYNTAX:
+set_distributed [-print_stats_timeout d] [-script file_name] [-shell remsh | rsh | ssh] [-shell_timeout d] [-slave_setup_timeout d] [-work_dir dir_name] [-verbose | -noverbose]
+
+OPTIONS:
+-print_stats_timeout d : Controls the amount of time allowed for displaying distributed processor
+            statistics.
+-script file_name : Specifies the pathname of a user-defined script to be invoked when launching
+            distributed processors. This file should be executable and must contain all settings
+            required for launching TestMAX ATPG on the slave machines. Here's an example script: #!/usr/bin/csh -f
+  setenv SYNOPSYS /tools/synopsys/W-2004.12
+  set path = ($SYNOPSYS/bin $path)
+  tmax $* When authoring user-defined scripts, you should: Make sure your script does not include echo or exit statements Verify the syntax and semantics before running your script.
+-shell remsh | rsh | ssh : Controls the shell used for launching slaves on remote hosts specified by the add
+            distributed processors command. Default is rsh .
+-shell_timeout d : Controls the amount of time in seconds allowed to start the UNIX shell specified by the -shell option.
+-slave_setup_timeout d : Controls the amount of time in seconds allocated for the distributed processors to be
+            up and running. The argument d is given in
+            seconds. This value must be inclusive and between 30 and 4,000,000. The default is 30
+            seconds. You should be cautious when you specify a high timeout value, because it might
+            appear that the tool is hung while it's waiting until the timeout limit that you
+            specified for slaves to be ready expires. TestMAX ATPG prints out the wait messaging,
+            indicating how many slaves are up and running and how many other slaves are still not
+            ready; for example: Master: Spawning the slaves ...
+         Waiting for 3 (of 3) slaves to respond ...
+         Waiting for 3 (of 3) slaves to respond ...
+         Waiting for 2 (of 3) slaves to respond ...
+ Slaves: About to get licenses ...
+-work_dir dir_name : Specifies the pathname of the shared working directory. Every machine performing the
+            distributed fault simulation tasks must have read/write/execute permissions in this
+            directory. This must be an absolute path starting from the system root; relative paths
+            are not supported. Default is the current working directory.
+-verbose | -noverbose : When -verbose is specified, additional messages from the shell command
+            prints to the log file. This information is useful for debug purposes. Default is -noverbose .
+

@@ -1,0 +1,23 @@
+COMMAND: analyze_nonscan_loading
+
+TITLE:
+analyze_nonscan_loading
+
+DESCRIPTION:
+This command analyzes the loading of nonscan state elements by simulating combinational random patterns and then reporting the number of nonscan cells that are loadable.
+
+SYNTAX:
+analyze_nonscan_loading [-atleast {< percentage <0 | 1 | B>>}] [-atmost {< percentage <0 | 1 | B>>}] [-max number] [-patterns number]
+
+OPTIONS:
+-atleast {< percentage <0 | 1 | B>>} : This option reports all nonscan cells that were loaded to either 0 or 1, or both 0 and
+            1 (by specifying the B argument) at least percentage times. The results are sorted by decreasing
+            probability.
+-atmost {< percentage <0 | 1 | B>>} : This option reports all nonscan cells that were loaded to either 0 or 1, or both 0 and
+            1 (by specifying the B argument) at most percentage times. The results are sorted by increasing
+            probability.
+-max number : This option limits the reporting to a specified number of
+            cells.
+-patterns number : Specifies the number of patterns to simulate. By default, 1024 random
+            patterns are simulated.
+

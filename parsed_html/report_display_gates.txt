@@ -1,0 +1,24 @@
+COMMAND: report_display_gates
+
+TITLE:
+report_display_gates
+
+DESCRIPTION:
+Use this command to generate information about the gates currently being displayed in the GSV.
+
+SYNTAX:
+report_display_gates [-command]
+
+OPTIONS:
+-command : This option prefixes each reported gate with the add_display_gates command, which
+            can be used in a command file to repopulate the current GSV display (see the Examples
+            section below).
+
+EXAMPLES:
+DRC> report_display_gates
+        U05 (46): type=OR #inputs=2 #outputs=1 #bidis=0
+        U75 (47): type=AND #inputs=2 #outputs=1 #bidis=0
+        muxme (48): type=MUX #inputs=3 #outputs=1 #bidis=0
+        flop_it (77): type=MUX #inputs=3 #outputs=1 #bidis=0
+        SCANOUT (126): type=PO #inputs=1 #outputs=1 #bidis=0
+

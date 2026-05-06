@@ -1,0 +1,42 @@
+COMMAND: write_simtrace
+
+TITLE:
+write_simtrace
+
+DESCRIPTION:
+This command assists in debugging ATPG pattern miscompares found during Verilog simulation.
+
+SYNTAX:
+write_simtrace filename [-gate netname_or_id] [-length int] [-replace] [-scan chainname : cellnumber]
+
+OPTIONS:
+filename : Specifies the name of the output file that defines a standalone module containing
+            Verilog debug statements.
+-gate netname_or_id : References a single net, device port, or module name that is monitored during
+            simlulation. The reference can be a TestMAX ATPG name or gate id. If the reference is a
+            single net, then the monitor will contain the name of the object (subject to a length
+            restriction of 20 characters or as specified by the -length option),
+            followed by a colon, and a single bit that is the state of that net at the specified
+            time. This is terminated by a semicolon. An example would be: “ ABC.DI:0; ”. If
+            the reference is to a module, then the output of that module must be displayed first in
+            the format above, followed by a comma instead of the semicolon, and all the named inputs
+            of the module are listed after an “ INs: ” identifier. The inputs are identified
+            by port-name only (not the full path name), and input ports that are constant values or
+            have no name are not displayed. A semicolon follows the last input port of the
+            module.
+-length int : Specifies the length of the names as they appear in the output statements. By default,
+            names are truncated to the last 20 characters; this option allows you to specify longer
+            or shorter names. This option is position-dependent and can be used multiple times; you
+            may place this option between sequences of -scan and -gate options and it will affect only the remaining options.
+-replace : Indicates that the output file is allowed to replace an existing file. The default is
+            to not allow a replacement.
+-scan chainname : cellnumber : Identifies the scan chain and cell that is monitored during simulation. This option
+            requires a chain name, followed by a colon, and the bit index in that chain. The output
+            of the cell is indicated first, followed by “ , INs: ”, followed by all named,
+            non-constant input ports of that cell. In the output region, if there is a scancell
+            before this cell, then the state of that previous cell will also be monitored, and it is
+            placed in parenthesis before the output state of this cell. Likewise, if there is a scan
+            cell after this cell, then the output of the next cell is also displayed, with
+            parenthesis around that state value as well. For example, a scan cell number 1 of chain c1 can be displayed as: “ c1:1 (0)0(1) INs: DI:0 SE: 0
+              D:1; ”.
+

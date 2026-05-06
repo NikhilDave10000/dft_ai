@@ -1,0 +1,28 @@
+COMMAND: report_scan_ability
+
+TITLE:
+report_scan_ability
+
+DESCRIPTION:
+Use this command to report nonscan cells that have been selected to behave as scan cells using the set_scan_ability command.
+
+SYNTAX:
+report_scan_ability [-max d]
+
+OPTIONS:
+-max d : Specifies the maximum number of virtual scan cells allowed to be reported. By default,
+            there is no limit.
+
+EXAMPLES:
+DRC> report_scan_ability
+ gate_id type instance_name
+ ------- ---- -------------------------
+ There were 0 DLATs/DFFs with scan ability set to ON.
+ DRC> set_scan_ability on core/host/d_l2odd_reg
+ DRC> set_scan_ability on core/host/mrd_st_reg_1
+ DRC> report_scan_ability
+ gate_id type instance_name
+ ------- ---- -------------------------
+  97299   DFF host/d_l2odd_reg
+  97302   DFF host/mrd_st_reg_1
+

@@ -1,0 +1,47 @@
+COMMAND: run_justification
+
+TITLE:
+run_justification
+
+DESCRIPTION:
+You can use this command to create a pattern that satisfies user-specified conditions placed on any number of internal (or external) circuit nodes.
+
+SYNTAX:
+run_justification [-set {< id | pin_pathname > <0|1|z|r|f>}...] [-full_sequential] [-noconstraints] [-noprevention] [-previous] [-verbose] <[-store] | [-replace_pattern d]>
+
+OPTIONS:
+-set {< id | pin_pathname >
+          <0|1|z|r|f>}... : Indicates the circuit location and the desired set value to justify. The circuit
+            location is identified by a primitive ID number or pin_pathname. 0, 1 or Z set a static
+            value at the specified location. R indicates a rising transition and F indicates a
+            falling transition. The -set option can specify multiple set points.
+            You can repeat the circuit location and set value as needed. The r and f arguments create last-shift launch
+            transitions, but do not apply any capture clocks. Basic scan and full-sequential
+            patterns are supported. It is not possible to launch transitions from the last cells of
+            the scan chains.
+-full_sequential : Specifies that the full-sequential ATPG algorithm is to be used during
+            justification.
+-noconstraints : Causes all constraints to be ignored during test generation. The default is to satisfy
+            all constraints.
+-noprevention : Causes contention prevention to be ignored during test generation. The default is to
+            enforce conditions that avoid contention.
+-previous : Causes all set points from the preceding run_justification command to
+            also be satisfied for the current justification.
+-replace_pattern d : The argument d to the -replace_pattern option is a
+            decimal pattern number of an existing pattern. The care bits for the justification
+            pattern replaces values in the pattern specified by the argument d .
+            This is done to the internal or external pattern buffer, depending on the current
+            setting (report settings patterns). The expected value for the pattern is not updated.
+            Use the run_simulation -update command to get correct expected values.
+-store : Causes storage of the pattern that satisfies the set points into the internal pattern
+            set. The default is to not store the pattern. When the pattern is stored, it is appended
+            to the end of any existing patterns in the internal pattern set. To avoid confusion, it
+            is suggested that you delete any existing internal patterns using the set_patterns -delete command before performing the justification.
+-verbose : Displays the pattern that satisfies the set points. The default is to not display the
+            pattern.
+
+EXAMPLES:
+# id #899 output set to 1 and pin pathname set to zero
+ TEST> run_justification -set {899 1 top/adder/carry 0 }
+ Unsuccessful justification: test status was redundant.
+

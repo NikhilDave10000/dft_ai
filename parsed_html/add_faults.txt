@@ -1,0 +1,144 @@
+COMMAND: add_faults
+
+TITLE:
+add_faults
+
+DESCRIPTION:
+Use this command to create a list of faults for fault simulation or test generation.
+
+SYNTAX:
+add_faults [ instance_name | pin_pathname | -module name | -all | -clocks | -scan_enable | -bridge_location bridge_location1 bridge_location2 | -node_file name] [-launch launch_clock] [-capture capture_clock] [-cell_aware] [-exclusive] [-shared] [-shared_launch] [-shared_capture] [-inter_clock_domain] [-intra_clock_domain] [-stuck <0 | 1 | 01> | -slow <r | f | rf>] [-bridge <0|1|01>] [-aggressor_node <first | second | both>] [-dynamic_bridge <r|f|rf>] [-dominant_node <first | second | both>] [-max_invalid_report d] [ instance_name -portfaults_only] [ module_name -portfaults_only]
+
+OPTIONS:
+instance_name : Adds faults associated with the selected hierarchical instance to the fault list except
+            for faults with a nofault attribute.
+pin_pathname : Adds faults associated with the specified pin_pathname to the fault list. You can use
+            the -stuck or the -slow options to specify which
+            faults to add. The default is both stuck 0 and stuck 1. Faults with a nofault attribute
+            are not placed in the fault list.
+-module name : Adds faults to all instances of the named module; note that the name argument can be a fixed string or a limited regular expression.
+-all : Adds faults at all potential fault sites in the design to the fault list except for
+            faults with a nofault attribute. For transition faults, the add_faults -all command does not add any
+            faults on clock or scan-enable logic by default. This is because it is not meaningful to
+            test faults in such logic at functional speeds with scan-based patterns. The add_faults -clocks and add_faults -scan_enable options do allow the addition of such faults to the transition fault list if required.
+              This option cannot be used when the fault model is set to bridging and
+              dynamic_bridging.
+-cell_aware : Enables TestMAX ATPG to use the cell-aware ATPG. In this case, all defects become
+              faults in fault lists, and both static and dynamic defects are supported. The ATPG
+              process uses both primary and secondary faults, and merges and simulates the faults.
+              For more information on cell-aware ATPG, see Cell-Aware Test in the TestMAX
+                ATPG and TestMAX Diagnosis User Guide .
+-clocks : Adds clock, set, and reset faults to the fault list. There are multiple reasons a fault is defined as a clock fault. In some cases, the
+            fault is on an external or internal clock, or on a gate in the fanout cone of an
+            external or internal clock. The clock_flag (displayed by the Display Gate Info command
+            in the TestMAX ATPG Schematic Viewer) is set to 1 if the gate is in the fanout cone of
+            an external or internal clock. If the clock_flag is set to 1, the faults on the gate are
+            considered clock faults. Another reason a fault is recognized as a clock fault is if it is on a pin TestMAX ATPG
+            recognizes as a clock pin of a sequential device. These clock pins include the clock,
+            set, and reset pins of flip-flops, latches, and memories. TestMAX ATPG also considers a
+            fault as a clock fault if the fault is on a gate in the fanin cone of a clock pin of a
+            sequential device. If a gate is in both the fanin cone of a clock pin and the fanin cone
+            of the data input pin of a flip-flop or latch, the faults on that gate are recognized as
+            clock faults.
+-scan_enable : Adds scan enable faults to the fault list.
+-bridge_location bridge_location1 bridge_location2 : Specifies the nodes of the bridging or dynamic bridging fault being added. Both nodes
+            must be specified and when specified, the -node_file option cannot be
+            used. For the bridging or dynamic bridging fault model, if this option is not used, the -node_file must be used. Either node can be selected to be an
+            aggressor node, victim node, both using the -aggressor option for the
+            bridging fault model and the -dominant option for the dynamic bridging
+            fault model. The arguments for add_faults -bridge_location could be
+            output pins. For example: TEST> add_faults -bridge_location mic0/alu0/sub_307/U4/Z
+              mic0/pc0/U33/Z Input pins can also be used but only if set_fault -bridge_input has been specified. A limited set of net
+            names are supported. A warning is given if an invalid bridge location is specified. In
+            order for a bridging pair to be read successfully, the fault model must be set before
+            the bridge type using the command set_faults -model <bridging | dynamic_bridging> .
+-node_file name : Specifies the name of a file that contains node pairs for use in creating the bridging
+            and dynamic bridging faults added to the fault list. When this option is used, the
+            bridge location pair or the dynamic bridging pair cannot be specified. If this option is
+            not used, the bridge location pair or the dynamic bridging pair must be specified. You
+            can use the -aggressor_node option or the -dominant_node option to specify the victim and aggressor nodes. See
+            Node File Format for Bridging Faults for the format of this file. The node file can be
+            compressed in gzip format. In order for bridging pairs specified in a node file to be
+            read successfully, the fault model must be set before the bridge type using the command set_faults -model <bridging |
+              dynamic_bridging> .
+-launch launch_clock : Specifies the launch clock of the faults to be added to the fault list. You can use
+            this option with or without the -capture switch. The -launch option adds all faults that are launched exclusively by the
+            specified clock. You can specify the PI, NO_CLOCK, or MULTIPLE keywords (in all upper or
+            all lowercase) with this option to add faults that are launched by the PI/PIO, no clock
+            domains, or multiple clock domains, respectively. For a complete description of how
+            TestMAX ATPG distinguishes faults captured by a clock and launched by a clock, see Using
+            Clock Domain-Based Faults.
+-capture capture_clock : Specifies the capture clock of the faults to be added to the fault list. This option
+            adds all faults that are captured exclusively by the specified clock. You can specify
+            the PO, NO_CLOCK, or MULTIPLE keywords (in all upper or all lowercase) with this option
+            to add faults that are captured by the PO/PIO, no clock domains, or multiple clock
+            domains, respectively. For a complete description of how TestMAX ATPG distinguishes
+            faults captured by a clock and launched by a clock, see Using Clock Domain-Based
+            Faults.
+-exclusive : Specifies that only the faults that are launched and captured exclusively (using a
+            single launch and a single capture) are to be added to the fault list. Faults
+            exclusively launched by PI or observed by PO are also added. For further details, see
+            Using Clock Domain-Based Faults.
+-shared : Specifies that only the faults that are launched or captured by multiple clocks are
+            added to the fault list. This excludes all PI and PO faults. When used with the -launch and -capture options, the -shared option changes the meaning of that switch so that faults
+            launched or captured by the specified clock and other clocks are added; in this case,
+            exclusive faults are not added. For further details, please see Using Clock Domain-Based
+            Faults in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide.
+-shared_launch : Specifies that faults launched by the specified clock and other clocks are added to the
+            fault list. An error is reported if you specify this switch without also using the -launch option. For further details, see Using Clock Domain-Based
+            Faults in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide.
+-shared_capture : Specifies that faults captured by the specified clock and other clocks are added to the
+            faults list. An error is reported if you use this switch without also using -capture . For further details, see Using Clock Domain-Based Faults in
+            the TestMAX ATPG and TestMAX Diagnosis User Guide.
+-inter_clock_domain : Adds only exclusive faults that are launched and captured by different clock domains.
+            For further details, see Using Clock Domain-Based Faults in the TestMAX
+              ATPG and TestMAX Diagnosis User Guide.
+-intra_clock_domain : Adds only exclusive faults that are launched and captured by the same clock domains.
+            For further details, see Using Clock Domain-Based Faults in the TestMAX
+              ATPG and TestMAX Diagnosis User Guide.
+-stuck <0 | 1 | 01> | -slow <r | f | rf> : Specifies faults to be added based upon their stuck or slow values. Note that these
+            options do not work with instances names, but do work for pinpath names and module
+            names.
+-bridge <0|1|01> : Specifies the type of bridging fault being added. The type can be either 0 - ba0 (bridging fault at 0) 1 - ba1 (bridging fault at 1) 01 - both (bridging fault at 0 and bridging fault at 1) The default is 01 (both).
+-aggressor_node <first | second | both> : Specifies which node in a node pair is used as the aggressor node of a bridging fault:
+            First, Second, or Both. The default is Both. How combinations of -bridge and -aggressor_node option settings interact
+            are shown in the following table. In the default case, four faults are added for each node pair defined (this condition
+            is shown italicized in the table above.) Duplicate faults are not included in the fault
+            list. A message is issued when the add_faults command executes,
+            indicating how many new faults were added to the list.
+-dynamic_bridge <r|f|rf> : Specifies the type of dynamic bridging fault to be added tot he faults list. The type
+            can be any of the following: r - bsr (bridge slow to rise) f - bsf (bridge slow to fall) rf - both (bridge slow to rise and bridge slow to fall) The default is rf (both).
+-dominant_node <first | second | both> : Specifies which node in a node pair is used as the dominant node of a dynamic bridging
+            fault: first , second , or both . The
+            default is both . The following table shows how combinations of -dynamic_bridge and -dominant_node option settings
+            interact: In the default case, four faults are added for each node pair defined (this condition
+            is shown italicized in the table above.) Duplicate faults are not included in the fault
+            list. A message is issued when the add_faults command executes that
+            indicates how many new faults were added to the list.
+-max_invalid_report d : Reports why a bridge pair was rejected. The d argument specifies maximum number of
+            invalid bridging fault nodes for which to report the reason for rejection.
+instance_name -portfaults_only] : Add faults associated with the selected hierarchical instance to the fault list whose
+              pins are connected to the boundary pins of instance except for faults with a nofault
+              attribute.
+module_name -portfaults_only] : Add faults to all instances of the module for fault locations that are connected to
+              boundary of the modules except for faults with a nofault attribute.
+
+EXAMPLES:
+TEST> add_faults -all
+ TEST> report_faults -summary
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class       code #faults
+ ----------------- ---- ---------
+ Detected           DT  7325
+ Possibly detected  PT  0
+ Undetectable       UD  1742
+ ATPG untestable    AU 18706
+ Not detected       ND 30447
+ -----------------------------------------------
+ total faults 58220
+ test coverage 12.97%
+ -----------------------------------------------
+

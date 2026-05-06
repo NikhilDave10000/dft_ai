@@ -1,0 +1,21 @@
+COMMAND: exit
+
+TITLE:
+exit
+
+DESCRIPTION:
+Use this command to terminate the current session and return to the windows or shell environment.
+
+SYNTAX:
+exit [-force] [ integer]
+
+OPTIONS:
+-force : Avoids the warning prompt that would otherwise occur upon exit when there are any
+            unsaved patterns. Note: In Tcl mode, the -force option is
+            built in by default. Therefore, you should not use this option in Tcl mode.
+integer : Returns the specified integer value to the exit calling process. By
+            default, TestMAX ATPG returns 0 to the calling process when the exit command is specified.
+
+EXAMPLES:
+DRC> exit
+

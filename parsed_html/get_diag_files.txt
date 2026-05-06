@@ -1,0 +1,15 @@
+COMMAND: get_diag_files
+
+TITLE:
+get_diag_files
+
+DESCRIPTION:
+This command returns a collection of objects for diagnosis files, which include the failure log files and the patterns file.
+
+SYNTAX:
+collection get_diag_files -name file_name | -all
+
+OPTIONS:
+-name file_name : Returns the diagnosis file object pertaining to the specified file name.
+-all : Returns all diagnosis file objects.
+

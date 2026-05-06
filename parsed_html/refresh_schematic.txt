@@ -1,0 +1,14 @@
+COMMAND: refresh_schematic
+
+TITLE:
+refresh_schematic
+
+DESCRIPTION:
+Use this command to redraw the schematic.
+
+SYNTAX:
+refresh_schematic
+
+EXAMPLES:
+DRC> refresh_schematic
+

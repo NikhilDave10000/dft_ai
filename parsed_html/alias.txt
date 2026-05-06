@@ -1,0 +1,26 @@
+COMMAND: alias
+
+TITLE:
+alias
+
+DESCRIPTION:
+This command defines an alternative symbolic name for a command and potential command arguments and switches.
+
+SYNTAX:
+alias [<alias_name> [<alias_text>]
+
+OPTIONS:
+<alias_name> : The symbolic name of the alias to be defined or reported. If no <alias_name> is provided, then all currently defined aliases are
+            reported.
+<alias_text> : The replacement text to use when an alias is entered as a command. The first word of
+            the <alias_text> must match a recognized command name. If no <alias_text> is provided, the alias corresponding to <alias_name> is reported. An alias can be defined as multiple
+            command lines by separating the individual commands with a semicolon ';' surrounded by
+            spaces. However, a multi line command cannot contain a source command.
+
+EXAMPLES:
+BUILD> alias restart set pat -del ; build -force
+BUILD> alias
+alias name alias text
+---------------- --------------------------------
+restart set pat -del ; build -force
+

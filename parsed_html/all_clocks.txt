@@ -1,0 +1,14 @@
+COMMAND: all_clocks
+
+TITLE:
+all_clocks
+
+DESCRIPTION:
+The all_clocks command creates a collection of all clocks in the current design.
+
+SYNTAX:
+collection all_clocks
+
+EXAMPLES:
+TEST-T> all_clocks
+

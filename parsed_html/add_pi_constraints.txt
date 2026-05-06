@@ -1,0 +1,30 @@
+COMMAND: add_pi_constraints
+
+TITLE:
+add_pi_constraints
+
+DESCRIPTION:
+Use this command to define constant logic values on top-level ports.
+
+SYNTAX:
+add_pi_constraints <0 | 1 | x | z> [-all_bidis | -all_bidis_except_clocks | { port_names } | -all | -all_except_clocks]
+
+OPTIONS:
+0 | 1 | x | z : Indicates the constrained value for the selected primary input or bidirectional port.
+            Only a port connecting to circuitry that can accept a Z state is allowed to be
+            constrained to a Z value.
+-all_bidis | -all_bidis_except_clocks : Selects the set of all BIDI pins, which is useful when setting all BIDIs to Z
+            (constraining BIDIs to output mode).
+{ port_names } | -all | -all_except_clocks : Indicates the site of the PI (Primary Input) constraint. PI constraints can be placed
+            only on primary input or bidirectional ports. Multiple port names can be defined on a
+            single command, but they must all share the same constrained value.
+
+EXAMPLES:
+DRC> add_pi_constraints 1 TEST_MODE
+ DRC> add_pi_constraints 0 TICK
+ DRC> report_pi_constraints
+ port_name  constrain_value
+ ---------- ---------------
+ /TEST_MODE 1
+ /TICK      0
+

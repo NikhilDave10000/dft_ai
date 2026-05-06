@@ -1,0 +1,31 @@
+COMMAND: update_faults
+
+TITLE:
+update_faults
+
+DESCRIPTION:
+This command updates fault parameters controlled by the fault manager.
+
+SYNTAX:
+update_faults [-direct_credit] [-external file_name] [-reset_au]
+
+OPTIONS:
+-direct_credit : Enables direct fault crediting for the following fault models: Dynamic bridging (victim only) faults to transition delay faults Dynamic bridging faults to static bridging faults Dynamic bridging (victim only), static bridging (victim only), and transition delay
+            faults to stuck-at faults Depending on the current fault model, the appropriate source fault model is selected
+            from the cache, if it exists. If not, you must also specify the -external option. For more information, see "Persistent Fault Model Support " in the TestMAX ATPG User Guide .
+-external file_name : This option, which is used with the -direct_credit option, specifies a
+            transition, bridging, or dynamic bridging fault list
+                ( file_name ). For more information, see
+            "Persistent Fault Model Support " in the TestMAX ATPG User
+              Guide .
+-reset_au : Resets the fault classification of the faults in the AN (ATPG Untestable Not-Detected)
+            and AX (ATPG Untestable Timing Exceptions) fault categories to ND (not detected). This
+            allows further ATPG effort to be applied in an attempt to detect these faults.
+
+EXAMPLES:
+TEST-T> update_faults -direct_credit
+   1544361 stuck-at faults were changed to DS from the inactive transition fault list.
+   0 stuck-at faults were changed to DI from the inactive transition fault list.
+   387 stuck-at faults were changed to NP from the inactive transition fault list.
+   13062 inactive transition faults were not found in the stuck-at fault list.
+

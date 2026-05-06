@@ -1,0 +1,31 @@
+COMMAND: add_lbist_seeds
+
+TITLE:
+add_lbist_seeds
+
+DESCRIPTION:
+This command specifies user-defined seed values that TestMAX ATPG uses to generate patterns for the DFTMAX LogicBIST tool instead of using randomly generated seeds (the default).
+
+SYNTAX:
+add_lbist_seeds { list_of_seed_values }
+
+OPTIONS:
+list_of_seed_values : Specifies a list of seed values as a string of 0 and 1 values. The length of each seed
+            must be equal to the care bit pseudo-random pattern generation (PRPG) length in the
+            design. Note that all-zeroes (000...) is a special seed value that causes the PRPG to
+            remain in an all-zeroes state. In this case, there is no 1 value to start the sequence.
+            You can use an all-zeroes specification to prevent the data generation process from
+            entering a codec static state.
+
+EXAMPLES:
+# single seed
+add_lbist_seeds 1011010101001010101010101111011
+
+# multiple seeds
+add_lbist_seeds { 1011010101001010101010101111011 1101111010101010101001010101101 }
+
+# incremental add of seeds
+add_lbist_seeds 1011010101001010101010101111011
+add_lbist_seeds { 1101111010101010101001010101101 1011010101001010101010101111011 }
+add_lbist_seeds 1011010101001010101010101111011
+

@@ -1,0 +1,73 @@
+COMMAND: report_lockup_latches
+
+TITLE:
+report_lockup_latches
+
+DESCRIPTION:
+The report_lockup_latches command performs a topological analysis of scan paths to find missing, extra, or incorrectly clocked lockup latches.
+
+SYNTAX:
+report_lockup_latches
+
+OPTIONS:
+-balanced_gates_file file_name : Specifies a file containing a list of skew-balanced clock gating sources. This option
+              enables you to avoid debugging irrelevant M831, M832, M833, and M835 messages. The syntax for the file containing skew-balanced clock gating sources is as
+              follows: balanced_clock_group name pin_pathname1 [pin_pathname2 ...] This file identifies groups of skew-balanced clock gating sources. Each line must
+              begin with the balanced_clock_group option and a name for the group.
+              At least one output pin of a gate must be specified ( pin_pathname ).
+              There is a maximum of 47 pin path names per line, but you can split multiple pins for
+              the same group into several lines, all referring to the same group name. The following example shows the extra information provided by this file in M832
+              message: An extra lockup latch is added between scan cells \counter_reg[45](172)
+                clocked by clk(17) (through U105/Z(23)) LE(45ns) and \counter_reg[46](173) clocked
+                by clk(17) (through U106/Z(24)) TE(55ns) (M832) The through point in parentheses varies depending on the options used. Note the following: When the balanced_clock_group option is used with the -gated_clocking option, the syntax is as shown. An ungated
+                  clock should be designated (directly) to show that there is no gated through
+                  point. Only the last gate in the clock path is reported. If the -latch_based_balanced option is specified, latch-based
+                  clock gates are ignored but other types of clock gates are reported. If the -buffered_clocking option is specified, the last buffer
+                  in the clock path is reported. By default, or with the -external_clocking option, the
+                  parentheses are omitted for external clocks or when the -nointclocks_unbalanced option is specified. By default, or with the -intclocks_unbalanced option, the
+                  internal clock source is reported.
+-buffered_clocking : Causes each clock tree driven by a separate buffer or inverter to be treated as a separate clock
+              source. This switch corresponds to the TestMAX DFT command set_scan_configuration -internal_clocks single . You should not
+              specify report_lockup_latches -buffered_clocking after set_build -portfault_box because the
+              build option creates extra virtual buffers which results in unexpected reporting.
+-external_clocking : Causes each clock tree driven by a separate external clock to be treated as a
+              separate clock source. This option is the default and corresponds to the TestMAX DFT
+              default setting.
+-gated_clocking : Causes each clock tree driven by a separate multi input gate to be treated as a
+              separate clock source. This switch corresponds to the TestMAX DFT command set_scan_configuration -internal_clocks multi .
+-intclocks_unbalanced | -nointclocks_unbalanced : When the -external_clocking option of the report_lockup_latches command is specified or used based on its
+              default setting, the -intclocks_unbalanced option assumes that each
+              On-Chip Clocking (OCC) clock tree is unbalanced to any other OCC clock tree. This
+              includes any situation when two trees share an external shift clock which requires a
+              lockup latch. This option is the default and corresponds to the TestMAX DFT behavior
+              when it inserts OCC controllers. The -nointclocks_unbalanced option
+              interprets the external clocking specification strictly and does not make an exception
+              for OCC clocks.
+-latch_based_balanced : When the -gated_clocking option is specified, this switch assumes that all clock
+              sub trees that are separated only by clock gating inserted by Power Compiler are
+              balanced so that they do not need lockup latches between them. These balanced sub
+              trees are detected by topological analysis, assuming that one of the Power Compiler
+              latch-based styles is used. All other types of multiple-input gates are still treated
+              as separate clock sources. This switch has no effect unless -gated_clocking is also specified.
+-pipeline : Enables checking for the following areas: Within compression pipeline registers Between compression pipeline registers and scan chains By default, these areas are ignored by the report_lockup_latches command. Note that the report_lockup_latches command cannot check the
+              serializer register.
+-merge_dlats : Allows report_lockup_latches to correctly identify Master/Slave
+            pairs and merge them into an equivalent DFF to complete the analysis. This allows report_lockup_latches to identify a missing latch issue when scan
+            cells are created from Master/Slave latch pair instead of MUX-D style scan chains.
+When the balanced_clock_group option is used with the -gated_clocking option, the syntax is as shown. An ungated
+                  clock should be designated (directly) to show that there is no gated through
+                  point. Only the last gate in the clock path is reported.
+If the -latch_based_balanced option is specified, latch-based
+                  clock gates are ignored but other types of clock gates are reported.
+If the -buffered_clocking option is specified, the last buffer
+                  in the clock path is reported.
+By default, or with the -external_clocking option, the
+                  parentheses are omitted for external clocks or when the -nointclocks_unbalanced option is specified.
+By default, or with the -intclocks_unbalanced option, the
+                  internal clock source is reported.
+
+EXAMPLES:
+TEST-T>
+report_lockup_latches
+No lockup latch violations were detected.
+

@@ -1,0 +1,79 @@
+COMMAND: report_summaries
+
+TITLE:
+report_summaries
+
+DESCRIPTION:
+Use this command to report any combination of the primitive, fault, pattern, library cell, memory, optimization, sequential depth, or CPU usage summaries.
+
+SYNTAX:
+report_summaries [primitives] [faults] [patterns] [library_cells] [memory_usage] [optimizations] [sequential_depths] [cpu_usage] [-launch launch_clock] [-capture capture_clock] [-exclusive] [-shared] [-inter_clock_domain] [-intra_clock_domain] [-per_clock_domain]
+
+OPTIONS:
+primitives : Reports the ATPG primitive summary.
+faults : Reports the fault summary. The display of collapsed versus uncollapsed fault categories
+            or normal versus verbose fault class detail is controlled by use of the set_faults command.
+patterns : Reports the pattern count.
+library_cells : Reports the library cells. A report includes the name of the library cell and the
+            number which have been instantiated in the flattened design. Note :
+            This count can differ slightly from an ASIC vendor's report of the same data due to
+            circuit optimization done for ATPG purposes which can result in the elimination of
+            certain internal gates.
+memory_usage : Reports total RAM usage by the process and well as the RAM used by the data space
+            patterns + design of the process. Note : This report is available
+            only on UNIX platforms.
+optimizations : Reports the gate optimization and removal performed during the run build process.
+sequential_depths : Reports the maximum Fast-Sequential depth for controlling, observing, and detection,
+            and a representative gate ID for each.
+cpu_usage : Reports the cumulative CPU usage since starting the tool for selected operations such
+            as reading netlists, performing model builds, generating ATPG patterns, compressing
+            patterns, and so on.
+-launch launch_clock : When specified with the faults option, the -launch option specifies the launch clock of the faults to be reported on. You can use this
+            switch independently, or in conjunction with the -capture switch. This
+            switch also accepts the keywords PI, NO_CLOCK, and MULTIPLE in either all upper or all
+            lowercase, to report on faults that are launched by PI/PIO, no clock domains, or
+            multiple clock domains, respectively. For a complete description of how TestMAX ATPG
+            distinguishes faults captured by a clock and launched by a clock, see "Using Clock
+            Domain-Based Faults in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide ."
+-capture capture_clock : When specified with the faults option, the -capture option specifies the capture clock of the faults to be reported on. This switch can be
+            used independently or in conjunction with the -launch switch. This
+            switch also accepts the keywords PO, NO_CLOCK, and MULTIPLE in either all upper or all
+            lowercase, to report on faults that are observed by PO/PIO, no clock domains, or
+            multiple clock domains, respectively. For a complete description of how TestMAX ATPG
+            distinguishes faults captured by a clock and launched by a clock, see "Using Clock
+            Domain-Based Faultsin the TestMAX ATPG and TestMAX Diagnosis User
+              Guide ."
+-exclusive : This option is used for reporting clock domain-based faults. When specified with the faults option, the -exclusive option excludes the
+            multiple launch and capture section from the report. For further details, please see
+            Reporting Clock Domain-Based Faults.
+-shared : When specified with the faults option, the -shared option reports only the section relating to multiple launch and capture clocks. For
+            further details, please see Reporting Clock Domain-Based Faults.
+-inter_clock_domain : When specified with the faults option, the -inter_clock_domain option reports on only the exclusive faults that
+            are launched and captured by different clock domains. For further details, please see
+            Reporting Clock Domain-Based Faults.
+-intra_clock_domain : When specified with the faults option, the -intra_clock_domain option reports on only the exclusive faults that
+            are launched and captured by the same clock domains. For further details, please see
+            Reporting Clock Domain-Based Faults.
+-per_clock_domain : This option reports all specified faults with extra information for their launch and
+            capture clocks. All clocks are reported, even those classified as "shared" or
+            "multiple." For further details, see "Using Clock Domain-Based Faultsin the TestMAX ATPG and TestMAX Diagnosis User Guide ."
+
+EXAMPLES:
+TEST> set_faults -fault_coverage
+ TEST> report_summaries faults
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class        code #faults
+ ------------------ ---- ---------
+ Detected           DT   144501
+ Possibly detected  PT   4224
+ Undetectable       UD   1634
+ ATPG untestable    AU   9335
+ Not detected       ND   6811
+ -----------------------------------------------
+ total faults 166505
+ test coverage 91.53%
+ fault coverage 86.78%
+ -----------------------------------------------
+

@@ -1,0 +1,31 @@
+COMMAND: report_instances
+
+TITLE:
+report_instances
+
+DESCRIPTION:
+This command reports data associated with a specified instance.
+
+SYNTAX:
+report_instances instance_name [-module name] [-netnames] [-garble | -ungarble]
+
+OPTIONS:
+instance_name : Specifies the name of the instance to report. It might be the hierarchical name of an
+            instance or the name of an instance inside a module selected with the -module option.
+-module name : Specifies that the instance to be reported resides inside the specified module.
+-netnames : Causes net names to be displayed in the report. By default, net names are not
+            displayed.
+-garble | -ungarble : The -garble option displays the garbled instance name to which that
+            the given original instance name is mapped in a garbled image created by the -garble option of the write_image command. This can be done only with an
+            ungarbled design database. The -ungarble option displays the original instance name of the given
+            garbled instance name present in a garbled image created by the -garble option of the write_image command. This option can be used to translate a garbled name to an original name, but
+            only with an ungarbled design database.
+
+EXAMPLES:
+DRC> report_instances U6 -module L572
+ U6 _MUX
+     "UNDEF" I ( H09 )
+     "UNDEF" I ( H07 )
+     "UNDEF" I ( H08 )
+     "UNDEF" O U1/
+

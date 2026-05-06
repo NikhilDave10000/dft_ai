@@ -1,0 +1,20 @@
+COMMAND: remove_partitions
+
+TITLE:
+remove_partitions
+
+DESCRIPTION:
+This command allows you to remove partitions that were added using the add_partition command.
+
+SYNTAX:
+remove_partitions -all <list of one or more partition_names>
+
+OPTIONS:
+-all : Removes all partitions.
+list of one or more partition_names : Removes only the listed partitions.
+
+EXAMPLES:
+DRC-T> remove_partitions -all 				
+	 Removing all partition definitions.
+ 					4 partitions have been deleted.
+

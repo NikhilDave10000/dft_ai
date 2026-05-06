@@ -1,0 +1,25 @@
+COMMAND: report_lbist_seeds
+
+TITLE:
+report_lbist_seeds
+
+DESCRIPTION:
+Use this command to report all current seed definitions and identify seeds that were used during LogicBIST ATPG.
+
+SYNTAX:
+report_lbist_seeds
+
+EXAMPLES:
+TEST-T>
+report_lbist_seeds
+Used   Seed Value (binary_normal)
+----  -----------------------------------------------
+Used  1011010101001010101010101111011
+Used  1101111010101010101001010101101
+      1011010101001010101010101111011
+      1011010101001010101010101111011
+      1111010010101101010100100000111
+      1010101010101010101010101010101
+      1110101011110010101111011111111
+      1110101011110010101111011111001
+

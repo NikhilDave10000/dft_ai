@@ -1,0 +1,76 @@
+COMMAND: write_drc_file
+
+TITLE:
+write_drc_file
+
+DESCRIPTION:
+Use this command to write a test protocol file in STIL format based on the currently defined clocks, PI constraints, PI equivalences, pin timing, and known STIL procedure files or protocol files.
+
+SYNTAX:
+write_drc_file filename [-compress <gzip | binary>] [-generic_captures | -nogeneric_captures] [-master_observe_generation | -nomaster_observe_generation] [-replace] [-scancells] [-scanstructures <all | min>]
+
+OPTIONS:
+filename : Specifies the path name of the file into which the test protocol data is written.
+-compress <gzip | binary> : Specifies that the test protocol file is to be written in compressed format and
+            specifies the type of compression: either GZIP or binary. The binary keyword creates a proprietary format that can be read only by TestMAX ATPG. The default
+            is to write the file in ASCII STIL format with no compression.
+-generic_captures | -nogeneric_captures : Writes single-cycle generic capture procedures (multiclock_capture, allclock_capture,
+            allclock_launch, and allclock_launch_capture) into the output file. The default is -generic_captures ; use the -nogeneric_captures option to get the previous behavior. When the -generic_captures option
+            is used, the default-generated procedures are suppressed (capture_<clockname> will
+            not be produced if they were not defined), but any explicitly defined clocked capture
+            procedure from a prior run_drc command will still be written out. The unclocked capture procedure will not be written
+            when this option is used. Also the default timing produced is written to be compatible
+            with single-cycle capture procedures (a Z event is produced by default for the measure
+            events H, L, T, and X, at time zero) when this option is used. If the default timing is
+            defined, only one Waveformtable is generated from this option, and all procedures will
+            reference that same timing. If you want multiple WaveformTables to be created
+            ("_launch_WFT_", "_capture_WFT_", and "_launch_capture_WFT_"), then use the command set_faults -model transition or set_faults -model path_delay before the write_drc_file command to
+            identify that the data should be generated to cover this mode of operation. Note that
+            the WGL format does not support 3-cycle generic capture procedures, and third-party
+            (ltran) formats also might have restrictions.
+-master_observe_generation | -nomaster_observe_generation : Controls whether a default master_observe procedure is written into the output file.
+            This procedure is generated only if slave clocks are detected and no master_observe
+            procedure was defined. Note that the master_observe procedure is intended to be a
+            template and will likely require manual edits to complete this definition. The default, -master_observe_generation , provides this template if the context
+            indicates it might be useful. If you don't want additions to the set of STL procedure
+            file procedures, you can select -nomaster_observe_generation to
+            suppress the generation of this template.
+-replace : Specifies that the test protocol file is allowed to replace an existing file. The
+            default is to not allow a replacement. Attempting to overwrite an existing file without
+            using -replace results in an error.
+-scancells : Causes the test protocol file to include information describing each scan chain and the
+            instances of each scan chain. The default is not to include this information. Note : The -scancells option does not affect scan
+            cells on internal chains.
+-scanstructures <all | min> : Controls the generation of scan chain data in the ScanStructures block
+            of a STIL file. The default setting, all , generates all supported
+            fields for all applicable scan chain data. If you specify the min keyword, the scan chain data is truncated for compressed designs that reference internal
+            scan input or scan output ports (internal scan chains). This protects the identification
+            of internal design elements. The following set of examples shows how the -scanstructures option
+            affects the contents of a generated STIL file. The first example shows the scan chain
+            data using the default setting ( -scanstructures all ): ScanChain "1" { ScanLength 11; ScanIn "core_i/ctl/U199/ZN"; ScanOut "core_i/ctl/ctl_de_reg_2_/Q"; ScanInversion 1; ScanCells ! "des_unit.core_i.ctl.ctl_dd_reg_0_.SI"
+              "des_unit.core_i.ctl.ctl_dd_reg_1_.SI" "des_unit.core_i.ctl.ctl_dd_reg_2_.SI"
+              "des_unit.core_i.ctl.ctl_dd_reg_3_.SI" ... "des_unit.core_i.ctl.ctl_de_reg_0_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_1_.SI" "des_unit.core_i.ctl.ctl_de_reg_2_.SI" ; ScanMasterClock "clk_st" ; } ScanChain "2" { ScanLength 11; ScanIn "core_i/ctl/U198/ZN"; ScanOut "core_i/ctl/key_dd_reg_5_/Q"; ScanInversion 1; ScanCells ! "des_unit.core_i.ctl.ctl_de_reg_3_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_4_.SI" "des_unit.core_i.ctl.ctl_de_reg_5_.SI"
+              "des_unit.core_i.ctl.ctl_de_reg_6_.SI" ... "des_unit.core_i.ctl.key_dd_reg_5_.SI" ; ScanMasterClock "clk_st" ; } If the -scanstructures min option is specified, the generated scan
+            chain data is truncated, as shown in the following example: ScanChain "1" { } ScanChain "2" { } Note the following:
+
+EXAMPLES:
+DRC> read_netlist i22.v -delete
+  Begin reading netlist ( i22.v )...
+  End parsing Verilog file i22.v with 0 errors;
+  End reading netlist: #modules=8, top=i22, #lines=61
+ DRC> run_build_model
+ --------------------------------------------------------
+ Begin build model process on topcut = i22 ...
+ End build model process: #gates=150, CPU_time=0.01 sec
+ --------------------------------------------------------
+ Begin learning analyses...
+ End learning analyses, total learning CPU time=0.02
+ --------------------------------------------------------
+ DRC> add_clocks 0 CLK
+ DRC> add_clocks 1 RSTB
+ DRC> write_drc_file template.spf -replace
+  End writing STIL test procedure file, File_size = 2140
+ DRC>
+

@@ -1,0 +1,15 @@
+COMMAND: remove_slow_bidis
+
+TITLE:
+remove_slow_bidis
+
+DESCRIPTION:
+This command is used to remove BUS primitives that were modified with the add_slow_bidis command..
+
+SYNTAX:
+remove_slow_bidis < port_name | -all>
+
+OPTIONS:
+port_name : Specifies the port whose modified bidirectional outputs are being removed.
+-all : Indicates that all modified bidirectional outputs should be removed.
+

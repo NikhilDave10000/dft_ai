@@ -1,0 +1,64 @@
+COMMAND: run_atpg
+
+TITLE:
+run_atpg
+
+DESCRIPTION:
+Use this command to generate ATPG patterns for current set of faults using the pattern source set by the set_patterns command.
+
+SYNTAX:
+run_atpg [-auto_compression] [basic_scan_only | fast_sequential_only | full_sequential_only] [-distributed] [-jtag_lbist { seed_values pattern_count capture_cycles }] [-ndetects n] [-nodisturb_clock_grouping] [-observe_file file_name] [-only_chain_diagnosis] [-only_chain_test] [-optimize_patterns] [-random] [-rerun_for_timing_exceptions] [-resolve_differences]
+
+OPTIONS:
+-auto_compression : Selects an algorithm that automatically produces compact patterns and high test
+              coverage using minimal CPU time. This option also enables global testability analysis,
+              including analysis for two-clock transition ATPG (specified by the set_delay -two_clock_transition_optimization command). You should always use this option for both multicore ATPG and distributed ATPG, and
+              all types of fault models and all design sizes. Note the following:
+When using DFTMAX Ultra with the -auto_compression option, the log
+            file includes two sets of pattern summary reports. You should refer only to the second
+            set of summary reports.
+This option is ignored by the TestMAX ATPG multithreading engine. The only effect of
+            this option is to add faults if the fault list if empty.
+
+EXAMPLES:
+TEST-T>
+set_atpg -patterns 300 -merge low
+TEST-T>
+run_atpg
+ATPG performed for stuck fault model using internal pattern  			source.  			
+			 ----------------------------------------------------------  			
+			 #patterns #faults       #ATPG  			faults test     process  			
+			 stored    detect/active red/au/abort coverage CPU  			time  			
+			 --------- ------------- ------------ -------- --------  			
+			 Begin deterministic ATPG: #uncollapsed_faults=72025,  			abort_limit=10...  			
+			 32        52907  			19118         0/0/1   			74.17%      17.11  			
+			 64         6750  			12366         1/0/1   			81.90%      25.85  			
+			 96         3005   			9361         1/0/1   			85.34%      33.38  			
+			 128        1733   			7628         1/0/1   			87.32%      40.57  			
+			 160        1360   			6268         1/0/3   			88.88%      47.22  			
+			 192        1139   			5129         1/0/4   			90.18%      52.88  			
+			 224        1016   			4113         1/0/7   			91.35%      58.21  			
+			 256         718   			3395         1/0/9   			92.17%      63.27  			
+			 288         662   			2733         1/0/11  			92.93%      67.56  			
+			 Warning: ATPG terminated due to meeting pattern count limit.  			(M234)  			
+			 300         192   			2541         1/0/14  			93.15%      69.13  			
+
+			     Uncollapsed Stuck Fault Summary Report  			
+			 -----------------------------------------------  			
+			 fault class         code  			#faults  			
+			 ------------------- ---- ---------  			
+			 Detected              			DT  81330  			
+			 Possibly detected     			PT      6  			
+			 Undetectable          			UD   1092  			
+			 ATPG untestable      AU   3445  			
+			 Not detected          			ND   2535  			
+			 -----------------------------------------------  			
+			 total faults 88408  			
+			 test coverage 93.15%  			
+			 -----------------------------------------------
+            Pattern  Summary Report
+ -----------------------------------------------
+ #internal  patterns             300
+     #basic_scan  patterns      300
+ -----------------------------------------------
+

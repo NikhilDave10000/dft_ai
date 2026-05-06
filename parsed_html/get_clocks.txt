@@ -1,0 +1,20 @@
+COMMAND: get_clocks
+
+TITLE:
+get_clocks
+
+DESCRIPTION:
+The get_clocks command creates a collection of clocks in the current design that match certain criteria.
+
+SYNTAX:
+collection get_clocks [-all] [-regexp] [-nocase] [ patterns] list patterns
+
+OPTIONS:
+-all : Returns all clocks.
+-regexp : Views the patterns argument as real regular expressions rather than
+            simple wildcard patterns. This option applies only to the clock name.
+-nocase : When combined with -regexp , makes matches case-insensitive. You can
+            use -nocase only when you also use -regexp .
+patterns : Matches clock names against the specified patterns. Patterns can include the wildcard
+            characters "*" and "?".
+

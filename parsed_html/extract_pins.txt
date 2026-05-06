@@ -1,0 +1,21 @@
+COMMAND: extract_pins
+
+TITLE:
+extract_pins
+
+DESCRIPTION:
+This command extracts physical information from a physical data store (PHDS) database for the pins of a design.
+
+SYNTAX:
+extract_pins [-connected_pins | -noconnected_pins] [-names { pin_names }] [-scan_path all | scan_path] [-verbose]
+
+OPTIONS:
+-connected_pins | -noconnected_pins : Extracts all pins connected to nets along the scan path specified by the -scan_path option. Use the -connected_pins option
+            with the -verbose option of the report_scan_path command when you
+            want to report the locations of additional pins connected to other fanouts on a scan
+            path net. The default is -noconnected_pins .
+-names { pin_names } : Extracts physical information for the specified pins. You can print the extracted
+            information using the report_physical –pin command.
+-scan_path all | scan_path : Extracts instance bounding box and pin location data for either all scan paths (the all argument) or for all pins along a specified scan path (the scan_path argument).
+-verbose : Prints additional physical extraction information for pins.
+

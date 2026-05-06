@@ -1,0 +1,14 @@
+COMMAND: remove_sdc
+
+TITLE:
+remove_sdc
+
+DESCRIPTION:
+This command, which can only be run in Tcl mode, removes all SDC (Synopsys Design Constraints) information (SDC clocks and exceptions) so that a different set of SDC data can be read in.
+
+SYNTAX:
+remove_sdc 			 -all
+
+OPTIONS:
+-all : Removes all SDC information.
+

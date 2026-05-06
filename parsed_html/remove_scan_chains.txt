@@ -1,0 +1,33 @@
+COMMAND: remove_scan_chains
+
+TITLE:
+remove_scan_chains
+
+DESCRIPTION:
+Use this command to delete scan chains defined with the add_scan_chains command.
+
+SYNTAX:
+remove_scan_chains < chain_name | -all>
+
+OPTIONS:
+chain_name | -all : Specify the scan chain to be removed by the label previously used to define the scan
+            chain when a prior add scan chains command was issued. Use of the -all option will remove all scan chain definitions from previous add scan chains
+            commands.
+
+EXAMPLES:
+DRC> add_scan_chain chain_1 si[1] so[1]
+ DRC> add_scan_chain chain_2 si[2] so[2]
+ DRC> add_scan_chain C3 si[3] so[3]
+ DRC> report_scan_chains
+ chain   group   length input_pin     output_pin
+ ------- ------  ------ ------------- ----------
+ chain_1 sg0     0       si[1]         so[1]
+ chain_2 sg0     0       si[2]         so[2]
+ C3      sg0     0       si[3]         so[3]
+ DRC> remove_scan_chain C3
+ DRC> report_scan_chains
+  chain   group   length input_pin     output_pin
+ ------- ------  ------ ------------- ----------
+ chain_1 sg0     0       si[1]         so[1]
+ chain_2 sg0     0       si[2]         so[2]
+

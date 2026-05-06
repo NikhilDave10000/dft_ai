@@ -1,0 +1,15 @@
+COMMAND: report_pin_name
+
+TITLE:
+report_pin_name
+
+DESCRIPTION:
+Use this command to report the pin pathnames of all nodes in the traceback cone of a selected input of a gate at the boundary of the library cell.
+
+SYNTAX:
+report_pin_name gate_id input_pin_id
+
+OPTIONS:
+gate_id : Specifies the gate at a library cell boundary where traceback begins.
+input_pin_id : Specifies the input pin of gate_id .
+

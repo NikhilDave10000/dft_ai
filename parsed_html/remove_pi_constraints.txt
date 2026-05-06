@@ -1,0 +1,25 @@
+COMMAND: remove_pi_constraints
+
+TITLE:
+remove_pi_constraints
+
+DESCRIPTION:
+Use this command to delete PI constraints previously added with the add_pi_constraints command.
+
+SYNTAX:
+remove_pi_constraints <{ port_names } | -all>
+
+OPTIONS:
+port_names : Specifies the port name of the PI (primary input) constraint to be removed.
+-all : Specifies that all PI constraints should be removed.
+
+EXAMPLES:
+DRC> report_pi_constraints
+ port_name         constrain_value
+ ---------------- ---------------
+ /test_mode        1
+ /pll_test_mode    1
+ DRC> remove_pi_constraints -all
+ DRC> report_pi_constrainsts
+  Warning: Requested report contained no entries. (M13)
+

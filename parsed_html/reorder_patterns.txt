@@ -1,0 +1,32 @@
+COMMAND: reorder_patterns
+
+TITLE:
+reorder_patterns
+
+DESCRIPTION:
+This command enables you to remove and reorder individual patterns and blocks of patterns as part of the DFTMAX Ultra flow.
+
+SYNTAX:
+reorder_patterns [-remove { pattern_num pattern_num } | -insert { pattern_num pattern_num }]
+
+OPTIONS:
+-remove { pattern_num pattern_num } : Removes individual patterns or blocks of patterns. To remove one or more patterns,
+            specify a list of one or more pattern numbers to remove. The following command removes
+            patterns 3 and 9: reorder_patterns -remove {3 9 } You can specify blocks of patterns by providing the first and last pattern numbers of
+            the block as a sublist inside the pattern removal list. You can mix individual pattern
+            numbers and pattern blocks in the list. The following command removes patterns 5 through 7: reorder_patterns -remove {{5 7}} The following command removes patterns 3, 5 through 7, and 9: reorder_patterns -remove {3 {5 7} 9}
+-insert { pattern_num pattern_num : Use this option with the -remove option to remove patterns and
+            reinsert them at a different location in the pattern set. For each pattern number or block provided in the removal list, specify the pattern
+            number where the removed patterns should be reinserted in the insertion list. For
+            removed patterns that should not be reinserted, specify an insertion pattern value of
+            X. The following command removes pattern 3, and reinserts patterns 4 through 6 at pattern
+            0: reorder_patterns -remove {3 {4 6}} -insert {X 0} The -remove and -insert options reference the
+            original pattern numbers that existed before pattern removal or insertion is performed
+            by the reorder_patterns command. You can issue multiple reorder_patterns commands as needed. Each
+            command resequences the patterns and pattern numbers after performing the specified
+            pattern manipulations. Subsequent reorder_patterns commands must refer
+            to the resequenced pattern numbers. You can reorder chain test patterns, stuck-at patterns, and transition fault patterns.
+            However, you cannot perform reordering operations that mix these pattern types.
+            Attempting to do so results in an error, as shown in the following example: Error: Pattern 2 and 13 are not of same type. Reordering is
+            possible between patterns of same type only Transition patterns are 6 to 99 Chain test patterns are 1 to 5
+

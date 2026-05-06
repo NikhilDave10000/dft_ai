@@ -1,0 +1,31 @@
+COMMAND: set_environment_gui
+
+TITLE:
+set_environment_gui
+
+DESCRIPTION:
+This command provides a command line equivalent for many of the changes that can be interactively adjusted in the Environment dialog box.
+
+SYNTAX:
+set_environment_gui [-cmdbar | -nocmdbar] [-error_messages <transcript | message_box>] [-history_order <newest | oldest>] [-max_history_length d] [-title_prefix string] [-toolbar <text | bitmap>]
+
+OPTIONS:
+-cmdbar | -nocmdbar : A selection of -cmdbar displays the command bar and while you resize
+            the main window, hides or discloses buttons. Click the ">> symbol on the far right to
+            view and select a hidden button. A selection of -nocmdbar hides the
+            command bar. The default is -cmdbar .
+-history_order <newest | oldest> : This option specifies the order in which the command history appears in the popup
+            window when the down arrow at the right of the command line input buffer is selected and
+            the command history window opens up. A selection of newest causes the most recent
+            command to appear first (at the top) of the window. A selection of oldest causes the
+            oldest command to appear first. The default is Oldest.
+-max_history_length d : This option controls the maximum number of commands stored in the command history
+            buffer. The default is 100 lines.
+-title_prefix string : This option displays a text string in the GUI title. To make the hostname visible in
+            the GUI title, use the hostname as the string .
+-toolbar <text | bitmap> : This option determines whether the GUI buttons are displayed with text labels or as
+            graphical icons. The default is Text.
+
+EXAMPLES:
+BUILD> set_environment_gui -toolbar bitmap
+

@@ -1,0 +1,23 @@
+COMMAND: report_po_masks
+
+TITLE:
+report_po_masks
+
+DESCRIPTION:
+This command reports all primary outputs that have been constrained to be masked with the add_po_masks command.
+
+SYNTAX:
+report_po_masks
+
+EXAMPLES:
+DRC> report_po_masks
+  Warning: Requested report contained no entries. (M13)
+ DRC> add_po_masks {D0 D1 D2 D3}
+ DRC> report_po_masks
+ output port_name
+ ----------------
+ /D0
+ /D1
+ /D2
+ /D3
+

@@ -1,0 +1,29 @@
+COMMAND: get_cells
+
+TITLE:
+get_cells
+
+DESCRIPTION:
+This command returns a collection of cell objects.
+
+SYNTAX:
+collection get_cells -id d | -type type | -nonscan | -filter expression | -all | -selected | -clock clock | [-regexp] [-nocase] [-hsc separator] [ patterns]
+
+OPTIONS:
+-id d : Returns a collection of cell objects corresponding to the specified gate ID.
+-type type : Returns a collection of cell objects with primitives of the type specified in the report primitives command.
+-nonscan : Returns a list of nonscan sequential elements.
+-all : Returns all cell objects.
+-selected : Returns a collection of cells that are selected in the GSV.
+-clock clock : Returns cells with the specified clock.
+-filter expression : Returns cells with the specified filter. The -filter option cannot be
+            used when the patterns argument is specified.
+-regexp : Recognizes patterns as full regular expressions. This option applies only to the cell
+            name. Note that you cannot use the -filter and -regexp options at the same time.
+-nocase : When combined with the -regexp option, the -nocase option causes
+            case-insensitive matches . You can use the -nocase option only when you
+            also use the -regexp option.
+-hsc separator : Specifies a separator character. The default is "/". Valid values are /, @, ^, #, .,
+            and |
+patterns : Matches cell names against the specified patterns.
+

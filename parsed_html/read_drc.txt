@@ -1,0 +1,17 @@
+COMMAND: read_drc
+
+TITLE:
+read_drc
+
+DESCRIPTION:
+This command reads the specified STIL procedure file, but will not further process it through DRC.
+
+SYNTAX:
+read_drc filename [-reorder_xtol_signals]
+
+OPTIONS:
+filename : Specifies the STL procedure file to be read.
+-reorder_xtol_signals : Reverses the order of signal usage for unload mode signals when writing X-tolerant mode
+            data. You should use this option if the run_drc command uses a file written from the read_drc command, and generates R rule violations during DRC. Note
+            that STIL procedure files generated from DFT Compiler might require this option if the read_drc command is specified before these files are used by the run_drc command.
+

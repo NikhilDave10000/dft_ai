@@ -1,0 +1,24 @@
+COMMAND: get_pins
+
+TITLE:
+get_pins
+
+DESCRIPTION:
+The get_pins command creates a collection of pins in the current design, relative to the current instance, that match certain criteria.
+
+SYNTAX:
+collection get_pins [-filter expression] [-regexp] [-nocase] [-hsc separator] [ patterns] string expression list patterns
+
+OPTIONS:
+-filter expression : Filters the collection with expression. For any pins that match patterns (or objects),
+            the expression is evaluated based on the pin's attributes. If the expression evaluates
+            to true, the pin is included in the result. Note that this option cannot be specified at
+            the same time as the patterns argument.
+-regexp : Views the patterns argument as real regular expressions rather than
+            simple wildcard patterns. This option applies only to the pin name. You cannot use the -filter and -regexp options at the same time.
+-nocase : When combined with -regexp , makes matches case-insensitive. You can
+            use -nocase only when you also use -regexp .
+-hsc separator : Separator character. The default is /. Valid values are : /, @, ^, #, ., |
+patterns : Matches pin names against patterns. Patterns can include the wildcard characters "*"
+            and "?" or regular expressions, based on the -regexp option.
+

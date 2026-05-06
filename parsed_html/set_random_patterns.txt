@@ -1,0 +1,22 @@
+COMMAND: set_random_patterns
+
+TITLE:
+set_random_patterns
+
+DESCRIPTION:
+Use this command to set the parameters that control the application of random patterns.
+
+SYNTAX:
+set_random_patterns [-clock < pinname | -clock_none>] [-length d] [-observe <master | slave | shadow>]
+
+OPTIONS:
+-clock < pinname | -clock_none> : Specifies the name of the capture clock to be used for random patterns. The default is -clock_none (no capture clock).
+-length d : Specifies the number of random patterns to apply. The default is 1024 patterns.
+-observe <master | slave | shadow> : Specifies the type of scan cell observe points to use for random patterns. The default
+            is master. In addition to this choice, every pattern is assumed to also measure
+            primary outputs.
+
+EXAMPLES:
+DRC>
+set_random_patterns -clock_none -length 3000 -observe master
+

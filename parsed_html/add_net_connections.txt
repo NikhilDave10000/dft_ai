@@ -1,0 +1,69 @@
+COMMAND: add_net_connections
+
+TITLE:
+add_net_connections
+
+DESCRIPTION:
+Use this command to change the behavior of nets in a netlist.
+
+SYNTAX:
+add_net_connections < pi | po | pio | tie0 | tie1 | tiex | tiez > <{ net_names } | pin_pathname > [-port name] [-module { names } | -all] [-disconnect | -remove] [-buf]
+
+OPTIONS:
+pi | po | pio | tie0 | tie1 | tiex | tiez : Indicates the type of net connection to be made. pi is
+            primary input, po is primary output, pio is primary input/output. The
+              " tie " values are for 0/1/x/z tied net connections.
+net_name | pin_pathname : Specifies the nets for which the selected connection is to be added. The net can be
+            identified by its net name or by an associated pin_pathname. A net pathname or pin
+            pathname below the "design" level (often identified by the use of the celldefine
+            directive in Verilog) cannot be the target of an add_net_connections command. For ideas on valid pin path names, review the fault list for the block in
+            question. Note : Net connections are a deferred
+              list that is operated on only after run_build_model is executed.
+            You should review the status messages during build for any B29(You can see in the TestMAX ATPG and TestMAX Diagnosis DRC Rules ) violations.
+            These are indications that the net connection target was not found. pin_pathname identifies the net connected to the pin that needs a new
+            connection. Therefore, all the sinks connected to the driving net will get the new
+            connection.
+-port name : Specifies the port name to which the connection is added. This can be only used for pi , po , or pio connections. If the
+            port does not exist; it is added. If it does exist, it is reused. If a set of vectored
+            (bussed) signals (VCS definitions with bracketed consecutive integers) are added with
+            this command, the assumed order of the created VCS port vector matches the order in
+            which the signals were declared. This option cannot be combined with -remove .
+-module name : Indicates that a net connection is made for every instantiation of the selected module.
+            The report_modules command
+            identifies the valid net and pin names of the module. The -module option can be combined only with the tie0 , tie1 , tiex , or tiez connections. When the same net name is to be handled in multiple modules, then
+            all net connections for this same net name need to be defined in a single add
+            net connections command using the -module option
+            multiple times. When modules are modified, the effect cannot be undone using the remove_net_connections command. To undo the changes, the original module must be re-read with the read_netlist command.
+-all : Specifies that the net_name supplied is to be processed for all modules where it can be
+            found. Without this option, only a net_name match at the top design level is processed.
+            Changes made with this option cannot be undone using the remove_net_connections command. To undo the changes, all modules should be deleted from memory and re-read from
+            their original source files.
+-disconnect : Indicates that the net is disconnected from its original drivers. Without this option,
+            the original driver remains. This option cannot be used if the target net is a top-level
+            bidi (PIO) or output (PO).
+-remove : Indicates that the pin_pathname is removed from the design. The pin pathname must
+            specify an existing top-level port. The port is disconnected from its original driver.
+            This option should be used together with PI , PO , or PIO option. It can also be used with the tie0 , tie1 , tiex , or tiez option if the
+            port is an input or bidirectional port. The -remove option cannot be
+            combined with any of the following: -port , -module , -all , or -disconnect . When a port is removed,
+            it does not show up in any patterns created.
+-buf : This option, when specified with the -disconnect option, disconnects
+            the target input (note that it can only be used with the tie0 , tie1 , tiez , tiex and pi net connections, and has effect only when used on module input
+            pins). When -buf is specified, a buffer is inserted in front of the
+            selected pin, thus isolating it from the rest of the net. The net connection is then
+            applied, which will disconnect the buffer and replace it with a pi . The
+            buffer can be removed by regular flattening optimizations.
+
+EXAMPLES:
+BUILD> add_net_connections TIE1 GLOBAL_VCC -all
+ BUILD> add_net_connections TIE0 GLOBAL_GND -all
+ BUILD> add_net_connections TIE1 GND -module {ORC1 BEA47 IOB21 }
+ BUILD> add_net_connections PI level2/L1/p3/b -port new_pin
+ BUILD> add_net_connections PI level2/L1/out11 -disconnect
+ BUILD> add_net_connections PO level2/L1/out11
+ BUILD> add_net_connections TIE0 float1 -module nestedand
+ BUILD> add_net_connections PI pwr1 gnd1 -remove
+ BUILD> add_net_connections TIE0 enable1 -remove
+ BUILD> add_net_connections TIE1 enable2 -remove
+ BUILD> add_net_connections TIEZ enable3 -remove
+

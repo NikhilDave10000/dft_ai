@@ -1,0 +1,68 @@
+COMMAND: report_primitives
+
+TITLE:
+report_primitives
+
+DESCRIPTION:
+Use this command to report data on ATPG primitives in the model created by the run build_model command.
+
+SYNTAX:
+report_primitives < id | instance_name | net_name | pin_pathname | -ports | -pis | -pos | -pios | -type type | -summary | -all > [-max d]
+
+OPTIONS:
+id | instance_name | net_name | pin_pathname : Selects display of pin data for the specified object. The type of pin data is specified
+            by a prior set_pindata command. An object is identified by its primitive ID number, its instance name, a net
+            name connected to the object, or a pin pathname of a pin of the instance. You can use a
+            wildcard character with an instance name. However, when TestMAX ATPG reads an image
+            file, the object cannot be identified by its instance name.
+-all : Reports all primitives. The pin data, as specified by a prior set_pindata command, is displayed for
+            each primitive.
+-ports : Reports all external (top-level) ports; equivalent to -pis -pos -pios .
+-pis : Reports all input ports (Primary Inputs).
+-pos : Reports all output ports (Primary Outputs).
+-pios : Reports all bidirectional ports (Primary I/O ports).
+-type type : Reports all primitives of a specific classification type. The pin data, as specified by
+            a prior set_pindata command,
+            is displayed for each primitive. Priority indicator "p" on an input shows that the input (which must be the set or reset
+            of a DLAT or DFF) has priority over the other set or reset of the same primitive.
+            Priority indicator "P" on an input shows that the input (which must be the set, reset,
+            or clock input of a DLAT or DFF) has priority over other clocks non-set/reset) of the
+            same primitive. These indicators allow correlating the attributes of gate pins in the flattened model
+            with the attributes of module ports in the netlist data (see the report_modules command). The recognized types include simulation primitives and ATPG functions as well as
+            learned behavior analysis: Simulation and ATPG Function Types: ADRBUS, AND, BUF, BUFZ, BUS, BUSK, DATABUS, DFF, DLAT, EQUIV, INV, MEMORY, MOUT, MUX,
+            NAND, NOR, OR, PI, PIO, PO, RPORT, SEL01, SEL1, SW, TIE0, TIE1, TIEX, TIEZ, TSD, WBUF,
+            WIRE, XNOR, XOR Learned Behavior Types: blocked, common_input, common_tied_input, conblocked, constrained, equivalences,
+            implications, invert_inputs, learn_buf, learn_inv, learn_tied_gate, tied, weak.
+-summary : Displays a summary of primitives used in the ATPG simulation model. This summary
+            includes the total number of primitives as well as a count of each primitive type used
+            in the ATPG model.
+-max d : Limits the number of primitives reported to specified maximum. This option does not
+            work with the -summary or -all options. To report a
+            specific number out of all primitives, use the report_primitives * -max d command .
+
+EXAMPLES:
+TEST> report primitives -summary
+        Primitive Summary Report
+ -----------------------------------------------
+ #primitives         20201
+ #primary_inputs        49
+ #primary_outputs       41
+ #primary_bidis         40
+ #DFFs                1713
+    #nonscan           201
+    #scan             1512
+ #BUSs                  40
+ #BUFs                1573
+ #INVs                1963
+ #ANDs                2384
+ #NANDs               5381
+ #ORs                 3298
+ #NORs                 972
+ #XORs                 208
+ #XNORs                141
+ #TIE0s                 55
+ #TIE1s                  3
+ #MUXs                2259
+ #TSDs                  81
+ -----------------------------------------------
+

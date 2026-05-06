@@ -1,0 +1,117 @@
+COMMAND: set_wgl
+
+TITLE:
+set_wgl
+
+DESCRIPTION:
+You use this command to set the parameters for waveform generation language (WGL) pattern generation.
+
+SYNTAX:
+set_wgl [-bidi_map {<ab> <cd>}]... [-chain_list <all | shift>]... [-forces_during_load <allow_x | previous_values | no_x>] [-group_bidis | -nogroup_bidis] [-initial_zx < as_is | x_only | z_only >] [-inversion_reference <cell | master | omit> [-last_scan | -nolast_scan] [-macro_usage | -nomacro_usage] [-pad | -nopad] [-scan_map < dash | bidi | keep | none >] [-tester_ready | -notester_ready | -pre_measured]
+
+OPTIONS:
+-bidi_map <ab> <cd> : Specifies an alternative mapping of force and measure characters in the WGL output.
+            This applies only to bidirectional ports, not to input-only or output-only ports. There
+            are 9 mappings that can be adjusted: 3 for when the bidirectional port is an input, 4
+            for when the bidirectional port is an output, and 2 for when the bidirectional port is a
+            scan input or scan output. The ab choice the input side of the translation. The first character
+            is the force value and the second character is the measure value. A dash
+              " - " as a force character is a placeholder, meaning a scan chain
+            input, while a dash as a measure character is a placeholder meaning a scan chain
+            output. The cd choice the corresponding output side of the translation. These
+            are the characters that appear in the WGL output file. The default mapping can viewed
+            with the report_settings command. Here is a mapping example: ab : cd == : == 0x : 0- # force 0, no measure 1x : 1- # force 1, no measure xx : x- # force unknown, no measure z0 : -0 # force Z, measure 0 z1 : -1 # force Z, measure 1 zx : -x # force Z, no measure zz : -z # force Z, measure Z -x : -- # bidi is a scan input z- : -- # bidi is a scan output The ab combinations in the previous example represent all legal values
+            that can be mapped. All other combinations for the ab characters are
+            illegal. A mapping can be repeated. If you repeat a mapping, the last one specified is
+            used. For more information, see Understanding WGL Options. The set_wgl command that implements the table above is as follows: BUILD> set_wgl -bidi_map { 0x 0- 1x 1- xx x- z0 -0 \ z1 -1 zx -x zz -z x -- z- -- } Note in the previous example that you can specify the -bidi_map option
+            only once, and the parameters must be in a list structure. Alternatively, you can repeat
+            the entire command line for each entry, as shown in the following example: set_wgl -bidi_map {0x 0-} set_wgl -bidi_map {1x 1-} set_wgl -bidi_map {xx x- } set_wgl -bidi_map {z0 -0 } set_wgl -bidi_map {z1 -1} set_wgl -bidi_map {zx -x} set_wgl -bidi_map {zz -z} set_wgl -bidi_map {x --} set_wgl -bidi_map {z- --} To use some BIDI mappings, you must disable the detection of Z states on device I/O
+            pins. This means the set_buses -external_z x command must be specified. Also, when writing WGL output,
+            you cannot specify the -measure_forced_bidis option of the write_patterns command.
+-chain_list <all | shift> : In some designs, typically containing JTAG, there are one or more shifts of the scan
+            chain done outside of the "shift" procedure within the load_unload procedure. When this
+            occurs, the length of the data vector provided for the WGL "scan" statement is reduced
+            by the number of shifts done with "vector" statements. Some WGL translators require that
+            the length of the scan chain defined in the WGL scanchain block match the number of bits
+            in the scan() load. Other WGL translators require that the length of the defined scan
+            chain match the physical scan chain at all times. The selection of all causes all
+            instances in the scan chain to occur in the definition. The selection of shift causes
+            only the instances loaded by the "scan()" statement to appear. The default is shift.
+-forces_during_load <allow_x | previous_values | no_x> : Specifies how primary inputs not explicitly forced in the load_unload procedure should
+            be forced. A selection of previous_values, which is the default, causes vector and scan
+            statements associated with the load_unload procedure to keep the values from the prior
+            capture procedures. A selection of no_x is identical to a selection of previous_values,
+            but in addition, if the prior value for an input was an X, it is changed to the pad
+            character in effect while writing patterns. A selection of allow_x disables this pattern
+            persistence, so that all inputs not explicitly set in the load_unload procedure are
+            forced to X. This option has no effect if the macro form of WGL is used and the behavior
+            is that of allow_x.
+-group_bidis | -nogroup_bidis : Selecting -group_bidis specifies that WGL patterns for designs with
+            bidirectional ports should have the pattern data for bidirectional ports presented in a
+            single column, 2-character grouped form. Selecting -nogroup_bidis produces data where the bidirectional values occur in two separate single character
+            columns, one for input and the other for output. The default is -nogroup_bidis .
+-initial_zx < as_is | x_only | z_only > : This option, which affects the WGL timeplate description, enforces a specific state
+            (either Z or X) only at time-zero (0ns) of any waveform that starts with a Z or X. The
+            default, as_is , does not change the waveform description from the
+            timing definition in the incoming STL procedure file or provided by default. When z_only is specified, any waveform event at time-zero that
+            specifies an X is changed to a Z (all other events remain the same, including any P
+            values). When x_only is specified, any Z event at time-zero is changed
+            to an X. It is recommended that if a waveform needs a specific value, this value should
+            be specified with the incoming timing of the STL procedure file rather than using this
+            option. However, for situations in which the WGL output must not have a Z state at
+            time-zero, but it is required by the STIL operation, the -initial_zx
+              x_only specification can be used to change only the WGL timing. This option is applied to write_patterns -format wgl or wgl_flat output. It
+            is strongly recommended that you use the x_only option when wgl_flat output is generated, since z_only generates
+            drive operations that are likely not desired in the output WGL file.
+-inversion_reference <master | cell | omit> : This option selects the reference scheme used to construct the inversion markers ("!"
+            characters) written to the WGL pattern file header. The selection of cell identifies an
+            inversion from each scan cell input to the next scan cell input. The use of master
+            identifies an inversion from each master cell to the next. This is a match to
+            TestCompiler and is the default. The selection of omit causes all inversion markers to
+            be omitted. This selection also affects the data written when the -notester_ready option is selected (see below). See also:
+            Understanding WGL Options
+-last_scan | -noLast_scan : Use of the -last_scan option results in the last patterns in the WGL
+            file being a "scan" vector. This is the default. Use of -nolast_scan causes the final patterns in the WGL file to be parallel "vector" patterns. This ending
+            with "vector" statements ensures that there are no active clocks, there are no
+            bidirectional port conflicts or internal bus contention problems, and the same number of
+            cycles/vectors occur for all patterns. Use of -nolast_scan is required
+            for compatibility with some ASIC vendor requirements for WGL, such as LSI Logic's LNI
+            format.
+-macro_usage | -nomacro_usage : Selecting -nomacro_usage specifies that WGL patterns should be
+            simplified without the use of macros. Use of -macro_usage allows for
+            the definition and use of macros, which can make the pattern file more complex but
+            result in a more compact file. The default is -nomacro_usage .
+-pad | -nopad : Selecting -pad specifies that scan chains shorter than the longest
+            scan chain should be padded to match the length of the longest. Selecting -nopad specifies that no padding will occur. The default is not to
+            pad. The choice of padding characters can be altered by using the -pad option of the write_patterns command.
+-scan_map <dash | bidi | keep | none> : For WGL output, the mapping of characters for "vector()" constructs and "scan()"
+            constructs can be handled differently from each other. Selecting dash causes scan chain inputs and outputs that are also bidirectional ports to be mapped to
+            "--" for force and measure. Selecting bidi causes scan chain bidi ports
+            to be mapped as determined by the -bidi_map settings in effect.
+            Selecting keep causes the scan chain bidi ports to keep the same value
+            as the prior vector() construct from the load_unload procedure. Selecting none turns off any mapping of scan chain bidi ports. The default is dash .
+-tester_ready | -notester_ready | -pre_measured : There are three variations for representing the scan chain load and unload data in the
+            WGL output file. The -tester_ready mode causes the data to be created
+            in a form that is ready to shift into the device pins on the tester, and requires no
+            additional processing to compensate for inversion information of the scan cells which is
+            loaded. The -notester_ready or parallel mode causes the data to be created in
+            a form that is ready to directly load into the state element of the scan cell which
+            TestMAX ATPG has classified as the "master" without additional processing for scan cell
+            inversion data. This means that the scan load and unload data is modified from the data
+            that would have been used for tester_ready by adjusting the data for
+            the effect of inversions between scan input and the scan cell for scan loads, and
+            between the scan cell and the scan output for scan unloads. The reference point for
+            inversions is selected by the -inversion_reference option. The pre_measured option is similar to the -notester_ready option in that it is a parallel form of data, but it
+            produces a different output when and end-of-cycle protocol is used (measure comes after
+            shift clock). The end-of-cycle protocol requires a scan output pre-measure vector for
+            the first scan bit and the expected scan unload data must be shifted by one bit to
+            compensate for this pre-measure. During this one-shift adjustment, the effect of
+            inversions between cells is considered and the expected data is modified accordingly. If
+            a preclock measure protocol is used, then the WGL produced is the same as if a selection
+            of -notester_ready was made. However, if an end-of-cycle protocol is
+            used, the WGL is different if the scan chains contain inversions. This parallel form is
+            the more traditional form expected by many test translation utilities. The default is -pre_measured .
+
+EXAMPLES:
+TEST> set_wgl -nomacro_usage
+

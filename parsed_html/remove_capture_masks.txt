@@ -1,0 +1,37 @@
+COMMAND: remove_capture_masks
+
+TITLE:
+remove_capture_masks
+
+DESCRIPTION:
+Use this command to delete previously defined nonscan cell capture masks.
+
+SYNTAX:
+remove_capture_masks < instance_path | gate_id | -all>...
+
+OPTIONS:
+instance_path | gate_id : Specifies the instance path name or the gate ID of the nonscan sequential cell for
+            which the capture mask should be removed. This gate should have been previously masked
+            with the add capture
+              masks command or an error is reported.
+-all : Specifies the removal of all defined capture masks.
+
+EXAMPLES:
+DRC> report_capture_masks
+  gate_id type instance_name
+ ------- ---- ---------------------------------
+   19252 DFF MAIN/U87/DATA_OUT
+   19286 DFF MAIN/U111/SHADOW
+   19287 DFF MAIN/U112/SHADOW
+   19288 DFF MAIN/U113/SHADOW
+
+ DRC> remove_capture_masks MAIN/U112/SHADOW
+  1 capture masks were removed from capture mask list.
+
+ DRC> report_capture_masks
+ gate_id type instance_name
+ ------- ---- ---------------------------------
+   19252 DFF MAIN/U87/DATA_OUT
+   19286 DFF MAIN/U111/SHADOW
+   19288 DFF MAIN/U113/SHADOW
+

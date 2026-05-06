@@ -1,0 +1,30 @@
+COMMAND: define_proc_attributes
+
+TITLE:
+define_proc_attributes
+
+DESCRIPTION:
+arg_name is the name of the argument.
+
+SYNTAX:
+string define_proc_attributes proc_name [-info info_text] [-define_args arg_defs] [-command_group group_name] [-hide_body] [-hidden] [-dont_abbrev] [-permanent]
+
+OPTIONS:
+proc_name : Specifies the name of the existing procedure.
+-info info_text : Provides a help string for the procedure. This is printed by the help command when you
+            request help for the procedure. If you do not specify info_text , the
+            default is "Procedure".
+-define_args arg_defs : Defines each possible procedure argument for use with help -verbose .
+            This is a list of lists where each list element defines one argument.
+-command_group group_name : Defines the command group for the procedure. By default, procedures are placed in the
+            "Procedures" command group.
+-hide_body : Hides the body of the procedure from info body .
+-hidden : Hides the procedure from help and info proc .
+-dont_abbrev : Specifies that the procedure can never be abbreviated. By default, procedures can be
+            abbreviated, subject to the value of the sh_command_abbrev_mode variable.
+-permanent : Defines the procedure as permanent. You cannot modify permanent procedures in any way,
+            so use this option carefully.
+
+EXAMPLES:
+prompt> proc plus {a b} { return [expr $a + $b]}
+

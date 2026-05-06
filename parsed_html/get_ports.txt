@@ -1,0 +1,20 @@
+COMMAND: get_ports
+
+TITLE:
+get_ports
+
+DESCRIPTION:
+The get_ports command creates a collection of ports in the current design that match certain criteria.
+
+SYNTAX:
+collection get_ports [-regexp] [-nocase] [ patterns] list patterns
+
+OPTIONS:
+-regexp : Views the patterns argument as real regular expressions rather than
+            simple wildcard patterns. This option applies only to the port name.
+-nocase : When combined with the -regexp option, makes matches case-insensitive.
+            You can use -nocase only when you also use -regexp .
+patterns : Matches port names against patterns. Patterns can include the wildcard characters "*"
+            and "?" or regular expressions, based on the -regexp option. Patterns
+            can also include collections of type port.
+

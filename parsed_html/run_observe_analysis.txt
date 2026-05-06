@@ -1,0 +1,52 @@
+COMMAND: run_observe_analysis
+
+TITLE:
+run_observe_analysis
+
+DESCRIPTION:
+You use this command to perform an observability analysis of the design based on controllability and observability SCOAP numbers.
+
+SYNTAX:
+run_observe_analysis [-max_observe_points d] [-num_observe_points_per_cell d] <-observe_file file_name > [-type_observe <pos | scancells>] [-replace]
+
+OPTIONS:
+-max_observe_points d : Specifies the maximum number of observe points to be selected in the design. By
+            default, TestMAX ATPG will do an analysis to select an optimum number of observe points
+            required for the design.
+-num_observe_points_per_cell d : Specifies the maximum number of observe points that should be connected through XOR
+            (observation) trees to one observe scan flip flop or primary output. The default is 8
+            observe points per observe flip flop or primary output. The selection of observe flip
+            flop versus primary output is done with the -type option.
+-observe_file file_name > : Specifies the name of the output file that will contain the list of selected observe
+            points. By default, 8 locations are listed per line and rank ordered from the most
+            beneficial to the least beneficial.
+-type_observe <pos | scancells> : Specifies the type of observation technique to be used for the selected observe point.
+            You can select between a primary output and a observe scan cell to make the selected
+            location observable. The default is a scan cell.
+-replace : If the file specified by the -observe_file option exists, then this
+            option is needed to overwrite that file, otherwise, an error condition is reported.
+
+EXAMPLES:
+TEST> run_observe_analysis -max 500
+ ------------------------------------------------------------
+                         List of added observe points
+ -------------------------------------------------------------
+ cnt obs #faults node
+ --- --- ------- --------------------------------------
+   1 145 484    /ARIT/mult/U860/N01 (7041)
+   2 115 178    /ARIT/mult/U756/N01 (7528)
+   3 39  486    /ARIT/mult/U798/N01 (6361)
+   4 21  850    /ARIT/mult/U220/N01 (6445)
+   5 74  194    /ARIT/mult/U850/N01 (7051)
+   6 87  148    /ARIT/mult/S2_11_7/N01 (6822)
+   7 66  162    /ARIT/mult/U859/N01 (6918)
+   8 38  352    /ARIT/mult/U227/N01 (6785)
+   9 96   98    /ARIT/mult/lt/mu/S2_12_12/N02 (5745)
+  10 123  74    /ARIT/mult/m32/L14_11/N02 (5991)
+   : : : :
+ 498 42   14    /ARIT/mult/U801/N01 (6596)
+ 499 98    6    /ARIT/mult/U527/N01 (7344)
+ 500 28   21    /PIE_1/PEASCH/U103/N01 (11958)
+ -------------------------------------------------------------
+ Total number of added observe points = 500, CPU tiime=25.87
+

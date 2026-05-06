@@ -1,0 +1,24 @@
+COMMAND: echo
+
+TITLE:
+echo
+
+DESCRIPTION:
+The echo command prints out the value of the given arguments.
+
+SYNTAX:
+string echo [-n] [argument...]
+
+OPTIONS:
+-n : By default, echo adds a newline. This option suppresses it.
+argument : Provides the arguments to be printed.
+
+EXAMPLES:
+shell> echo "Running version" $sh_product_version
+  Running version v3.0a
+
+  shell> echo -n "Printing to" [expr (3 - 2)] > foo
+  shell> echo " line." >> foo
+  shell> sh cat foo
+  Printing to 1 line.
+

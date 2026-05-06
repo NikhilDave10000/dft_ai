@@ -1,0 +1,24 @@
+COMMAND: remove_licenses
+
+TITLE:
+remove_licenses
+
+DESCRIPTION:
+Use this command to manually release and check in selected licenses.
+
+SYNTAX:
+remove_licenses  { license }
+
+OPTIONS:
+test-analysis | test-compression-atpg | test-faultsim | test-atpg-max | test-diagnosis |
+          test-fault-max | test-power : Specifies the license or licenses to release and to check in to the license server. Any
+            number of licenses can be released using a single command.
+
+EXAMPLES:
+TEST> report_licenses
+  test-analysis
+  test-faultsim
+ TEST> remove_licenses test-faultsim
+ TEST> report_licenses
+  test-analysis
+

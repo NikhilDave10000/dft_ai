@@ -1,0 +1,20 @@
+COMMAND: report_scan_enables
+
+TITLE:
+report_scan_enables
+
+DESCRIPTION:
+Use this command to report scan enable attributes previously defined with the add_scan_enables command.
+
+SYNTAX:
+report_scan_enables
+
+EXAMPLES:
+TEST> report_scan_enables
+ value port
+ ----- -----------------------------
+   1    SCAN_EN (6)
+   Z    bidi[0] (3210)
+   Z    bidi[1] (3211)
+   Z    bidi[2] (3212)
+

@@ -1,0 +1,15 @@
+COMMAND: get_primitive
+
+TITLE:
+get_primitive
+
+DESCRIPTION:
+The get_primitive command returns a collection of primitive objects.
+
+SYNTAX:
+collection get_primitive <primitive_id>
+
+OPTIONS:
+<primitive_id> : Returns a collection of primitive objects corresponding to the specified primitive ID.
+            Note that only a single ID can be specified.
+

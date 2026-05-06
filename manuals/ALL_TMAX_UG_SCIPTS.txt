@@ -1,0 +1,644 @@
+Basic ATPG Run Script
+set_messages-log mylog-replace
+# Read in the netlist library and
+# Verilog library
+read_netlist-library library/*.v
+read_netlist design.v
+# Build the ATPG Model
+run_build_model DESIGN_TOP
+# Set up and run DRC
+set_drc stil_procedures.spf
+run_drc
+# Add faults and run ATPG
+add_faults-all
+run_atpg-auto
+# Write the patterns
+write_patterns DESIGN.stil-format STIL \-replace
+write_patterns DESIGN.bin-replace
+========================================================================================
+Basic TestMAX ATPG Run
+# In TestMAX ATPG, expert and
+# verbose messaging is
+recommended.
+set_messages-level expert
+set_atpg-verbose
+# TestMAX ATPG Uses 8 threads by
+# default. Use these settings to
+change
+# the number of threads. Make sure
+# that both set_atpg and set_
+simulation
+# use the same thread count.
+# set_atpg-num_threads 8
+# set_simulation-num_threads 8
+# Read in the netlist library and
+# Verilog library
+read_netlist-library library/*.v
+read_netlist design.v
+# Build the ATPG Model
+run_build_model DESIGN_TOP
+#Set up and run DRC
+set_drc stil_procedures.spf
+run_drc
+# Add faults and run ATPG
+add_faults-all
+run_atpg-auto
+# Write the patterns
+write_patterns DESIGN.stil-format STIL-replace
+write_patterns DESIGN.bin-replace
+========================================================================================
+ATPG Run No SPF
+set_messages-log mylog-replace
+# Read in the netlist library and
+# Verilog library
+read_netlist-library library/*.v
+read_netlist design.v
+# Build ATPG Model
+run_build_model DESIGN_TOP
+# Add Clocks and PI Constraints
+add_clocks 0{clk}-shift \-timing{100 50 80 40}
+add_clocks 1{rst}-timing{100 50 80
+40}
+add_scan_enable 1 test_se
+add_scan_chains c1 test_sis data_out
+add_pi_constraints 1 test_mode
+# Set up and run DRC
+set_drc stil_procedures.spf
+run_drc
+# Add faults and run ATPG
+add_faults-all
+run_atpg-auto
+# Write the patterns
+write_patterns DESIGN.stil-format STIL \-replace
+write_patterns DESIGN.bin-replace
+========================================================================================
+
+Bridging Fault ATPG
+set_faults-model bridging
+add_faults-node_file coupling.txt
+// Optionally set drive strength
+// set atpg \
+//-optimize_drive_strength
+run_atpg-auto
+write_patterns bridging.pat \-format bin
+remove_faults-all
+set_faults-model stuck
+add_faults-all
+set_patterns-external bridging.pat
+run_fault_sim
+set_patterns-internal
+run_atpg-auto
+set_patterns-external bridging.pat \-append
+write_patterns-bridge_ssa.pat \-format ...
+Note:
+Thestuck-at fault modelcandetect manybridges.Sofaultsimulatestuckpatternsagainst
+bridging. You canalsotrytheoppositeflow: RunATPGwithbridgingfaultsandwriteout
+bridging patterns. Then run fault simulation of bridging patternsusing stuck-at faults. Then, top
+off with additional stuck-at faults for any remaining undetected stuck-at faults.A similar scheme
+canbeusedtocombinepatternsfromother faultmodels(e.g.transition).
+========================================================================================
+
+Cell-Aware ATPG
+# Read the design image
+read_image ./design/leon3mp.img
+# Read CTMs
+read_cell_model ./CTM/*.CTM
+# Add Faults
+add_faults-all-cell_aware
+# Run ATPG
+run_atpg-optimize
+# Write the patterns
+write_patterns \
+./patterns/cell_aware_patterns.bin-replace
+========================================================================================
+Dynamic Bridging Fault ATPG
+# read netlist and libraries,
+# build, run drc
+read_netlist design.v-delete
+run_build_model design
+run_drc design.spf
+# set fault model to dynamic
+bridging
+set_faults-model dynamic
+bridging
+# read in fault list
+add_fault-node ...
+# run atpg
+run_atpg-auto_compression
+# write out the bridging
+patterns
+write_patterns dyn_bridge_pat.bin \\-format binary-replace
+# Fault simulate dynamic bridge patterns with stuck-at
+# faults. This is intended to reduce the set of patterns
+# by not generating patterns for stuck-at faults
+# detected by the dynamic bridging patterns
+remove_faults-all
+set_faults-model stuck
+add_faults-all
+# read in dynamic bridging pattern
+set_patterns external dyn_bridge_pat.bin
+# fault simulate
+run_fault_sim
+# generate additional stuck-at patterns
+set_patterns internal
+run_atpg-auto_compression
+
+Notethefollowing:
+l
+l
+l
+l
+l
+l
+l
+l
+l
+l
+ATPGattemptstolaunchatransitionalongthevictimwhileholdingtheaggressor at a
+static value
+BeforerunningATPGwithrun_atpgafaultlistshouldhavebeencreated
+Basic-scan (launch onlast shift), Two Clocks, andFast-SequentialATPGmodesare
+supported
+Fault simulation supported asusualwithrun_fault_simcommand
+DynamicBridgingATPGandFaultSimulationdonotsupportFull-Sequentialmode
+Strength-based pattern generation (similar to what existsfor the staticbridging fault
+model) isnot supportedNodefileformat: pair of bridgelocationsoneachline, separated
+byaspace
+Anunmodifiedcouplingcapacitancereport generatedfromSynopsysStar-RCXT could
+bealsoused
+Moreinfoonnodefile, seetheNodeFileFormatfor BridgingPairstopicinTestMAX
+ATPGOnlineHelp
+Fault list file should not include clocks and asynchronousset or reset signals, because
+proper detection statuscannot beguaranteedfor thesefaults
+For moreinformationondynamicbridging,seeRunningtheDynamicBridgingFault
+ATPGFlow
+========================================================================================
+
+Low Power ATPG
+read_netlist-lib $my_lib.v
+read_netlist $my_design.v
+run_build $my_design
+run_drc $my_drc_file.spf
+report_clock-gating
+set_atpg-fill adjacent
+set_atpg-power_budget 25
+add_faults-all
+run_atpg-auto
+report_power-per_pattern-percentage
+
+
+Notes:
+l
+l
+TestMAXATPGperformslow-powerfillduringATPG
+l
+set_atpg-fill adjacent
+ReducesPeakPowerduringCapture
+l
+Acceptsdesigner-specified switching activity budget
+l
+l
+l
+l
+Simple, highlyautomatedflow eliminatesneedfor manualadhocsolutions
+Producescompactpatternset
+Enablestesting at mission-modepower levels
+For moreinformation, seePower-AwareATPG
+
+
+
+========================================================================================
+
+Multicore ATPG
+# Perform DRC and enter TEST mode
+run_drc top_level.spf
+# select the fault model and create
+# the fault list
+set_faults-model transition
+# Other ATPG settings here
+...
+# Use two cores during run_atpg
+set_atpg-num_processes 2
+run_atpg-auto
+# Continue with other commands
+after run_atpg
+...
+// Multicore Usage- Farm Multi-Host (LSF)
+bsub-R "span[hosts=1]"-n 4 \
+tmax_multicore_batch.csh
+// Ensure all slots are reserved on a single host
+// 4 slots are allocated for ATPG run
+read_netlist Libs/*.v-delete-library-noabort
+run_build_model top_level
+run_drc top_level.spf
+set_faults-model stuck
+...
+add_faults-all
+set_atpg-num_processes 4
+// Multicore Usage- Farm Multi-Host (GRID)
+qsub-l cputype=amd64,\
+mem_free=16G,mem_avail=16G,\
+cpus_used=4,model=AMD2800 \
+tmax_multicore_batch.csh
+// 4 slots are allocated for ATPG run
+read_netlist Libs/*.v-delete-library-noabort
+run_build_model top_level
+run_drc top_level.spf
+set_faults-model stuck…
+add_faults-all
+set_atpg-num_processes 4
+
+Notes:
+l
+l
+l
+l
+l
+l
+l
+l
+l
+Allowsyoutoparallelize and improveATPGruntime.
+Utilizes up to the number ofuser-specifiedcores.
+Better memoryutilization (~50% increaseper core) comparedtodistributed(~100%
+increase per slave)
+Goodruntimescalability
+Verypredictable QoR
+Communicationviasharedmemoryinsteadoffilesandsockets
+Simpleuser model:set_atpg-num_processes 2
+All ATPGengines:basic-scan,two-clock, fast-seq, full-seq
+For moreinformation, seeRunningMulticoreATPG
+
+========================================================================================
+
+Scan-Through-TAP ATPG Flow
+set_faults-model bridging
+add_faults-node_file
+coupling.txt
+// Optionally set drive
+strength
+// set atpg \
+//  -optimize_drive_strength
+run_atpg-auto
+write_patterns bridging.pat \-format bin
+remove_faults-all
+set_faults-model stuck
+add_faults-all
+set_patterns-external
+bridging.pat
+run_fault_sim
+set_patterns-internal
+run_atpg-auto
+set_patterns-external bridging.pat \-append
+write_patterns-bridge_ssa.pat \-format ...
+
+
+========================================================================================
+
+Transition Delay Fault ATPG
+// last_shift launch:
+read_netlist lib.v-lib
+read_netlist test.v
+run_build top
+set_delay-launch_cycle \
+last_shift
+set_fault-model transition
+set_drc test.spf
+read_sdc <FILE_NAME>
+set_delay-nopi_changes
+set_delay-nopo_measures
+add_po_mask-all
+set_delay-launch_cycle system_
+clock
+set_delay-common_launch_capture_clock
+set_delay-allow_multiple_common_clocks
+#optional# set_delay-slow_equivalence
+#optional# set_delay-nodisturb
+add_pi_constrain 0 scan_en
+run_drc
+run_atpg-auto
+write_pattern patp.stil-format stil-parallel
+write_pattern pats.stil-format stil-serial
+exit
+// system_clock launch:
+read_netlist lib.v-lib
+read_netlist test.v
+run_build top
+set_delay-launch_cycle system_clock
+set_drc test.spf
+set_fault-model transition
+read_sdc <file_name>
+set_delay-nopi_changes
+set_delay-nopo_measures
+add_po_mask-all
+set_delay-launch_cycle system_clock
+set_delay-common_launch_capture_clock
+set_delay-allow_multiple_common_clocks
+#optional# set_delay-slow_equivalence
+#optional# set_delay-nodisturb
+add_pi_constrain 0 scan_en
+run_drc
+run_atpg-auto
+write_pattern patp.stil-format stil-parallel
+write_pattern pats.stil-format stil-serial
+exit
+========================================================================================
+Transition Delay Fault ATPG Using LOES Timing
+// Typical Flow for Using Launch-On
+// Extra Shift Mode
+set_delay–launch_cycle extra_shift
+# Other delay settings are the same for LOES and LOC
+set_delay–common_launch_capture_clock–nopi_changes
+add_po_masks-all
+run_drc design_with_loes.spf–patternexec Internal_scan
+set_faults–model transition
+run_atpg–auto
+write_patterns design_with_loes.stil–format stil
+write_faults design_with_loes.faults–all
+drc–force
+# Prepare to change the LOSPipelineEnable constraint value
+remove_pi_constraints–all
+set_delay–launch_cycle system_clock
+set_delay–common_launch_capture_clock–nopi_changes
+add_po_masks-all
+run_drc design_with_loc.spf–patternexec Internal_scan
+set_faults–model transition
+#Use-retain_code so the redundant faults do not need to be
+identified again
+read_faults design_with_loes.faults–retain_code
+# Many faults that are AU for LOES can be detected by LOC
+update_faults-reset_au
+
+========================================================================================
+
+Basic TestMAX ATPG Diagnosis Run
+# Read the image used to
+# generate the pattern for
+# diagnostics:
+read_image \
+Results/design1_img.gz
+# Use the class-based candidate
+# organization in the diagnosis
+# report.
+set_diagnosis-organization \
+class
+set_diagnosis-fault_type all
+# TestMAX ATPG thread settings
+set_atpg-num_threads 8
+set_simulation-num_threads 8
+# Set the pattern file, using the
+# binary pattern set if available, but
+# only to diagnose pattern-based failure
+# data. STIL (or WGL) patterns are
+# required to diagnose cycle-based
+# failure data, and may be used to
+# diagnose pattern-based failure data.
+set_patterns-external patterns.bin
+# Perform diagnosis on the failure file
+# and generate data for Yield Exporer.
+# Multiple runs using different failure files
+# with the same pattern may be
+# run in sequence:
+run_diagnosis datalogs/fail1.log
+write_ydf results1/design1_diagnosis.ydf-replace
+run_diagnosis datalogs/fail2.log
+write_ydf results2}/design1_diagnosis.ydf-append
+run_diagnosis datalogs/fail3.log
+write_ydf results3/design1_diagnosis.ydf-append
+========================================================================================
+
+Distributed Processing Fault Simulation Flow
+read_netlist libs.v-delete-library
+read_netlist scan_design.v
+run_build <top_level >
+run_drc top_level.spf
+set_fault-model stuck
+add_faults-all
+set_distributed \-work_dir /shared/workdir
+add_distributed_processors "hosta hostb"
+set_pattern-external func_pat.bin.gz
+run_fault_sim-distributed-sequential
+write_fault final.flt-all-collapsed \-compress gzip-replace
+
+========================================================================================
+
+DFTMAX What-If Analysis
+set_messages-log \
+scancompress_analysis.log-replace
+# read libraries and netlist
+read_netlist libs/tmax_libs/*.v-library
+read_netlist design.v
+run_build top
+# run drc in regular scan mode
+run_drc scan.spf
+set_faults-model stuck
+add_faults-all
+analyze_compressor-num_inputs 15 \-num_scanouts 15-num_chains 180
+
+========================================================================================
+DFTMAX Ultra High Resolution Pattern Flow
+read_image image_file.dat
+## Step 1
+## Run diagnostics to identify defective
+## chains. For faster run time, read
+## chain test patterns only. To
+## generate a separate set
+## containing chain test patterns
+## use run_atpg–only_chain_test
+set_patterns–external chain.stil
+run_diagnosis \
+high_res_pat_failure_log_file.log \-streaming_report_chains_only \
+chain_fail_list
+set_patterns–delete
+## Step 2
+## Read full pattern test file
+set_patterns-external full_pattern_set.stil
+## Use add_chain_masks command to
+## generate high resolution patterns
+add_chain_masks-external-filename chain_fail_list \-diagnosis
+## Write the patterns
+write_patterns high_resolution_set.stil–format stil \-external
+## Step 3
+## Retest the failing part with the high resolution
+## patterns and collect the fail data
+## Step 4
+set_patterns-external high_resolution_set.stil
+## Main diagnosis run using log file generated using
+## high resolution patterns
+run_diagnosis high_res_pat_failure_log_file.log-verbose
+
+========================================================================================
+
+Fault Coverage of Combined ATPG and JTAG Test
+Vectors
+//Generate the JTAG test vectors in BSD Compiler:
+create_bsd_patterns
+write_test-f verilog-out jtag_tb.v
+// Edit the testbench to add the eVCD dumpvar
+// command in the initial block:
+initial begin
+_failed = 0;
+/* Generate VCDE */
+// 'ifdef vcde_out
+// extended VCD, see IEEE Verilog 1364-2001
+$display("// %t : opening Extended VCD output file", $time);
+$dumpports( design.design_inst, "sim_vcde.out");
+// 'endif
+// Run VCS simulation as follows:
+Command: vcs-R-l vcs.log ver_files.v jtag_tb.v
++define+GATES+ +notimingchecks+-y models-v libs/my_io.v-v
+libs/my_techlib.v +libext+.v+
+// Step 2: Run ATPG for regular scan patterns
+# Read in libraries and top-level design with bsd inserted
+read_netlist core.v
+read_netlist io.v
+read_netlist design_w_bsd.v
+run_build
+# Run drc for atpg patterns
+run_drc mydesign.spf
+# Obtain the coverage of the core, excluding IEEE 1149.1 logic
+add_nofaults ORCA_BSR_top_inst
+add_nofaults ORCA_DW_tap_inst
+add_faults-all
+# Generate ATPG patterns
+run_atpg-auto
+# Write out atpg patterns and faultlist
+write_faults atpg.faults.gz-compress gzip-all-replace
+write_patterns atpg.pats.gz-format bin-compress gzip-replaceFault Coverage of Combined ATPG and JTAG Test
+Vectors
+//Generate the JTAG test vectors in BSD Compiler:
+create_bsd_patterns
+write_test-f verilog-out jtag_tb.v
+// Edit the testbench to add the eVCD dumpvar
+// command in the initial block:
+initial begin
+_failed = 0;
+/* Generate VCDE */
+// 'ifdef vcde_out
+// extended VCD, see IEEE Verilog 1364-2001
+$display("// %t : opening Extended VCD output file", $time);
+$dumpports( design.design_inst, "sim_vcde.out");
+// 'endif
+// Run VCS simulation as follows:
+Command: vcs-R-l vcs.log ver_files.v jtag_tb.v
++define+GATES+ +notimingchecks+-y models-v libs/my_io.v-v
+libs/my_techlib.v +libext+.v+
+// Step 2: Run ATPG for regular scan patterns
+# Read in libraries and top-level design with bsd inserted
+read_netlist core.v
+read_netlist io.v
+read_netlist design_w_bsd.v
+run_build
+# Run drc for atpg patterns
+run_drc mydesign.spf
+# Obtain the coverage of the core, excluding IEEE 1149.1 logic
+add_nofaults ORCA_BSR_top_inst
+add_nofaults ORCA_DW_tap_inst
+add_faults-all
+# Generate ATPG patterns
+run_atpg-auto
+# Write out atpg patterns and faultlist
+write_faults atpg.faults.gz-compress gzip-all-replace
+write_patterns atpg.pats.gz-format bin-compress gzip-replace
+// Step 3: Read in external bsd patterns & run fault_sim
+# Read in top-level design and run drc without a .spf file
+read_netlist {core.v io.v design_w_bsd.v}
+run_build
+run_drc
+# read in external patterns with appropriate strobe options
+set_patterns-delete-external sim_vcde.out-strobe_period {100 ns}–strobe_offset {95 ns}
+# run seq simulation to verify there are no miscompares
+run_sim-sequential
+# Read in atpg faultlist and add in the jtag faults
+read_faults atpg_faults.gz-retain
+add_faults ORCA_BSR_top_inst
+add_faults ORCA_DW_tap_inst
+# Fault simulate the jtag patterns
+run_fault_sim–sequential
+report_summaries
+========================================================================================
+
+Generating Patterns for DFTMAX Ultra
+### USER INPUTS AND DFTMAX ULTRA OUTPUT FILES ###
+set TOP_MODULE_NAME top_module_name
+set NETLIST_FILES1 netlist_files1
+set NETLIST_FILES2 netlist_files2
+set LIBRARY_FILES1 library_files1
+set LIBRARY_FILES2 library_files2
+set BUILD_CONSTRAINTS_FILE build_constraints_file
+set DRC_CONSTRAINTS_FILE drc_constraints_file
+set STL procedure file_FILE spf_file
+set LOG log_file
+setenv SYNOPSYS path_to_tool_installation
+############### BUILD SETTINGS ###################
+set_messages-level expert-log $LOG-replace
+report_version-full
+build-force
+set_faults-pt_credit 0
+set_faults-summary verbose
+set_rules N2 warning
+set_rules B12 warning
+set_rules B5 warning
+set_faults-atpg_effectiveness
+set_atpg-verbose
+set_netlist-redefined_module last
+read_netlist $NETLIST_FILES1
+read_netlist $NETLIST_FILES2
+read_netlist $LIBRARY_FILES1-library
+read_netlist $LIBRARY_FILES2-library
+source-echo $BUILD_CONSTRAINTS_FILE
+run_build_model $TOP_MODULE_NAME
+############### DRC SETTINGS ###################
+source-echo $DRC_CONSTRAINTS_FILE
+set_faults-model stuck
+run_drc $STL procedure file_FILE
+#################### RUN ATPG ####################
+add_nofaults-module .*COMPRESSOR.*
+add_faults-all
+run_atpg-auto_compression
+run_simulation–remove_padding_patterns
+write_patterns ultra.stil format stil
+========================================================================================
+
+IDDQ Bridging Flow
+# Enable IDDQ Bridging fault model
+set_fault-model iddq_bridging
+# Read bridging pairs
+add_fault–node_file bridging_
+pair.txt
+# Run ATPG
+run_atpg-auto
+# Write patterns
+write_patterns iddq_bridging.stil
+\-format stil
+========================================================================================
+
+Slack-Based Testing
+// PrimeTime:
+...
+set timing_save_pin_arrival_and_slack
+true
+update_timing
+report_global_slack-max-nosplit
+global_slack_file
+...
+// TestMAX ATPG:
+read_netlist CORE.v-library
+read_netlist DESIGN.v
+run_build_model TOP
+add_pi_constraint 0 scan_en
+run_drc DESIGN.spf
+set_faults-model transition
+set_delay-launch system
+read_timing global_slack_file
+set_delay-max_delta_per_fault 0.5
+set_delay-max_tmgn 2.5
+run_atpg-auto
+# report commands
+Notes:
+Becauseofadditionalrequirementsplacedontheon-chipclockingcontroller, launch-on shift
+modehassomemajordrawbackswhenusedwithinternalclocking.However,launch-onextra
+shift modeprovidesmanyoftheadvantagesoflaunch-onshiftmode,withoutplacinganextra
+burdenontheon-chipclockingcontroller.
+For moreinformation, seeTransitionDelayFault ATPGTimingModes
+

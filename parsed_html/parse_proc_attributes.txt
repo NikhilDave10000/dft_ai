@@ -1,0 +1,15 @@
+COMMAND: parse_proc_attributes
+
+TITLE:
+parse_proc_arguments
+
+DESCRIPTION:
+The parse_proc_arguments command is used within a Tcl procedure to enable use of the -help option, and to support argument validation.
+
+SYNTAX:
+string parse_proc_arguments -args arg_list result_arrary
+
+OPTIONS:
+-args arg_list : Specifies the list of arguments passed into the Tcl procedure.
+result_array : Specifies the name of the array into which the parsed arguments should be stored.
+

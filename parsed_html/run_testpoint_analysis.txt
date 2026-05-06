@@ -1,0 +1,30 @@
+COMMAND: run_testpoint_analysis
+
+TITLE:
+run_testpoint_analysis
+
+DESCRIPTION:
+This command controls test-point insertion based on undetected fault topology.
+
+SYNTAX:
+run_testpoint_analysis -test_point_file file_name [-num_observe_points_per_cell number] [-class fault_class] [-replace] [-dont_touch module_name] [-max_test_points number]
+
+OPTIONS:
+-test_point_file file_name : Specifies the name of the output file that will contain the list of test points. This
+            file uses the same file format as the run_observe_analysis command to remain compatible with
+            TestMAX DFT.
+-num_observe_points_per_cell number : Specifies the maximum number of observe points that should be connected through XOR
+            (observation) to one observe scan flip flop or primary output. The default is 8 observe
+            points per observe flip flop or primary output.
+-class fault_class : Specifies the class of faults to be targeted. This switch can be specified multiple
+            times if you need to specify multiple fault classes. For example, you can first generate
+            test patterns, then execute the run_testpoint_analysis command using
+            with the -class NO and -class AN options. If the -class switch is not specified, then all undetected faults is
+            considered for test-point insertion. In Tcl mode, lists are used to specify additional classes. For example: -class {NO AN} OR -class [list NO AN] You can specify the following fault classes using the -class option: DS — Detected by simulation DI — Detected by implication AP — ATPG untestable possibly detected NP — Not analyzed, possibly detected UU — Undetectable unused UO — Undetectable unobservable UT — Undetectable tied UB — Undetectable blocked UR — Undetectable redundant AN — ATPG untestable not-detected NC — Not controlled NO — Not observed
+-replace : Causes TestMAX ATPG to replace any existing output file (specified by the -test_point_file option).
+-dont_touch module_name : This option prevents the creation of test points in the specified instance. Multiple -dont_touch options can be used for additional instances. In Tcl
+            mode, lists are used to specify additional instances. For example: -dont_touch {instA instB} OR -dont_touch [list instA instB]
+-max_test_points number : Specifies the largest number of test points to be inserted. TestMAX ATPG will stop
+            writing out test-points before reaching the maximum number specified with the -max_test_points option if no improvement is seen during analysis. If
+            this option is not specified, the default maximum is 1000 test-points.
+

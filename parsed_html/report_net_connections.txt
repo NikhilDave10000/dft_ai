@@ -1,0 +1,18 @@
+COMMAND: report_net_connections
+
+TITLE:
+report_net_connections
+
+DESCRIPTION:
+Use this command to report all net connections added with the add_net connections command.
+
+SYNTAX:
+report_net_connections
+
+EXAMPLES:
+BUILD> add_net_connections PI gwx12z/amd/dp/uto_reg_0/D -disconnect
+ BUILD> add_net_connections PO gwx12z/amd/dp/U943/Z
+ BUILD> report_net_connections
+  Connection PI, net gwx12z/amd/dp/uto_reg_0/D, disconnect
+  Connection PO, net gwx12z/amd/dp/U943/Z
+

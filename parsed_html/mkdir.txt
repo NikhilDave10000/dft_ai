@@ -1,0 +1,17 @@
+COMMAND: mkdir
+
+TITLE:
+mkdir
+
+DESCRIPTION:
+Use this command to create a new directory.
+
+SYNTAX:
+mkdir <pathname>
+
+OPTIONS:
+pathname : Specifies the name of the directory to create.
+
+EXAMPLES:
+DRC> mkdir flt_files
+

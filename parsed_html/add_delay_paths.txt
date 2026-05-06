@@ -1,0 +1,21 @@
+COMMAND: add_delay_paths
+
+TITLE:
+add_delay_paths
+
+DESCRIPTION:
+This command reads in a delay path list from a specified file.
+
+SYNTAX:
+add_delay_paths file_name
+
+OPTIONS:
+file_name : Reads in a delay path list from this file.
+
+EXAMPLES:
+TEST> add_delay_paths stopwatch
+ Warning: Rule P2 (missing delay path name) was violated 4 times.
+ Warning: Rule P21 (path node values not satisfiable) was violated 2 times.
+ Delay path file results: #paths=4, #invalid=0, #untestable=2, CPU
+ time=0.04 seconds.
+

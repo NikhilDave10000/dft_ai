@@ -1,0 +1,20 @@
+COMMAND: report_capture_masks
+
+TITLE:
+report_capture_masks
+
+DESCRIPTION:
+Use this command to report any defined capture masks which can exist on nonscan sequential cells.
+
+SYNTAX:
+report_capture_masks
+
+EXAMPLES:
+DRC> report_capture_masks
+ gate_id type instance_name
+ ------- ---- ---------------------------------
+   19252 DFF MAIN/U87/DATA_OUT
+   10286 DFF MAIN/U111/REG_1
+    9287 DFF MAIN/U112/BARSQ
+   11288 DFF MAIN/U113/KJX1
+

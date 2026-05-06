@@ -1,0 +1,152 @@
+COMMAND: remove_faults
+
+TITLE:
+remove_faults
+
+DESCRIPTION:
+This command removes faults from the current fault list.
+
+SYNTAX:
+remove_faults [<pin_pathname | instance_name | -module module_name | <[-bridge_location { bridge_location1bridge_location2 }] | -class fault_class | -all | -clocks | -scan_enable | -retain_sample d | -stuck <0 			| 1 | 01> | -slow <r | f | rf>] [-launch launch_clock] [-capture capture_clock] [-combinational_feedback] [-exclusive] [-shared] [-shared_launch] [-shared_capture] [-inter_clock_domain] [-intra_clock_domain] [-aggressor_node <first | second | both>] [-bridge <0|1|01>] [-dynamic_bridge <r|f|rf>] [-dominant_node <first | second | both>] [-non_strength_sensitive]
+
+OPTIONS:
+pin_pathname : Specifies removal of all faults in the current fault list associated with the specified
+            pin_pathname.
+instance_name : Specifies removal of all faults in the current fault list that are associated with the
+            specified instance name.
+-module name : Remove faults from all instances of the module, where 'name' could be a fixed string or
+            a limited regular expression.
+-bridge_location { bridge_location1 bridge_location2 } : Specifies the nodes of the bridging or dynamic bridging fault being removed. Both nodes
+            must be specified, and if not specified, then either the -all or -retain_sample options must be used. Either node can be selected to
+            be an aggressor node, victim node, both using the -aggressor option for
+            the bridging fault model and the - dominant option for the dynamic
+            bridging fault model.
+-class fault_class : Specifies the fault class that TestMAX ATPG should delete. TestMAX ATPG supports
+            multiple uses of the -class option.
+-combinational_feedback : Removes the bridging faults if the aggressor and victim form a combinational feedback
+            loop.
+-all : Specifies that all faults are to be removed. If there are any patterns in the internal
+            pattern set, they are deleted if the fault list is removed.
+-clocks : Removes clock faults from the fault list.
+-scan_enable : Removes scan enable faults from the current fault list.
+-retain_sample d : Specifies that a portion of all faults should be removed and that the indicated
+            percentage of faults should be retained. This can be used to create a sampled subset of
+            the original fault list. The sample selection is performed by giving each fault the
+            selected probability of being retained. The final result cannot be an exact percentage
+            of the original fault list due to random effects.
+-stuck <0 | 1 | 01> : Removes faults with the specified stuck value. The default is stuck 01.
+-slow <r|f|rf> : Removes faults with the specified slow value.
+-launch launch_clock : Specifies the launch clock of the faults to be removed from the fault list. You can use
+            this switch independently, or in conjunction with the -capture switch.
+            The -launch option removes all faults that are launched exclusively by
+            the specified clock. You can specify the PI, NO_CLOCK, or MULTIPLE keywords (in all
+            upper or all lowercase) with this option to remove faults that are launched by the
+            PI/PIO, no clock domains, or multiple clock domains, respectively. For a complete
+            description of how TestMAX ATPG distinguishes faults captured by a clock and launched by
+            a clock, see Using Clock Domain-Based Faults in the TestMAX ATPG and
+              TestMAX Diagnosis User Guide .
+-capture capture_clock : Specifies the capture clock of the faults to be removed from the fault list. You can
+            use this switch independently, or in conjunction with the -launch switch. The -capture switch removes all faults to the fault list that are
+            captured exclusively by the specified clock. This switch also accepts the keywords PO,
+            NO_CLOCK, or MULTIPLE, in either all upper or all lowercase, to remove faults that are
+            observed by PO/PIO, no clock domains, or multiple clock domains, respectively. For a
+            complete description of how TestMAX ATPG distinguishes faults captured by a clock and
+            launched by a clock, see Using Clock Domain-Based Faults in the TestMAX
+              ATPG and TestMAX Diagnosis User Guide .
+-exclusive : Specifies that only the faults that are launched and captured exclusively (using a
+            single launch and a single capture) are to be removed from the fault list. Faults
+            exclusively launched by PI or observed by PO are also removed. For further details, see
+            Using Clock Domain-Based Faults in the TestMAX ATPG and TestMAX Diagnosis
+              User Guide .
+-shared : Specifies that only the faults that are launched or captured by multiple clocks are
+            removed from the fault list. This excludes all PI and PO faults. For further details,
+            see Using Clock Domain-Based Faults in the TestMAX ATPG and TestMAX
+              Diagnosis User Guide .
+-shared_launch : Specifies that faults launched by the specified clock and other clocks are removed from
+            the fault list. An error is reported if you specify this switch without also using the -launch option. This excludes all PI and PO faults. For further
+            details, see Using Clock Domain-Based Faults in the TestMAX ATPG and
+              TestMAX Diagnosis User Guide .
+-shared_capture : Specifies that faults captured by the specified clock and other clocks are removed from
+            the faults list. An error is reported if you use this switch without also using the -capture option. For further details, see Using Clock Domain-Based
+            Faults in the TestMAX ATPG and TestMAX Diagnosis User
+            Guide .
+-inter_clock_domain : Removes only exclusive faults from the fault list that are launched and captured by
+            different clock domains. For further details, see Using Clock Domain-Based Faults in the TestMAX ATPG and TestMAX Diagnosis User Guide .
+-intra_clock_domain : Removes only exclusive faults from the fault list that are launched and captured by the
+            same clock domains. For further details, see Using Clock Domain-Based Faults in the TestMAX ATPG and TestMAX Diagnosis User Guide .
+-aggressor_node <first | second | both> : Specifies which node in a node pair is used as the aggressor node of a bridging fault: first , second , or both . The default
+            is both . To see how combinations of the -bridge and -aggressor_node option settings interact, see the -aggressor option of the add_faults command. Using the default settings, there are four faults removed for each node pair defined if
+            the faults were included in the list. A message is given at the end of the command
+            indicating how many faults were removed from the list.
+-bridge <0|1|01> : Specifies the type of bridging fault being removed. The type can be either: 0 - ba0 (bridging fault at 0) 1 - ba1 (bridging fault at 1) 01 -both (bridging fault at 0 and bridging fault at 1) The default is 01 (both).
+-dynamic_bridge <r|f|rf> : Specifies the type of dynamic bridging fault being reported. The type can be any of the
+            following: r - bsr (bridge slow to rise) f - bsf (bridge slow to fall) rf -both (bridge slow to rise and bridge slow to fall) The default is rf (both).
+-dominant_node <first | second | both> : Specifies which node in a node pair is used as the dominant node of a dynamic bridging
+            fault: first , second , or both . The
+            default is both . Using first or second will limit the set of faults reported and will only report the
+            faults with the dominant in the position specified. To see how combinations of the -dynamic_bridge and -dominant_node option settings
+            interact, see the -dominant_node option of the add_faults command. Using default
+            settings, four faults are removed for each node pair defined if the faults were included
+            in the list.
+-non_strength_sensitive : Removes faults where neither node is driven by a gate with a dominant value.
+
+EXAMPLES:
+TEST> add_faults /reg4
+ TEST> report_faults -all
+ sa0 DI reg4/CK
+ sa1 DI reg4/CK
+ sa0 DI reg4/Q
+ sa1 DI reg4/Q
+ sa0 DI reg4/lat1/Q
+ sa1 DI reg4/lat1/D
+ sa0 DI reg4/lat1/D
+ sa1 DI reg4/lat1/CK
+ sa0 DI reg4/lat1/CK
+ sa1 UT reg4/lat1/RB
+ sa0 DI reg4/lat1/RB
+ sa1 UT reg4/lat1/SB
+ sa0 DI reg4/lat1/SB
+ sa1 DI reg4/lat1/Q
+ sa0 DI reg4/r/SB
+ sa1 DI reg4/r/CK
+ sa0 DI reg4/r/CK
+ TEST> remove_faults reg4/lat1
+ TEST> report_faults -all
+ sa0 DI reg4/CK
+ sa1 DI reg4/CK
+ sa0 DI reg4/Q
+ sa1 DI reg4/Q
+ sa0 DI reg4/r/SB
+ sa1 DI reg4/r/CK
+ sa0 DI reg4/r/CK
+ TEST> report_faults -summary
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class         code #faults
+ ------------------- ---- ---------
+ Detected            DT   11816
+ Possibly detected   PT       0
+ Undetectable        UD     840
+ ATPG untestable     AU    3312
+ Not detected        ND   72116
+ -----------------------------------------------
+ total faults 88084
+ test coverage 13.54%
+ -----------------------------------------------
+ TEST> remove faults -all
+  Warning: Internal pattern set is now removed. (M133)
+ TEST> report_faults -summary
+       Uncollapsed Fault Summary Report
+ -----------------------------------------------
+ fault class         code #faults
+ ------------------- ---- ---------
+ Detected            DT       0
+ Possibly detected   PT       0
+ Undetectable        UD       0
+ ATPG untestable     AU       0
+ Not detected        ND    0
+ -----------------------------------------------
+ total faults 0
+ test coverage 0.00%
+ -----------------------------------------------
+

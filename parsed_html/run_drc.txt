@@ -1,0 +1,109 @@
+COMMAND: run_drc
+
+TITLE:
+run_drc
+
+DESCRIPTION:
+This command performs design rule checking (DRC).
+
+SYNTAX:
+run_drc [ file_name] [-append] [-dft] [-patternexec exec_name] [-prescan] [-test | -delete]
+
+OPTIONS:
+file_name : Specifies the name of the STIL procedures file that defines the scan chains and test
+            procedures. If not specified, the file name specified in the most recent set_drc command is used. Any file used
+            becomes the default for future run_drc commands. The syntax of the STIL
+            procedures file is a limited subset of the IEEE STIL language.
+-append : Applies the DRC operation based on information specified from command line settings
+            (the same as if the run drc command was performed without a specified
+            test protocol file). A test protocol filename must be specified with this option,
+            however only the MacroDefs and Procedures sections of this file are included in the
+            applied data. The test protocol file provides the capability to define the test_setup and/or the
+            load_unload procedure in a flow that would otherwise use command line statements to
+            establish the design information. As a result, you can override the defaults established
+            for these functions when command line operations are used exclusively. The test protocol
+            file should only contain either one or both of the MacroDefs and Procedures blocks; any
+            other data in this file is ignored. These blocks should contain the following statements
+            at the beginning of the line (no other names should appear on these blocks):
+              " Procedures { " and " MacroDefs { " . If the MacroDefs block is specified, it must include the definition of
+            the test_setup procedure. If the Procedures block is specified, it must include the
+            definition of the load_unload procedure, and may also define definitions of capture
+            procedures.
+-dft : This option, which is applicable to DRC mode only, causes TestMAX ATPG to check
+            post-scan DRC rules (includes all DRC checks except for D rules). TestMAX ATPG returns
+            to DRC mode after checking, regardless of whether the rule check is successful.
+-patternexec exec_name : Selects between different PatternExec blocks in the STIL procedure file. DRC can only
+            run on one of the PatternExec blocks, so if the STIL procedure file has more than one,
+            this switch must be used. Failure to use this switch might cause DRC to run on only the
+            last PatternExec block in the file.
+-prescan : Causes TestMAX ATPG to check only pre-scan DRC rules (D rules). TestMAX ATPG returns to
+            the DRC mode after the checking is complete. The prescan context assumes certain netlist
+            environments and requires certain options to be set to for the checking to accurately
+            take place. For instance, if this analysis is performed on a netlist before scan
+            insertion, the command set_scan_ability on -all is required. Other netlist contexts might
+            require additional switches.
+-test | -delete : Indicates the type of design rule checking to be performed. If you select -test (the default), design rule checking is performed for TEST
+            command mode. Upon successful completion, the command mode is set to TEST. The -delete option deletes all DRC data, and must be run in TEST mode.
+            After the data is deleted, TestMAX ATPG returns to DRC command mode.
+
+EXAMPLES:
+DRC> run_drc slo_gin.spf
+ --------------------------------------------------------------------------
+ Begin scan design rule checking...
+ --------------------------------------------------------------------------
+ Begin reading test protocol file slo_gin.spf...
+ End parsing STIL file slo_gin.spf with 0 errors.
+ Test protocol file reading completed, CPU time=0.08 sec.
+ --------------------------------------------------------------------------
+ Begin Bus/Wire contention ability checking...
+ Bus summary: #bus_gates=40, #bidi=40, #weak=0, #pull=0, #keepers=0
+    Contention status: #pass=0, #bidi=40, #fail=0, #abort=0, #not_analyzed=0
+    Z-state status : #pass=0, #bidi=40, #fail=0, #abort=0, #not_analyzed=0
+ Bus/Wire contention ability checking completed, CPU time=0.04 sec.
+ --------------------------------------------------------------------------
+ Begin simulating test protocol procedures...
+ Nonscan cell constant value results: #constant0 = 4, #constant1 = 7
+ Nonscan cell load value results : #load0 = 4, #load1 = 7
+ Warning: Rule Z4 (bus contention in test procedure) was violated 12 times.
+ Test protocol simulation completed, CPU time=0.15 sec.
+ --------------------------------------------------------------------------
+ Begin scan chain operation checking...
+ Chain c1 successfully traced with 31 scan_cells.
+ Chain c2 successfully traced with 31 scan_cells.
+ Chain c3 successfully traced with 31 scan_cells.
+ Chain c4 successfully traced with 31 scan_cells.
+ Chain c5 successfully traced with 31 scan_cells.
+   : : : : : : :
+ Chain c44 successfully traced with 30 scan_cells.
+ Chain c45 successfully traced with 30 scan_cells.
+ Chain c46 successfully traced with 30 scan_cells.
+ Scan chain operation checking completed, CPU time=0.47 sec.
+ --------------------------------------------------------------------------
+ Begin clock rules checking...
+ Warning: Rule C17 (clock connected to PO) was violated 16 times.
+ Warning: Rule C19 (clock connected to non-contention-free BUS) was violated 1 times.
+ Clock rules checking completed, CPU time=0.15 sec.
+ --------------------------------------------------------------------------
+ Begin nonscan rules checking...
+ Nonscan cell summary: #DFF=201 #DLAT=0 tla_usage_type=none
+ Nonscan behavior: #C0=4 #C1=7 #LE=11 #TE=179
+ Nonscan rules checking completed, CPU time=0.04 sec.
+ --------------------------------------------------------------------------
+ Begin DRC dependent learning...
+ DRC dependent learning completed, CPU time=1.01 sec.
+ --------------------------------------------------------------------------
+ Begin contention prevention rules checking...
+ 26 scan cells are connected to bidirectional BUS gates.
+ Warning: Rule Z9 (bidi bus driver enable affected by scan cell) was violated 24 times.
+ Contention prevention checking completed, CPU time=0.03 sec.
+ --------------------------------------------------------------------------
+ DRC Summary Report
+ --------------------------------------------------------------------------
+ Warning: Rule C17 (clock connected to PO) was violated 16 times.
+ Warning: Rule C19 (clock connected to non-contention-free BUS) was violated 1 times.
+ Warning: Rule Z4 (bus contention in test procedure) was violated 12 times.
+ Warning: Rule Z9 (bidi bus driver enable affected by scan cell) was violated 24 times.
+ There were 54 violations that occurred during DRC process.
+ Design rule checking was successful, total CPU time=2.27 sec.
+ --------------------------------------------------------------------------
+

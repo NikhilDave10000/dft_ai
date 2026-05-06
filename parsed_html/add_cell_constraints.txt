@@ -1,0 +1,70 @@
+COMMAND: add_cell_constraints
+
+TITLE:
+add_cell_constraints
+
+DESCRIPTION:
+This command adds cell constraints that are used to control the load and unload values allowed on scan cells.
+
+SYNTAX:
+add_cell_constraints <0 | 1 | x | 0x | 1x | ox | xx> <[ chain_name | instance_name > [-position {< cell_pos1 | sci> [ cell_pos2 | sci]>} | -all>>] [-index number]
+
+OPTIONS:
+0 | 1 | x | 0x | 1x | ox | xx : Indicates the type of constraint to be added. The choices 0 , 1 , or x indicate the constrained value that
+            should be in place at the end of the scan chain load. When a 0 , 1 , or x constraint is applied, the scan cell is
+            always loaded with this value for every pattern. A capture clock loads new data into the
+            scan cell that might be different from the 0/1/X loaded by a scan load. When a 0x constraint is specified, the scan cell is always loaded to
+            zero (0) and will always observe X. When a 1x constraint is specified, the scan cell is always loaded to
+            one (1) and will always observe X. A ox constraint indicates the observed value is always masked, or
+            considered to be X. The value loaded by a scan load or captured by a capture clock is
+            not affected, and the actual scan cell value continues to affect the fanout cone of the
+            scan cell. A selection of ox affects only the expected value for the
+            scan chain unload. This value is X (or masked). To affect the value loaded by a scan
+            load, use the xx selection. To affect the value loaded by a capture
+            clock, use the add_capture_masks command. Some compression restrictions may affect the ability to apply cell constraints. In
+              the case of chain tests in compression mode, M177 messages might be reported when
+              attempting to specify constraints, as shown in the following example: add_cell_constraints 1 8897
+add_cell_constraints ox 9299
+add_cell_constraints 0 8706
+add_cell_constraints 1 8597
+add_cell_constraints 1 8610
+add_cell_constraints 0 8853 In this case, the -verbose option of the set_contention command is set
+            and the following messages are reported: Warning: Cell constraint 11-15 set to 1 not satisfied for preclock chain test pattern (pat1=0). (M177)
+Warning: Cell constraint 25-14 set to 0 not satisfied for preclock chain test pattern (pat1=3). (M177)
+Warning: Cell constraint 16-10 set to 1 not satisfied for preclock chain test pattern (pat1=0). (M177)
+Warning: Cell constraint 17-16 set to 1 not satisfied for preclock chain test pattern (pat1=0). (M177)
+Warning: Cell constraint 11-19 set to 0 not satisfied for preclock chain test pattern (pat1=2). (M177) Note: An ox constraint is the letter "o" followed by the letter "x" and
+                might look like a zero with some fonts. A xx constraint causes the
+                scan cell to always be loaded with X and to always observe X. It is equivalent to
+                combining x and ox .
+chain_name -position < cell_pos1 | sci> [ cell_pos2 |
+          sci]> | -all> : Indicates the scan chain name and position within the scan chain where the cell
+            constraint is applied. Position 0 is the cell closest to the scan chain output. A range
+            of cells can be specified or the keyword -all which indicates all cells
+            in the scan chain. The keyword sci is used for a cell position and
+            indicates the numeric value equivalent for the scan cell closest to the scan chain
+            input.
+instance_name : Specifies the constraint location by the instance_name of the latch or flip-flop of the
+            scan cell to be constrained.
+-index number : If the instance_name argument defines a reference that contains
+            multiple sequential elements (a multibit cell), you can use the -index option to specify the specific bit you want to constrain. Without this option, all bits
+            of this type of reference are constrained. Bit order is a function of a model
+            definition. If you use the -index option, you should also use the report_cell_constraints command to review and verify the specific bit
+            (identified by its gate ID) that was constrained. The -index option specifies only a single value that is applied to all
+            names associated with the specified instance_name argument. If you need
+            to constrain multiple specific bits of an instance, you should specify the add_cell_constraints command multiple times with a different index
+            value in each command. The -index option does not affect gate IDs, as
+            there is no ambiguity in this context. The index value must be greater than or equal to
+            1; the first bit of a cell is referenced as “1”. If the index value exceeds the number
+            of bits in the instance, no constraint is defined and no errors are generated.
+
+EXAMPLES:
+DRC-T> report_primitives 130
+ /reg2/lat1 (130) DLAT (P_LAT_RS)
+    !SB I (/TIE_1)
+     RB I 28-
+     CK I 17-
+     D I 105-/reg2/MX1/Q
+     Q O 131-/reg2/r/D
+ DRC-T> add_cell_constraints OX reg2/r/D
+

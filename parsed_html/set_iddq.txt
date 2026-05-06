@@ -1,0 +1,49 @@
+COMMAND: set_iddq
+
+TITLE:
+set_iddq
+
+DESCRIPTION:
+Use this command to specify the criteria considered in determining whether a pattern is used for an IDDQ measure.
+
+SYNTAX:
+set_iddq [-atpg | -noatpg] [-bridge_equivalence | -nobridge_equivalence] [-exclude_ports <none | bidis | all>] [-interval_size 1|32] [-toggle | -notoggle] [float | nofloat] [strong | nostrong] [weak | noweak] [write | nowrite]
+
+OPTIONS:
+-atpg | -noatpg : Specifying -atpg causes the test generator to attempt to satisfy all
+            of the IDDQ constraints while generating patterns. Specifying -noatpg results in patterns checked for IDDQ constraints after pattern generation; any failing
+            pattern is discarded. The default is -noatpg .
+-bridge_equivalence | -nobridge_equivalence : This option detects one pair of bridges to imply detection of the other pair. For
+            example, say that "ba0 net1 net2" and "ba1 net2 net1" are the same collapsed fault. When
+            this option is specified, there is an implied detection of "ba1 net1 net2" and "ba0 net2
+            net1". Note that this option has no effect when the test generator generates a test. If
+            one fault is detected, the fault simulator marks the equivalent faults as detected. The
+            default is -bridge_equivalence .
+-exclude_ports <none | bidis | all> : Controls contention checking. Specifying all ignores IDDQ contention checking on buses
+            connected to the top level ports. Specifying bidis ignores IDDQ checking on bidir ports.
+            Specifying none checks IDDQ contention on all buses and bidir ports. The default is
+            all.
+-interval_size 1 | 32 : Sets the interval size to either 1 (the default) or 32. Using an interval length of 1
+            will give better QOR at the expense of execution time. Using an Interval length of 32
+            gives a better runtime, and is useful for generating a large number of IDDQ
+            patterns.
+-toggle | -notoggle : Specifying -toggle causes a relaxation of the IDDQ criteria and an
+            input pin fault site does not require sensitization and propagation to an output pin of
+            the same gate. With the -toggle option, the input pin fault site needs
+            only to toggle states to be given a IDDQ fault detection credit. Setting the -toggle option has no effect if the IDDQ bridging fault model is set
+              ( set_faults -model iddq_bridging ).The default is -notoggle . For input faults (using the IDDQ fault model) on sequential primitives, TestMAX
+            ATPG does not propagate the fault effect to the output of the sequential primitives.
+float | nofloat : Selecting float specifies that BUS gates cannot be at a Z state during an IDDQ measure.
+            Any pattern failing this criteria will not be considered for an IDDQ pattern. The
+            default is float.
+strong | nostrong : Selecting strong specifies that the IDDQ measure is required to be contention free for
+            strong drivers of BUS gates. This functionality is not yet implemented.
+weak | noweak : Selecting weak specifies that BUS gates with weak inputs cannot be at a competing state
+            to other strong or weak BUS inputs during an IDDQ measure. The default is weak.
+write | nowrite : Selecting write specifies that RAMs cannot have an active write port during an IDDQ
+            measure. The default is write .
+
+EXAMPLES:
+BUILD> set_faults -model iddq
+ BUILD> set_iddq float strong write -atpg
+

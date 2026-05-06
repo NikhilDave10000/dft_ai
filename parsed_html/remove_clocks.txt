@@ -1,0 +1,28 @@
+COMMAND: remove_clocks
+
+TITLE:
+remove_clocks
+
+DESCRIPTION:
+Use this command to delete clocks previously added with the add_clocks command.
+
+SYNTAX:
+remove_clocks <{ port_name } | -all>
+
+OPTIONS:
+port_name ... : Specifies the port name to be removed from the defined clock list.
+-all : Specifies that all defined clocks are to be removed.
+
+EXAMPLES:
+DRC> report_clocks
+ clock_name    off usage
+ ------------- --- --------------------------
+ /INC 0
+ /CLK 0
+ /RSTB 1
+ DRC> remove_clocks {CLK RSTB}
+ DRC> report_clocks
+ clock_name    off usage
+ ------------- --- --------------------------
+ /INC 0
+

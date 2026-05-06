@@ -1,0 +1,95 @@
+COMMAND: report_power
+
+TITLE:
+report_power
+
+DESCRIPTION:
+Use this command to report various types of power data.
+
+SYNTAX:
+report_power [-average] [-capture] [-csv filename] [-first_pattern d] [-hierarchy depth | min_scancells | Instance_name] [-last_pattern d] [-max d] [-module name] [-peak] [-percentage] [-per_clock_domain] [-per_cycle] [-per_partition] [-per_pattern] [-shift] [-toggled_cells PatnId | ShiftID]
+
+OPTIONS:
+-average : Includes average power data in the power report. The default is to include booth
+            average and peak power. This option only works with the -per_pattern option. If this option is issued without the -per_pattern option, then
+            the -per_pattern option is automatically selected.
+-capture : Uses capture cycles as a basis for power reporting. By default, shift, capture, and
+            load cycles are reported.
+-csv filename : Directs the output of the report_power command to a comma-separated
+            file (csv). This option does not work with the -percentage option.
+-first_pattern d : Specifies the first pattern to run the analysis on. This is applied to -per_cycle and -per_pattern options, and well as
+              the case where neither is specified.
+-hierarchy depth | min_scancells Instance_name : depth – This option is to restrict the power reports to the required
+              depth in the hierarchy. This is a mandatory argument. min_scancells - This option specifies the minimum number of scancells
+              that instances must have. Only the instances with scancells more than this number
+              appear in the report. This is also a mandatory argument. instance_name - This option is for the user required instance from
+              where power reporting is done hierarchically. If instance name is not specified, the
+              TOP instance is selected. The report has the hierarchical power analysis summary of all the selected patterns.
+              It includes peak pattern having maximum switching and average switching activity of
+              all the patterns. The summary has both capture and shift switching. The report can
+              also be generated on a per pattern basis using “-per_pattern” switch.
+-last_pattern d : Specifies the last pattern to run the analysis on. This setting is applied to the -per_cycle and -per_pattern options, or when neither
+            option is specified.
+-max d : Includes a sorted list of shift, capture and load power switching for the maximum d patterns in the report generated
+            from the -per_pattern option. If the -per_pattern option is not selected, the -max option automatically selects the -per_pattern option.
+-module name : Specifies the module name used as a basis for calculating the power. Only the scan
+            cells within the specified module is considered during power calculations.
+-peak : Includes peak power in the power report. The default is to include booth average and
+            peak power. This option only works with the -per_pattern option. If
+            this switch is issued without -per_pattern , then -per_pattern is automatically selected.
+-percentage : Reports, as a percentage, all scannable flip-flops that change relative to all
+            scannable flip-flops contained within the design and recognized as a result of the run_drc command.
+-per_clock_domain : Creates individual capture power reports for each clock. By default, the report_power command creates a consolidated report for all clock
+            domains.
+-per_cycle : Reports switching information on a cycle-by-cycle basis. These cycles are arranged
+            based on the actual sequence that would occur while applying the actual ATPG vector. For
+            a basic scan vector, the power switching results for a number of shift cycles are equal
+            to the length of the longest scan chain, followed by a single capture cycle, and this is
+            repeated for the number of ATPG patterns in the pattern set. For a fast-sequential pattern with one load and multiple capture cycles, the switching
+            activity of several capture cycles are reported per pattern. As previously mentioned , a
+            pattern set that includes both basic scan and fast-sequential patterns results in a
+            report in which some patterns include one capture per pattern in their -per_cycle report, while some patterns include more than one. From
+            the -per_cycle report, you cannot identify which patterns are basic
+            scan patterns and which patterns are fast-sequential patterns, except that a pattern
+            with more than one capture cycle can never be a basic scan pattern. The -per_cycle switch is not supported with the multicore ATPG
+            feature.
+-per_partition : Reports shift and capture power for every partition. To report the shift power per
+            partition, use the -shift option with the -per_partition option. Use the -capture option with
+            the -per_partition option for reporting capture power for individual
+            partitions.
+-per_pattern : Reports the average and peak switching results for shift, load and capture on a pattern
+            by pattern basis. Peak shift results are reported for each pattern by comparing the
+            instantaneous switching for different cycles and different load’s of the same pattern to
+            determine the load and shift cycle during which the maximum power switching occurs. The
+            average shift results are derived by calculating the average switching for all cycles
+            and all loads. Peak capture results are calculated by comparing the capture power for different
+            capture cycles of the same pattern to determine the cycle at which the peak power
+            switching occurs. Average capture results are calculated by taking the average capture
+            power of different capture cycles for the same pattern. Since basic scan patterns
+            include only one capture cycle, average and peak power is always the same. Peak load results are calculated by comparing the total power for different load cycles
+            of the same pattern to determine the load cycle at which the peak power switching
+            occurs. Average load results are calculated by taking the average load power of
+            different load cycles for the same pattern. Since basic scan pattern include only one
+            load or unload cycle, average and peak power is always the same.
+-shift : Uses shift cycles as a basis for power reporting. By default, shift, capture, and load
+            cycles are reported.
+-toggled_cells PatID ShiftID : PatnId is the pattern for which you want to get the list of scan
+              cells. ShiftId is the shift cycle id for which list of scan cells
+              information is be reported. This is optional. If not mentioned the shift with maximum
+              toggles is be selected and scan cells information for that shift is be reported. The report consists of list of scan cells with scan chain name, cell id and gate id
+              for the scan cell. The list of scan cells is reported for capture cycle and selected
+              shift cycle under different headings.
+
+EXAMPLES:
+TEST> report_power -per_pattern -percentage
+ -----------------------------------------------
+            Power Analysis Summary
+ -----------------------------------------------
+   Number of Scan Cell             750534
+   Number of Patterns              0-2680
+   Cycle Per Load                  3412
+   Average Shift Changes:          2400.38 3.20%
+   Average Capture Changes:        9058.04 12.07%
+   Maximum Shift Cell Changes:     37510 49.97% (pattern: 0 cycle: 3411)
+   Maximum Capture Cell Changes:   30742 40.96% (pattern: 1)
+

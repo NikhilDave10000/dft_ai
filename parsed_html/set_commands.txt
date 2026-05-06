@@ -1,0 +1,24 @@
+COMMAND: set_commands
+
+TITLE:
+Set_commands
+
+DESCRIPTION:
+Use this command to control the command history or to specify the handling of errors during command file execution.
+
+SYNTAX:
+set_commands [history | nohistory] [abort | noabort | exit] [-secure < command | all> | -nosecure < command | -all>]
+
+OPTIONS:
+history | nohistory : Specifies whether a command history is stored. The default is history .
+abort | noabort | exit : Specifies what happens when an error occurs during execution of a command file. Abort causes execution of the command file to stop at the error. Noabort allows execution to continue after the error. Exit causes
+            termination of the TestMAX ATPG session at the error. The default is abort. Note the
+            following:
+You cannot use the Control-c keyboard combination to replicate the abort option during the execution of the set.
+The -noabort option will override Tcl script variables "set
+          sh_script_stop_severity E" and "set sh_continue_on_error False." You should use either the set_commands options or the Tcl variables in a script flow. Using both
+          may result in unpredictable results.
+
+EXAMPLES:
+DRC> set_commands noabort # don't quit command files on error
+

@@ -1,0 +1,19 @@
+COMMAND: read_nofaults
+
+TITLE:
+read_nofaults
+
+DESCRIPTION:
+Use this command to add the nofault attribute for faults defined in an external file.
+
+SYNTAX:
+read_nofaults file_name
+
+OPTIONS:
+file_name : Specifies the pathname to the file containing the list of faults whose nofault
+            attribute is to be set on.
+
+EXAMPLES:
+DRC> read_nofaults nofaults.ub
+  4001 faults were added to nofault list.
+

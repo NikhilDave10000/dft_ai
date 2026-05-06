@@ -1,0 +1,49 @@
+COMMAND: report_physical
+
+TITLE:
+report_physical
+
+DESCRIPTION:
+This command prints a report of physical locations based on the specified options.
+
+SYNTAX:
+report_physical [-bridge { net1 net2 }] [–candidates <all | candidate_id >] [-instance instance_name] [-neighbors name] [-net net_name] [-pin pin_pathname] [-subnet { net_namesubnet_id }] [-technology]
+
+OPTIONS:
+-bridge { net1 net2 } : Reports the bridgeable areas between the two specified nets. Bridgeable areas are
+            defined by the default layer tolerance or by the -tolerance option of
+            the set_physical command.
+–candidates <all | candidate_id > : Reports detailed information on physical locations used for class-based diagnostics
+            reporting. This information can also be reported using the set_diagnosis -verbose command. Note
+            that this option is not supported for fault-based diagnostics reporting. For more
+            information on creating a class-based diagnostics report, see the "Class-Based Diagnosis
+            Reporting" section in the TestMAX ATPG User Guide .
+-instance instance_name : Reports the cell bounding box for the specified instance and the geometries for all
+              pins connected to the instance.
+-neighbors <name> : This option reports the neighboring net names and geometries for the specified net
+              driver pin.
+-net net_name : Reports the geometries for the specified net and for all pins connected to the net.
+-pin pin_pathname : Reports the geometries for the specified pin, the bounding box of the connected cell,
+            and either the geometries of the connected subnet if the fanout is greater than 1 or the
+            connected net if there is only one fanout.
+-subnet { net_name subnet_id } : Reports only the net geometries for the specified subnet of the specified net. To use
+            the candidate subnets IDs with this option, you must enable the physical subnet IDs by
+            specifying the set_diagnosis -show physical_subnet_id command prior to the run_diagnosis command.
+-technology : Reports technology library data, such as defined metal layers.
+
+EXAMPLES:
+TEST-T>
+report_physical -subnet {I_RISC_CORE/I_ALU/U14/ZN 20}
+Net: I_RISC_CORE/I_ALU/n16	Net ID: 218
+
+ Subnet: 20
+      METAL2	(796240 626030) (796440 626350)
+      METAL2	(797880 622400) (798080 625880)
+      METAL2	(797880 625620) (798080 625940)
+      METAL3	(796195 626090) (796485 626290)
+      METAL3	(796240 625680) (796440 626290)
+      METAL3	(796240 625680) (798080 625880)
+      METAL3	(797835 625680) (798125 625880)
+      VIA23	(796340 626190)
+      VIA23	(797980 625780)
+

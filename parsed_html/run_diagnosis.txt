@@ -1,0 +1,153 @@
+COMMAND: run_diagnosis
+
+TITLE:
+run_diagnosis
+
+DESCRIPTION:
+You use this command to perform a diagnosis of a failing device using an input file that identifies its failing tester measures.
+
+SYNTAX:
+run_diagnosis file_name [-assume_chain_defect < <stuck|slow|fast|all> chain_name >] [-chain_failure] [-display] [-file { file_list }] [-find_offset { begin end }] [-noreport_defects] [-only_report_failures] [-rank_faults] [-streaming_report_chains_only filename] [-truncate pattern#] [-verbose] [-write_fault_list out_file [-replace] [-compress <bin | gzip>]]
+
+OPTIONS:
+file_name : Specifies the name of the failure data file. When parallel diagnostics is enabled by
+            the set_diagnosis -number_processes command, you can specify a list of datalogs, as shown
+            in the following example: run_diagnosis [list {datalogs/ff_[1-9].log} \ {datalogs/ff_[1-9][0-9].log} \ {datalogs/ff_100.log} ] Note that wildcards are also accepted when specifying datalogs, as shown in the
+            following example: run_diagnosis datalogs/ff_*.log For more information on specifying a list of datalogs, see "Parallel Diagnosis” in the TestMAX ATPG and TestMAX Diagnosis User Guide ."
+-assume_chain_defect < <stuck|slow|fast|all> chain_name > : This option and set of arguments enforce the execution of scan chain diagnosis for a
+            particular defect type and scan chain. There are two mandatory arguments. The first, <stuck|slow|fast|all > , is the defect type. The second, chain_name , is the chain on which the
+            faults should be ranked. Only one defect type and chain name can be specified at a
+            time. At the completion of the command, the tool reports the top candidates for each fault
+            type. If the “ stuck ” type is specified, then all stuck-at types
+            (stuck-at-0, stuck-at-1) are ranked. If the “ slow ” or
+              “ fast ” types are specified, then all slow or fast types
+            (slow-to-rise/fall/rise-fall and fast-to-rise/fall/rise-fall) are ranked. If
+              “ all ” is specified, then all defect types for the specified scan
+            chain are ranked. The -assume_chain_defect option overwrites the -auto option. It cannot be used on the same command line with the -chain_failure or -rank_faults options. If there is unexplained failure for all simulated candidates, then following message is
+            printed: Warning: Insufficient data to locate <fault_type> fault in chain chain_name
+-chain_failure : If your patterns show failures during the chain test, then you might have a device
+            failure that prevents the proper loading and unloading of the scan chains. Use the -chain_failure option locate the scan chain and bit position at which
+            the flaw most likely occurs. This option adjusts the diagnostic algorithm to
+            troubleshoot scan chain shifting instead of assuming the data load and unload work fine.
+            For best results, failure data from ten or more patterns is required. The diagnostic algorithm identifies the location of stuck-at, slow-to-rise,
+            slow-to-fall, fast-to-rise or fast-to-fall. The latter two types cover hold time
+            problems affecting the scan chain shift operation. If pattern 0 is not the chain test, a
+            simple chain diagnosis algorithm with lower accuracy is used. The output displays a set of possible defect locations (chain, cell position, and
+            instance name), along with a score, which indicates the confidence of each location.
+            This score is a percentage measuring how much the failures seen on the tester matches a
+            simulated chain defect at that location. It also shows the predicted type of defect. For
+            example: fail.log scan chain diagnosis results: #failing_patterns=79
+              ----------------------------------------------------------- defect type=fast-to-rise
+              match=100% chain=c0 position=178 master=CORE/c_rg0 (46) match=100% chain=c0
+              position=179 master=CORE/c_rg2 (57) match= 98% chain=c0 position=180 master=CORE/c_rg6
+              (54)
+-display : Displays the diagnosis results schematically, unless you use the -chain_failure option. It does not support graphic display of
+            failures in the chain test patterns. For patterns other than chain test patterns, it
+            displays each potential failure site along with the fault codes to indicate the fault
+            positions associated with the failure. The fault code is always "DS/--" or "--/DS",
+            indicating a stuck-at-0 or stuck-at-1 detection location, respectively. Note : The primary output display mechanism affects the fault codes
+            displayed on PO primitives. As a result, the faults codes displayed near PO primitives
+            might be incorrect. To confirm the values shown in the schematic, refer to the values in
+            the transcript.
+[-file { file_list }] : When using the split pattern feature in Tcl mode, this option indicates the list of the
+            second and following failure log files. The specification must be a valid Tcl list. For
+            example: TEST-T> run_diagnosis fail1.log –file {fail2.log fail3.log …}
+              [options] The run_diagnosis report includes a set of lines that display each
+            pattern file characteristic, as in the set_pattern ext <file> -split report. If a failure log file contains failures,
+            another line displays the cycle offset and truncation options values. The line is
+            highlighted in bold in the example shown below: TEST-T> run_diagnosis split_fail/fail_stil_0.txt \ -file
+              {split_fail/fail_stil_1.txt \ split_fail/fail_stil_2.txt \ split_fail/fail_stil_3.txt}
+              ; Pattern_file=prog.stil_0.gz, basic_scan=[0(3),4(66)], fast_sequential=[-1,-1] Cycle_offset=0, truncate=0/0, incomplete_failures=0,
+                failure_memory_limit=0 Pattern_file=prog.stil_1.gz,
+              basic_scan=[5(82),9(146)], fast_sequential=[-1,-1] Pattern_file=prog.stil_2.gz,
+              basic_scan=[10(162),14(226)], fast_sequential=[-1,-1] Cycle_offset=159,
+                truncate=3/13, incomplete_failures=0, failure_memory_limit=0 Warning: 0
+              failure(s) were read, 6 failure(s) were ignored. (M267) Pattern_file=prog.stil_3.gz,
+              basic_scan=[15(242),16(258)], fast_sequential=[-1,-1] Cycle_offset=239,
+                truncate=0/0, incomplete_failures=0, failure_memory_limit=0 To avoid generating a long report, only the first failure log file containing valid
+            failures is reported — even if the diagnosis is performed using several failure log
+            files. You can retrieve all the file names using the " name " attribute
+            from the collection returned by get_diag_files -all Tcl API command. If you use this command in
+            conjunction with the previous example, the diagnosis report will indicate the following
+            statement: Diagnosis summary for failure file split_fail/fail_stil_0.txt Also note the following: Cycle_offset=NBR means that the first cycle number of the patterns
+            contained in the split pattern read is cycle number NBR. truncate=A/B means that the .truncate value in the failure log file is
+            A and it corresponds to pattern number B. incomplete_failures is equal to 0 if .incomplete_failures is not set
+            and 1 if it is set. failure_memory_limit=NBR is an echo of value of .failure_memory_limit
+            directive. See Using Split Datalogs to Perform Parallel Diagnosis for Split Patternsin the TestMAX ATPG and TestMAX Diagnosis User Guide for more
+            information on the split pattern flow for parallel diagnostics.
+-find_offset { begin end } : This option suppresses normal diagnostics reporting and instead finds and prints a
+            specific cycle offset in the search range between the begin and end parameters. When this offset value is added to the cycle-based
+            failures in the failure data file (specified by file_name parameter of
+            the run_diagnosis command), it allows the expected data for all
+            failures to match the expected responses in the external pattern set. The failure data
+            file must contain expected data for each failure, and there must be at least 10 failures
+            to use this option. If the patterns run on the tester have not been modified, the cycle
+            offset is usually 0 (the default) or 1 (if the tester counts cycles starting at 0.)
+            However, if additional cycles have been added before or while running on the tester, you
+            will need to specify the correct cycle offset (usually a negative value) so diagnosis
+            can map cycle numbers in the failure data file to the cycle numbers of the external
+            pattern set used for diagnosis. The cycle offset reported with this option should be specified using the set_diagnosis -cycle_offset d option prior to all
+            subsequent diagnosis runs using the same external pattern set.
+-noreport_defects : This option suppresses printing the full diagnostics report for flows that always use the report_defects command for class-based
+              diagnostics.
+-only_report_failures : This option suppresses diagnostics reporting and prints only the failing measures. Do not use this option for class-based diagnostics (triggered by the set_diagnosis –organization class command). Instead, use the set_diagnosis -verbose command. In the case of normal scan patterns, the failing measures report looks like the
+            following: Report all failures: #failures=2
+              ------------------------------------------------------------------------------ pattern
+              chain/pin_name position gate_id -------- --------------- --------- ------------------
+              3 4 2 654 4 4 1 655 The descriptions of the fields are as follows: pattern is the pattern number. chain/pin_name indicates the chain name where the failure occurs when
+            the failure could be mapped back. This column indicates the pin name in case of failure
+            in capture cycle or if the failure could not be mapped back to a scan cell. position is the scan cell position where the failure occurs. If the
+            failure was in capture cycle, it is -1. gate_id is the gate id of the failing scan cell or a scanout. For Adaptive Scan, an additional column called “ type ” indicates if the
+            failure has been successful ( unique ) or not
+              ( unmapped ) at mapping back to a single scan cell. A third mapping type, called potential , can be displayed.
+            This type is displayed if more than one scan cell explains a particular set of external
+            failures for a particular shift position. In summary, one failure maps to different
+            chains. As an example, say there is one failure for pattern 7, and the diagnosis cannot
+            determine the exact source of the failure. Then the diagnosis indicates that the failure
+            observed on pattern 7 is coming potentially from chains 6, 81 or 90. The following
+            report is printed: ----------------------------------------------------------------------- pattern
+              chain/pin_name position gate_id type ------- -------------- --------- ---------
+              ---------------- 7 6 131 636837 potential 7 81 131 659098 potential 7 90 131 665290
+              potential The diagnosis engine then assumes one of these flip-flops is failing and tries to find
+            the best candidate. Another example is as follows: --------------------------------------------------------------------------------------
+              pattern chain/pin_name position gate_id type ------- -------------- ------- --------
+              ------- 7 48 1 62063 unique 26 out1 -1 62084 unique 33 o_tdata_dd[5] 12 62076
+              unmapped The mapping report printed by this option and the report printed by set_diagnosis -mapping_report are the
+            only complete reports. The first mapping report printed at the beginning of the
+            diagnosis report looks like the following example and is not intended to be completed.
+            See "Understanding run_diagnosis Output" for more details. ------------------------------------------------------------------------------
+              pattern chain pos# output pin_names ------- ---------------- ----
+              ------------------------------------------------ 9 1 4 test_so1 test_so2 test_so3 14 1
+              3 test_so1 test_so2 test_so3
+-rank_faults : Ranks a set of faults based on how well they match the defective device response on the
+            tester. The supported fault models are stuck-at, transition, bridging, and IDDQ. TestMAX ATPG simulates the collapsed faults (indicated by the DS code in the diagnosis
+            report) in the active fault list (added by the add_faults or read_faults command) and using the Fast-Sequential
+            simulator, scores the faults, and displays the match score. As the fault list is
+            typically small, this run should be relatively quick. TestMAX ATPG simulates only a subset of the passing patterns as with normal diagnosis,
+            but you can control it with the -sample option of the set_diagnosis command. Note: TestMAX ATPG ignores most of the other diagnosis option when you use the -rank_faults option because you are not running diagnosis. The
+            following is an example flow: run_drc set_patterns -external pattern.bin.gz # write out fault candidates into
+              file callouts.txt run_diagnosis fail.txt -write callouts.txt -replace # read the
+              faults back in read_faults callout.txt #run fault simulation to rank the fault
+              run_diagnosis failures.txt -rank_faults TestMAX ATPG uses the following formula for ranking the faults: match % = TFSF 			
+ _____________________ X 100 			
+ TFSF + TFSP + TPSF Where (use the -verbose option to display these parameters):
+
+EXAMPLES:
+TEST-T>
+run_diagnosis /project/mars/lander/chipA_failure.dat –display
+Diagnosis summary for failure file /project/mars/lander/chipA_failure.dat
+ #failing_pat=2, #failures=2, #defects=1, #faults=2, CPU_time=0.05
+ Simulated : #failing_pat=2, #passing_pat=35, #failures=2
+ ------------------------------------------------------------------------------
+ Fault candidates for defect 1: stuck fault model, #faults=2, #failing_pat=2,   #passing_pat=35,  #failures=2
+ ------------------------------------------------------------------------------
+ match=100.00%, #explained patterns: <failing=2, passing=35>
+ sa1 DS de_encrypt/C264/U36/O (L434ND)
+ sa0 -- de_encrypt/C264/U36/I1 (L434ND)
+ sa0 -- de_encrypt/C264/U36/I2 (L434ND)
+ sa0 -- de_encrypt/C264/U28/O (L434ND)
+ sa1 -- de_encrypt/C264/U26/I2 (L434ND)
+ ------------------------------------------------------------------------------
+ match=50.00%, #explained patterns: <failing=1, passing=35>
+ sa1 DS de_encrypt/C264/U28/I1 (L434ND)
+

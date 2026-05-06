@@ -1,0 +1,18 @@
+COMMAND: report_distributed_proc
+
+TITLE:
+report_distributed_processors
+
+DESCRIPTION:
+Use this command to get information on the distributed processors performing a distributed fault simulation task.
+
+SYNTAX:
+report_distributed_processors
+
+EXAMPLES:
+TEST> report_distributed_processors
+  MACHINE himalaya [ARCH: sparc-64]
+  MACHINE himalaya [ARCH: sparc-64]
+  MACHINE himalaya [ARCH: sparc-64]
+  MACHINE himalaya [ARCH: sparc-64]
+

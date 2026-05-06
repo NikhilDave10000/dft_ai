@@ -1,0 +1,38 @@
+COMMAND: report_serializers
+
+TITLE:
+report_serializers
+
+DESCRIPTION:
+This command generates a report containing data for the specified serializers.
+
+SYNTAX:
+report_serializers <<serializer_name> | -load | -unload |-all> -chain_segments [-verbose]
+
+OPTIONS:
+<serializer_name> : The name of the serializer for which you want to generate a report.
+-load : Reports all load serializers.
+-unload : Reports all unload serializers.
+-all : Reports all serializers.
+-chain_segments : Reports the scanin port and length for each load serializer segment and the scanout
+            port and length for each unload serializer segment.
+-verbose : Reports the data for the specified serializers in verbose mode.
+
+EXAMPLES:
+TEST-T> report_serializers -load
+ ------------------------------------------------   ------   -------
+ name                                                                                           type       length
+ ------------------------------------------------   ------   -------
+ U0/U_deserializer_my_serial                                            load                   8
+ ------         -----     ------------------------------------------------------------------   ------
+ Scanin         Index     Parallel Outputs                                                                                                      invert
+ ------         -----     ------------------------------------------------------------------   ------
+ SI_0                 0         U0/U_decompressor_my_serial/\serial_update_reg[0]                                    no
+ SI_0                 1     U0/U_decompressor_my_serial/\serial_update_reg[1]                                     no
+ SI_0                 2         U0/U_decompressor_my_serial/\serial_update_reg[2]                                     no
+ SI_0                 3         U0/U_decompressor_my_serial/\serial_update_reg[3]                                     no
+ SI_0                 4         U0/U_decompressor_my_serial/\serial_update_reg[4]                                     no
+ SI_0                 5     U0/U_decompressor_my_serial/\serial_update_reg[5]                                    no
+ SI_0                 6         U0/U_decompressormy_serial/\serial_update_reg[6]                                      no
+ SI_0                 7         U0/U_decompressor_my_serial/\serial_update_reg[7]                                     no
+

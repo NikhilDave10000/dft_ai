@@ -1,0 +1,15 @@
+COMMAND: get_settings
+
+TITLE:
+get_settings
+
+DESCRIPTION:
+The get_settings command returns a collection of setting objects associated with either DRC or delay settings.
+
+SYNTAX:
+collection get_settings drc | delay
+
+OPTIONS:
+drc : Returns DRC settings.
+delay : Returns delay settings.
+

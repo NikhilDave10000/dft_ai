@@ -1,0 +1,45 @@
+COMMAND: report_version
+
+TITLE:
+report_version
+
+DESCRIPTION:
+This command reports the current version of TestMAX ATPG or the virtual address space in which TestMAX ATPG is executing.
+
+SYNTAX:
+report_version [-full | -short | -address] [-banner] [-verbose]
+
+OPTIONS:
+-full : Generates the full version report. This consists of the short version string, the date,
+            and the time of day stamp of the currently running version.
+-short : Generates the short version report. This consists of a letter code and the date string
+            of the form YYMMDD.
+-address : Reports whether the executable is using 32-bit or 64-bt virtual address space. A 32-bit
+            executable can use at most 2.1 to 3.8 GB of virtual memory, depending on the platform.
+            So, your design plus libraries plus patterns must all fit in this range of memory. A
+            64-bit executable does not have this limit and is typically limited by the size of
+            physical RAM plus swap space of the workstation on which it is running.
+-banner : Generates the product name and the full version report. This consists of the product
+            name (TestMAX ATPG), short version string, the date, and the time of day stamp of the
+            currently running version.
+-verbose : Generates the product name and the full version report (same as the -banner option), followed by the date version for subsystem
+            tasks.
+
+EXAMPLES:
+BUILD-T> report_version
+  H-2013.03-SP5-CS1-tcl
+BUILD-T> report_version -full
+  H-2013.03-SP5-CS1-i131004_180753-tcl
+BUILD-T> report_version -short
+  i131004-tcl
+BUILD-T> report_version -address
+  32bit executable
+BUILD-T> report_version -banner
+  TestMAX ATPG (TM)  H-2013.03-SP5-CS1-i131004_180753 –tcl
+BUILD-T> report_version -release
+  Standard release code
+BUILD-T> report_version -verbose
+  TestMAX ATPG (TM)  H-2013.03-SP5-CS1-i131004_180753
+  util020306 edif102400 udp030603 otdd111798 veri091708 net031604 flat121611
+  stil032009 syn121400 vhdl120203 wgl100308 api101507 vcde_102602 tpapi040700 lbist111207-tcl
+

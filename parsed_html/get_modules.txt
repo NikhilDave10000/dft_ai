@@ -1,0 +1,15 @@
+COMMAND: get_modules
+
+TITLE:
+get_modules
+
+DESCRIPTION:
+This command returns a collection of module objects.
+
+SYNTAX:
+collection get_modules -type type | module_name
+
+OPTIONS:
+-type type : Returns the module object associated with the specified type.
+module_name : The name of the module to return.
+

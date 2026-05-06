@@ -1,0 +1,25 @@
+COMMAND: report_licenses
+
+TITLE:
+report_licenses
+
+DESCRIPTION:
+Use this command to report all licenses currently checked out by TestMAX ATPG.
+
+SYNTAX:
+report_licenses [-quantity]
+
+OPTIONS:
+-quantity : Reports how many copies of each license are currently checked out.
+
+EXAMPLES:
+TEST-T>
+report_licenses
+Test-Analysis
+ Test-Fault-Max
+
+ TEST-T>
+report_licenses -quantity
+Test-Compile
+ Test-ATPG-MAX (4)
+

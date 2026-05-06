@@ -1,0 +1,19 @@
+COMMAND: report_timing
+
+TITLE:
+report_timing
+
+DESCRIPTION:
+This command generates a report of the pin slack data used in small delay defect testing in TestMAX ATPG.
+
+SYNTAX:
+report_timing < instance_name | primitive_id | -all > [-max number]
+
+OPTIONS:
+instance_name : Specifies an instance name used for reporting pin slack data. You can use a wildcard
+            character with the instance name.
+primitive_id : Specifies the primitive ID used for reporting pin slack data.
+-all : Reports pin slacks for all gates.
+-max number : Specifies the maximum number of gates reported when using a wildcard character with an
+            instance name. To report a specific number out of all instances, use the report_timing * -max number command.
+

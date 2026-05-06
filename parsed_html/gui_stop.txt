@@ -1,0 +1,8 @@
+COMMAND: gui_stop
+
+TITLE:
+gui_stop
+
+DESCRIPTION:
+This command stops the TestMAX ATPG GUI session and reverts to the TestMAX ATPG shell command prompt.
+

@@ -1,0 +1,19 @@
+COMMAND: read_cell_model
+
+TITLE:
+read_cell_model
+
+DESCRIPTION:
+This command loads cell test models (CTMs) for use in cell-aware diagnostics.
+
+SYNTAX:
+read_cell_model path/filename -delete -defect_type <target_defect_type>
+
+OPTIONS:
+path : Specifies the path and names of the CTMs you want to load. Wildcard (*) with the file
+            name extension lists or displays all the files in the directory with the particular
+            suffix.
+
+EXAMPLES:
+read_cell_model ctm_dir/*.ctm
+

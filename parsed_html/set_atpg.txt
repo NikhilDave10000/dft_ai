@@ -1,0 +1,301 @@
+COMMAND: set_atpg
+
+TITLE:
+set_atpg
+
+DESCRIPTION:
+Use this command to set the parameters that control the ATPG process.
+
+SYNTAX:
+set_atpg [-abort_limit comb_max_remade_decs] [-add_setreset_test | -noadd_setreset_test] [-adjacent_fill_range d] [-allow_clockon_measures | -noallow_clockon_measures] [-allow_flat_tail_atpg | -noallow_flat_tail_atpg] [-analyze_untestable_faults | -noanalyze_untestable_faults] [-basic_min_detects_per_pattern d [ d]] [-calculate_power | nocalculate_power] [-capture_cycles d] [-chain_test <off | 0011 | 0101 | 1000 | 0111 | string <r|c>>] [-checkpoint { time fault_file pattern_file } | -nocheckpoint] [-coverage max_percent] [-decision <random | norandom>] [-di_analysis | -nodi_analysis] [-domain { clock_names }] [-extra_cycle | -noextra_cycle] [-fast_min_detects_per_pattern { d [ d]}] [-fast_path_delay | -nofast_path_delay] [-fill <random |0|1|X| adjacent>] [-full_min_detects_per_pattern d [ d]] [-full_seq_abort_limit seq_max_remade_decs] [-full_seq_atpg | -nofull_seq_atpg] [-full_seq_time max_secs_per_fault [ max_secs_per_run]] [-full_seq_merge <off | low | medium | high | d >] [-group_clk_constraints { first_pass middle_pass final_pass }] [-lete_fastseq | -nolete_fastseq] [-load_mode < n | all>] [-load_value [0 | 1]] [-merge <off | low | medium | high | d [low | medium | high | d]>] [-min_ateclock_cycles d] [-new_capture | -nonew_capture] [-num_processes number | max>] [-num_threads number] [-optimize_bridge_strengths | -nooptimize_bridge_strengths] [-parallel_strobe_data_file  [ psd_file] | -noparallel_strobe_data_file] [-partition < list_of_partition_names>] [-partition_coverage] [-patterns max_patterns] [-post_capture_contention_prevention | -nopost_capture_contention_prevention] [-power_aware_asyncs | -nopower_aware_asyncs] [-power_budget n] [-prevention <random | norandom>] [-power_effort <high | low>] [-quiet_chain_test | -noquiet_chain_test] [-quiet_padding_patterns | -noquiet_padding_patterns] [-replace_parallel_strobe_data_file | -noreplace_parallel_strobe_data_file] [-resim_atpg_pattern <off | fault_sim | nofault_sim | test_gen>] [-save_patterns { file_name_prefix n }] [-seq_contention_prevention | -noseq_contention_prevention] [-shared_io_analysis | -noshared_io_analysis] [-shift_controller_peak percentage] [-shift_power_budget number] [-shift_power_effort <off | low | medium | high | d >] [-single_load_per_pattern | -nosingle_load_per_pattern] [-store | -nostore] [-streaming_xtol_chain_test on | off] [-streaming_xtol_chain_diagnosis on | off | number_of_chain_patterns] [-summary | -nosummary] [-timing_exceptions_au_analysis | -notiming_exceptions_au_analysis] [-target_clock_faults | -notarget_clock_faults] [-time max_secs_per_fault [ max_secs_per_run]] [-verbose | -noverbose] [-xtol_chain_diagnosis <off | low | high [ d]>]
+
+OPTIONS:
+-abort_limit comb_max_remade_decs : Specifies the maximum number of remade decisions before terminating a test generation
+            effort during the Basic-Scan and Fast-Sequential ATPG algorithms. The default is 10. X1
+            analysis is affected by the -abort switch, since it uses ATPG to figure
+            out if the feedback path is sensitizable. TestMAX ATPG ignores this option. For more information, see TestMAX ATPG Multithreading Command
+              Option Support TestMAX ATPG and TestMAX Diagnosis User Guide.
+-add_setreset_test | -noadd_setreset_test : The -add_setreset_test option improves the resolution for chain
+            diagnosis. This option causes the set test pattern and reset test pattern to load
+            values, 0 and 1, in scan chains, and then apply the set and reset clock pulse to all the
+            applicable scan cells. Both set and reset test patterns use full observability mode. If
+            all the scan cells have both set and reset signals, then each stuck-at chain defect is
+            distinguished based on these two patterns. These patterns are not chain test patterns,
+            but they can be annotated as chain tests if all the clocks are off (inactive). This case
+            might occur when either a 0 or a 1 value is loaded into all scan chains, but the clock
+            pulse is not applied. When the -add_setreset_test option is set, the following message is
+            printed during the run_atpg process: Adding reset test pattern using 1 clock. Adding set test pattern using 1 clock. The -add_setreset_test option is compatible with the -xtol_chain_diagnosis option or the -quiet_chain_test option. The order in which you specify these
+            options is important: the -xtol_chain_diagnosis option or the -quiet_chain_test option must be specified before the -add_setreset_test option. The -chain_test option does not generate set and reset patterns.
+-adjacent_fill_range d : This option only applies if the -fill adjacent option is used. It
+            offers a compromise between power usage and pattern count by limiting the number of
+            adjacent bits having the same value. The value d includes the care bit
+            and typically has a value of 2 or greater. The default adjacent fill range is 0. Higher
+            values result in less compact, lower switching patterns, while lower values result in
+            more compact, and higher switching patterns. The range is reset at each care bit, or
+            when the previous range expires. When a range expires, a random value is selected for
+            the next fill range.
+-allow_clockon_measures | -noallow_clockon_measures : Specifies whether to allow patterns that perform output measures while clocks are on.
+            By default, measures are not performed with any clocks on. Certain types of fault
+            locations cannot be fully tested under this restriction. For additional information, see
+            "Supporting Clock ON Patterns in STIL." This option switches to non-threaded processing. For more information, see TestMAX ATPG
+              Multithreading Command Option Support in the TestMAX ATPG and TestMAX Diagnosis User
+              Guide.
+-allow_flat_tail_atpg | -noallow_flat_tail_atpg : Default is -noallow_flat_tail_atpg which means ATPG stops when detecting flat
+              tail, this is, the trend of coverage increase per patterns falls below some threshold.
+              It issues a message: ATPG terminated due to flat progress (P/N) (M234) Where P is the projected percentage increase in test coverage over the next N
+              patterns. When -allow_flat_tail_atpg is selected, ATPG is not stopped by flat tail
+              detection. This can be selected when additional test coverage is required and when
+              pattern count and CPU time increase are accepted.
+-analyze_untestable_faults | -noanalyze_untestable_faults : Use this option to enable global analysis to identify untestable faults when run_atpg (without -auto_compress ) is used, and also enables global testability analysis
+            for 2-clock transition ATPG. This analysis is useful for reducing pattern count when
+            many targeted faults are untestable. This option is always enabled when run_atpg -auto_compress is used. The default is -noanalyze_untestable_faults .
+-basic_min_detects_per_pattern d [ d ] : When the -merge option is enabled, this option avoids merging patterns
+            that fail to detect a minimum number of collapsed faults during basic scan ATPG and
+            two-clock (transition) ATPG. Note that the -merge option is on by
+            default in TestMAX ATPG II, so this option is always applied. The -basic_min_detects_per_pattern option can be set at any time
+            before running ATPG; the default is 0 (not used). The second d parameter specifies to terminate basic scan ATPG when the number of consecutive rejected
+            patterns due to failure to achieve minimum detections reaches the value specified. The
+            default for this parameter is 40. Changing this value to 0 means "no limit" on the
+            number of consecutive rejected patterns. A non-zero value here will reduce ATPG
+            run-time, with a potential corresponding reduction in coverage at the point of rejection
+            if the remaining faults require some effort to detect. This option provides a trade-off
+            between run-time and early detection of faults when pattern generation starts to drop in
+            effectiveness. When the second parameter is non-zero, TestMAX ATPG might report termination of pattern
+            generation due to a specified number of consecutive rejected patterns. The number of
+            rejected patterns specified in this message might exceed the setting of this second
+            parameter. This is because TestMAX ATPG operates on pattern sets for basic-scan and
+            two-clock environments in groups of 32, in parallel, and the results at the end of this
+            operation is reported across this entire group. An exception to the usual effect of -fast_min_detects_per_pattern occurs when the two-clock option is used for transition fault ATPG. In this case, the
+            patterns are simulated in groups of 32, rather than one at a time, so there is no
+            measure of the number of detects for each pattern at the time each pattern is generated.
+            In this case, the -basic_min_detects_per_pattern option is applied at
+            the time the patterns are fault simulated rather than as each pattern is being
+            generated. In TestMAX ATPG, the size of the pattern group varies, however patterns are
+            still simulated in groups. Note: When running TestMAX ATPG, the -basic_min_detects_per_pattern option is applied separately to
+              basic scan (or two-clock) patterns and to fast-sequential patterns. This means that
+              when fast-sequential ATPG is enabled, the rejection limit is applied twice. First,
+              basic scan and two-clock patterns are generated. If these patterns hit the rejection
+              limit, that part of ATPG is halted. But when fast-sequential pattern generation
+              begins, both parameters of the -basic_min_detects_per_pattern option
+              are applied. This is in contrast to non-threaded TestMAX ATPG, which uses the separate
+              parameters of the -fast_min_detects_per_pattern option for
+              fast-sequential ATPG.
+-calculate_power | nocalculate_power : Improves the runtime performance of the report_power command by enabling the ATPG process to internally
+            calculate the switching activity of the scan flip-flops. Note the following limitations
+            of the -calculate_power option: It cannot be used with the -domain option of the set_atpg command . It is not supported for Full-Sequential ATPG. It does not compute power numbers for padding patterns. Power numbers for padding
+                patterns are displayed in the output report with the "?" symbol. The -per_cycle , -first , -last ,
+                and -module options of the report_power command have no effect
+                if the -calculate_power option is used. If you want to generate
+                switching information on a cycle-by-cycle basis, use the following commands: set_atpg –nocalculate_power (This is the default. It must be set
+                before the run_atpg command.) report_power –per_pattern –shift –capture –per_cycle Note: This option is ignored by TestMAX ATPG. For more
+            information, see TestMAX ATPG Multithreading Command Option Support.
+-capture_cycles d : Sets the Fast-Sequential ATPG algorithm effort level. Acceptable values are integers
+            between 2 and 10, or 0. A value of 0 disables Fast-Sequential ATPG pattern effort and
+            results in Basic-Scan (combinational) ATPG patterns, the default. A value of 2 or higher
+            enables Fast-Sequential ATPG pattern effort. A recommended starting value is 4. Be
+            careful not to to set this control too high, as it can cause long runtimes. Instead,
+            generate patterns, increase the value, generate more patterns, increase the value again,
+            and repeat until you achieve the desired test coverage. Note: When running TestMAX ATPG, two-cycle patterns can be
+            generated when the setting is 0.
+-chain_test <off | 0011 | 0101 | 1000 | 0111 | string > : Generates a chain test as pattern 0 during ATPG. The choices are: off - Do not generate pattern. 0011 - (Default) Generate a repeating pattern of
+            0011... 0101 - Generate a repeating pattern of 01... 1000 - Generate a pattern of 0's lead by a 1 (that
+            is, 10000...000) 0111 - Generate a pattern of 1's lead by a 0 (that
+            is, 01111...111) string - Generate a
+            user-defined sequence of 1's and 0's having a final character of "C" to repeat the last
+            digit as a constant or "R" to repeat sequence For example: 011001R --> 011001 011001 011001 011011C --> 011011 111111 111111
+-checkpoint { time fault_file pattern_file } |
+          -nocheckpoint : Periodically saves patterns and fault lists to files at a specified checkpoint interval
+            during ATPG pattern generation. The checkpoint interval time is specified in CPU
+            seconds, with a minimum value of 60 seconds. The fault and pattern files are saved in
+            compressed format and overwrite any files of the same name. The default is the -nocheckpoint option. Example: set_atpg -checkpoint { 3600.00 chkp_fault chkp_patt } For more information on checkpoint files, see Using ATPG Checkpoint Files.
+-coverage max_percent : Specifies a test coverage limit for terminating the ATPG effort. The value can be any
+            decimal number between 0 and 100. Basic-scan ATPG is performed in groups of 32 patterns
+            and this can cause the final test coverage to be slightly higher than the level
+            specified by the -coverage option. If you combine the -coverage option with the -num_processes option, you
+            might see coverage overruns. Normally, when a coverage limit is met, a slave process
+            finishes its current interval and stops. However, because slave processes work
+            concurrently in ATPG, these finishing intervals might add additional fault coverage
+            beyond the set limit. The more slave processes that are used, the more likely overruns
+            will occur. To specify the test coverage target for specific partitions, use the -coverage option with the -partition option. For
+            example: set_atpg -coverage < max_percent > -partition
+                < list_of_partition_names >
+-decision <random | norandom> : Specifies how the initial decision choice is to be made when making a decision during
+            ATPG. The default is norandom , which makes the initial choice based on
+            controllability criteria. When performing ATPG pattern compression, the random decision
+            method can sometimes result in lower pattern counts. Note: TestMAX ATPG ignores this option. For more information,
+            see TestMAX ATPG Multithreading Command Option Support.
+-di_analysis | -nodi_analysis : The -di_analysis option (the default) specifies DRC to perform DI
+            (Detected by Implication) fault analysis. This analysis marks fault sites that must
+            correctly operate to enable successful scan shift operation. These faults are credited
+            as DI faults in the fault list. If you do not want to perform DI analysis, you must set the -nodi_analysis option before running DRC. This prevents TestMAX ATPG
+            from crediting any detected faults on the scan path or enable port to the flip-flop, and
+            so on. In this case, ATPG targets these faults and attempts to detect them using regular
+            patterns. If you set -nodi_analysis after running DRC and before
+            running ATPG, faults on the scan path are still credited as DI faults.
+-domain { clock_names } : Sets a capture budget for individual clock domains. This option must be used with the -power_budget option, and must be specified in the order shown in the
+            following example: set_atpg -power_budget 48 -domain clock1 You can specify a capture budget for multiple individual clock domains, as shown in the
+            following example: set_atpg -power_budget min -domain {clock1 clock2 clock3} For more information, see “Setting a Capture Budget for Individual Clocks” in the TestMAX ATPG and TestMAX Diagnosis User Guide .
+-extra_cycle | -noextra_cycle : The -extra_cycle option (the default) allows ATPG to generate 2-cycle
+            patterns for stuck-at faults even when fast sequential ATPG is not enabled. In most
+            cases, only a small number of 2-cycle patterns are generated near the end of the ATPG
+            session. To prevent the 2-cycle patterns from being generated (which is always the case
+            with single-process and multicore ATPG), set the -noextra_cycle option.
+            If you are using TestMAX ATPG, you can control the clocking of the extra cycle for
+            stuck-at faults using the set_delay -common_launch_capture_clock command.
+-fast_min_detects_per_pattern { d [ d ] } : When the -merge option is enabled, this option avoids creating
+            patterns that fail to detect a minimum number of collapsed faults during fast-sequential
+            ATPG compression. This option can be set any time before running ATPG; the default is 0
+            (not used). The second d parameter specifies to terminate Fast-Sequential ATPG
+            when the number of consecutive rejected patterns due to failure to achieve minimum
+            detections reaches the value specified. The default for this parameter is 40. Changing
+            this value to 0 means there is no limit on the number of consecutive rejected patterns.
+            A non-zero value will reduce ATPG run-time, with a potential corresponding reduction in
+            coverage at the point of rejection if the remaining faults require some effort to
+            detect. This option provides a trade-off between run-time and detection of faults when
+            pattern generation starts to drop in effectiveness. If you use the -fast_min_detects_per_pattern option to specify two
+            parameters, you must use Tcl list syntax (for example, enclose the values in curly
+            braces): set_atpg -fast_min_detect {100 10} Note the following: The -fast_min_detects_per_pattern option does not apply to the
+            two-clock option with transition fault ATPG; the two-clock option is controlled by the -basic_min_detects option. In this case, the patterns are simulated
+            in groups of 32 rather than one at a time, so there is no measure of the number of
+            detects for each pattern at the time each pattern is generated. In this case, the -basic_min_detects_per_pattern option is applied at the time the
+            patterns are fault-simulated rather than as each pattern is being generated. The -fast_min_detects_per_pattern option is ignored in TestMAX ATPG.
+            However, you should use the -basic_min_detects_per_pattern option for
+            equivalent functionality on basic scan patterns.
+-fast_path_delay | -nofast_path_delay : Targets a list of path delay faults used by fast-sequential ATPG for generating path
+            delay patterns. The default is -fast_path_delay . Note: This option switches to non-threaded processing. For more
+            information, see TestMAX ATPG Multithreading Command Option Support.
+-fill <random |0|1|X| adjacent> : Specifies fill options for running internal scan and compressed scan patterns. During
+            ATPG, the values at some primary inputs and scan cells do not have affect the targeted
+            faults. These don't care bits can be filled based on user specification. Except as noted
+            below, PIs are filled with random values. The random parameter (the default) causes the don't care scan cells to
+            be filled with random values. This option produces the most compact pattern set, because
+            non-targeted faults are more likely to be detected with every don't care bit taking on a
+            random value. The 0 parameter causes don't care scan cells to be filled with 0s. The 1 parameter causes don't care scan cells to be filled with 1s. The X parameter causes don't care scan cells and PIs to be filled with
+            Xs. This option produces the least compact pattern set. The adjacent parameter causes don't care scan cells to be filled with
+            the value of the first downstream (closer to scan output port) scan cell with a
+            defined/care value. Fill values are generated based on values at the scan input port
+            (and not the values in the scan cells). This option can be useful to minimize power
+            usage during scan shifting by reducing signal switching at the expense of higher pattern
+            count. Note: The adjacent parameter is supported in the presence of
+            compression (i.e. DFTMAX compression). However, all other fill values
+              ( 0 , 1 , X , and random ) are treated as random . -full_min_detects_per_pattern d [ d ] When -merge is enabled, avoids creating patterns that fail to detect a
+            minimum number of collapsed faults during Full-Sequential ATPG compression. This option can be set at any time before running ATPG; the default is 0 (not used).
+            The second d parameter specifies to terminate Full-Sequential ATPG when the number of
+            consecutive rejected patterns due to failure to achieve minimum detections reaches the
+            value specified. The default for this parameter is 40. If you are running multithreaded TestMAX ATPG, this option is ignored unless you
+            manually switch ATPG to the non-threaded mode. To switch to non-threaded processing,
+            launch TestMAX ATPG by using the command tmax or set the -num_threads option of both set_atpg and set_simulation commands
+            to 0 .For more information, see TestMAX ATPG Multithreading Command
+            Option Support. -full_seq_abort_limit seq_max_remade_decs Controls the backtrack limit for Full-Sequential ATPG pattern generation when the -full_seq_time option is set to 0. The default is 10. A value of zero
+            means no limit. Note that the primary effort control for Full-Sequential ATPG is the -full_seq_time option. If you are running multithreaded TestMAX ATPG, this option is ignored unless you
+            manually switch ATPG to the non-threaded mode. To switch to non-threaded processing,
+            launch TestMAX ATPG by using the command tmax or set the -num_threads option of both set_atpg and set_simulation commands
+            to 0 .For more information, see TestMAX ATPG Multithreading Command
+            Option Support. -full_seq_atpg | -nofull_seq_atpg Specifies whether the pattern generator attempts to use the Full-Sequential ATPG
+            algorithm after the Basic-Scan and (optionally) the Fast-Sequential ATPG algorithms. The
+            default is not to enable the Full-Sequential ATPG algorithm. If you are running multithreaded TestMAX ATPG, this option is ignored unless you
+            manually switch ATPG to the non-threaded mode. To switch to non-threaded processing,
+            launch TestMAX ATPG by using the command tmax or set the -num_threads option of both set_atpg and set_simulation commands
+            to 0 .For more information, see TestMAX ATPG Multithreading Command
+            Option Support. -full_seq_merge <off | low | medium | high | d > Similar to the -merge option except that it specifies whether pattern
+            merging is performed during Full-Sequential ATPG. The default is off. If you are running multithreaded TestMAX ATPG, this option is ignored unless you
+            manually switch ATPG to the non-threaded mode. To switch to non-threaded processing,
+            launch TestMAX ATPG by using the command tmax or set the -num_threads option of both set_atpg and set_simulation commands
+            to 0 .For more information, see TestMAX ATPG Multithreading Command
+            Option Support. -full_seq_time <max_secs_per_fault>
+                [ max_secs_per_run ] Similar to the -time option, but applies to the Full-Sequential ATPG
+            algorithm. The defaults are 10 for the maximum seconds per fault and 0 for the maximum
+            seconds per run (0 means no limit). This time limit control is the primary control over
+            the Full-Sequential pattern generation effort. If you are running multithreaded TestMAX ATPG, this option is ignored unless you
+            manually switch ATPG to the non-threaded mode. To switch to non-threaded processing,
+            launch TestMAX ATPG by using the command tmax or set the -num_threads option of both set_atpg and set_simulation commands
+            to 0 .For more information, see TestMAX ATPG Multithreading Command
+            Option Support.
+-group_clk_constraints { first_pass middile_pass final_pass } : This option groups patterns into sets, each of which uses only one of the defined ClockingProcedure blocks in the STL procedure file. These numbers are
+            specified just once, but they are applied for each individual clocking procedure. ATPG
+            categorizes each fault by the clocking procedures that can test it. Only the appropriate
+            subset is considered by ATPG as it generates tests for each clocking procedure. The
+            grouping does not apply to fast sequential patterns. It applies to two-clock-optimized
+            transition delay patterns and basic scan patterns for stuck-at. The following arguments are specified in terms of percentages of the fault list: The first_pass argument specifies the target percentage of the
+                fault list in the first pass through each clocking procedure. The first pass results
+                in long blocks of patterns with just one clocking procedure. The middle_pass argument specifies the target percentage of the
+                fault list in the subsequent passes through each clocking procedure. These passes
+                are repeated until the final_pass number is reached. The middle
+                passes result in shorter blocks of patterns with just one clocking procedure. The final_pass argument specifies the target percentage of the
+                fault list in the final pass in which any clocking procedure might be used. In this
+                pass, there is no guarantee that any two consecutive patterns will share the same
+                clocking procedure. For more information, see "Using Internal Clocking Procedures."
+-lete_fastseq | -nolete_fastseq : When the -lete_fastseq option is set, Fast-Sequential ATPG is target
+            faults based on Leading Edge (LE) Trailing Edge (TE) relationships between sequential
+            elements.With -nolete_fastseq (the default),Fast-Sequential ATPG will
+            target all the faults as if there is no such LE/TE clocking relationship, which is the
+            typical mode of Fast-Sequential ATPG. The -lete_fastseq option is
+            intended to get extra fault coverage when there are many faults whose detection depends
+            on LETE effects. Note: TestMAX ATPG ignores this option. For more information,
+            see TestMAX ATPG Multithreading Command Option Support.
+-load_mode < n | all> : Generates quiet chain test patterns for a specific and existing load mode or all load
+            modes. When you use compression mode to generate a quiet chain test you cannot
+            independently load one internal scan chain. This is because, for a fixed compressor load
+            mode, the same internal scan chains are always fed by one load compressor scan input.
+            Thus, it is not possible to decouple two chains which are always tied together in same
+            load mode. To overcome this situation, use the -load_mode option to enforce the
+            application of the quiet chain test for a particular load mode or all load modes. You
+            should specify the -load_mode option after setting the -quiet_chain_test option.
+-load_value [0 | 1] : Configures the constant value loaded into chain test patterns, and is particularly
+            useful for quiet chain test patterns. The constant value can be 0 or 1. The default is
+            0.
+-merge <off | low | medium | high | d [low | medium |
+          high | d ]> : Specifies whether to perform pattern merging during Basic-Scan and Fast-Sequential ATPG
+            pattern generation. The argument indicates how much effort to spend doing merging. The
+            default is off (0), which means no merging is performed. Unless a value for this option
+            is specified or the run_atpg -auto_compression command is being used, no merging will occur and
+            there is no verbose output to report. The first value sets normal ATPG secondary test generation merge effort The second
+            value sets the merge effort for mutiple fault sensitization, which occurs when -auto_compression is used. The labels low, medium, and high are
+            accepted for both, as well as an integer value. The first group of labels have
+            corresponding numeric values of low=20, medium=100, and high=500. The second group of
+            labels have corresponding numeric values of low=200, medium=1000, and high=5000. To help
+            determine whether a chosen effort level is appropriate, you can use the -verbose
+            option. Enables 2-clock optimization, set_delay -two_clock_transition_optimization , when -merge is set
+            to a value other than 0. Note: If you are using TestMAX ATPG, this option is ignored.
+            For more information on TestMAX ATPG, see "Running TestMAX ATPG."
+-min_ateclock_cycles d : Specifies the minimum number of system cycles each pattern must have. Each system cycle
+            pulses all defined reference clocks (if any). By default, the number of ATE Clock cycles
+            is the same as the value for set_drc -num_pll_cycles (or the PLLCycles value in the STIL procedure file). This
+            might have to be increased to account for OCC Controller latency, or if one of the PLLs
+            has a low frequency. set_atpg -min_ateclock_cycles 3 # example A minimum number of ATE clock cycles can be defined to allow sufficient time between
+            the end of a load_unload and the start of the next load_unload for the clock generator and the PLL controller to switch
+            from shift to system mode, pulse the designated internal clocks, and switch back to
+            shift mode.
+-new_capture | -nonew_capture : The simulation behavior of trailing-edge (TE) devices is to always capture the state
+            after the leading-edge (LE) and level-sensitive (LS) devices have captured. This pattern
+            always simulates correctly, but it might not detect the target fault. ATPG recognizse
+            all forms of "capture new" behavior for DLATs and DFFs, and it creates patterns that are
+            much more likely detect such target faults, including: Leading edge to TE state elements LS to TE state elements LS to LS state elements The default is the -nonew_capture option. For DFTMAX Ultra, the
+            default is the -new_capture option. Note: TestMAX ATPG ignores this option. For more information,
+            see TestMAX ATPG Multithreading Command Option Support.
+-num_processes number | max> : Specifies the number of slave processes to be used for multicore ATPG. The number
+            specification refers to the number of slave processes that is used in ATPG. If max is
+            specified, then TestMAX ATPG computes the maximum number of processes available in the
+            host based on number of CPUs. If TestMAX ATPG detects that the host has only one CPU,
+            then single-process ATPG is performed instead of multicore ATPG with only one slave. Note that you should not specify more processes than the number of CPUs available on
+            the host. You should also consider whether there is other CPU-intensive processes
+            running simultaneously on the host when specifying the number of processes. If too many
+            processes are specified, performance will degrade and might be worse than single-process
+            ATPG. On some platforms, TestMAX ATPG cannot compute the number of CPUs available and
+            will issue an error if max is specified. To turn off multicore ATPG, specify set_atpg -num_processes 0. This option has no effect on- TestMAX -( Remove TestMAX and change it to "Threaded
+            ATPG"). For more information, see TestMAX ATPG Multithreading Command Option
+            Support. Note the following:
+It cannot be used with the -domain option of the set_atpg command .
+It is not supported for Full-Sequential ATPG.
+It does not compute power numbers for padding patterns. Power numbers for padding
+                patterns are displayed in the output report with the "?" symbol.
+The -per_cycle , -first , -last ,
+                and -module options of the report_power command have no effect
+                if the -calculate_power option is used. If you want to generate
+                switching information on a cycle-by-cycle basis, use the following commands: set_atpg –nocalculate_power (This is the default. It must be set
+                before the run_atpg command.) report_power –per_pattern –shift –capture –per_cycle
+
+EXAMPLES:
+TEST-T>
+set_atpg -patterns 400 -abort_limit 5
+

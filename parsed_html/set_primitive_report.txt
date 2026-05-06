@@ -1,0 +1,35 @@
+COMMAND: set_primitive_report
+
+TITLE:
+set_primitive_report
+
+DESCRIPTION:
+This command controls the type of information displayed by the report_primitives command.
+
+SYNTAX:
+set_primitive_report [-interval d] [-max_fanout d] [-time <clock | preclock | postclock | lete | all>] [-verbose | -noverbose]
+
+OPTIONS:
+-interval d : Specifies an interval at which to place a blank space for some selections of pin data
+            (includes test procedure simulated data and pattern data). This is intended to improve
+            the readability of the pin data. A selection of 0 indicates no interval insertion. The
+            default is 0.
+-max_fanout d : Specifies the maximum number of fanout connections that are displayed. The default is
+            2.
+-verbose | -noverbose : Specifies whether to display all learned data for a gate. The default is
+            -noverbose.
+-time <clock | preclock | postclock | lete | all> : Specifies the time segment of the capture clock simulation to display when viewing
+            Basic-Scan patterns. This setting has no effect when viewing Fast-Sequential or
+            Full-Sequential patterns. You should use the analyze_simulation_data command to view Fast-Sequential or
+            Full-Sequential data. The clock argument displays the time segment with all clocks active
+            and all state elements at their new captured state. The preclock argument displays the time segment with all clocks off
+            and all state elements at their previous state. The postclock argument displays the time segment with all clocks off
+            and the state elements at their new captured state. The lete argument displays the time segment with the capture clock on
+            and LE/LS state elements at their new value used by a trailing-edge state element. The all argument (the default) causes display of clock, preclock,
+            and postclock data as a 3-character field; any unavailable information is displayed as a
+            question mark character " ? ". A question mark is used because the
+            additional time periods are only simulated when required.
+
+EXAMPLES:
+TEST> set_primitive_report -max_fanout 5 -verbose
+

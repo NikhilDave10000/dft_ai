@@ -1,0 +1,49 @@
+COMMAND: write_faults
+
+TITLE:
+write_faults
+
+DESCRIPTION:
+Use this command to write fault data to an external file.
+
+SYNTAX:
+write_faults filename [ instance_name | pin_pathname] [-stuck <0|1|01> | -slow <r|f|rf>] | [-class fault_class ... | -summary | -all > [-collapsed | -uncollapsed] [-compress <gzip | binary>] [-profile] [-max d] [-replace]
+
+OPTIONS:
+filename : Specifies the pathname and file to which the fault data is written.
+instance_name : Specifies that faults associated with the selected instance name are written.
+pin_pathname [-stuck <0|1|01> | -slow <r|f|rf>] : Selects faults associated with the specified pin pathname for writing. You can use the -stuck option to write only the stuck-at-1 or stuck-at-0 faults
+              associated with the specified pin pathname, or both; or use the -slow option to write the slow-to-rise, slow-to-fall, or both to the specified file.
+-class fault_class : Specifies that only faults associated with the specified fault class should be written. Multiple
+              fault classes can be specified within a list, and this option can also be combined
+              with an instance_name . See the examples in the example section.
+-summary : Writes a fault summary (rather than a fault list) to the file.
+-all : Specifies that all fault classes in the current fault are selected for writing.
+-collapsed | -uncollapsed : Selects whether the fault list written will show collapsed or uncollapsed faults. The
+            default is the current setting as specified with the set_faults command. When -uncollapsed is
+            selected or is the current setting of set faults, the equivalent faults follow the
+            primary fault and are indicated by a double dash "--". This behavior can be adjusted
+            with the set faults command.
+-compress <gzip | binary> : Specifies that the output file is to be written in compressed format and specifies the
+            type of compression: GZIP or binary. The binary keyword creates a
+            proprietary format that can be read only by TestMAX ATPG. The default is to write the
+            file with no compression.
+-profile : Selects a report of the number of faults detected per pattern in the external pattern
+            set. The pattern set must be external and a prior run_fault_sim -sequential command must have been run. This option is primarily useful
+            for fault grading of functional patterns. It creates report showing the pattern number
+            and the number of new faults detected as well as the total cumulative detected faults.
+            The set_faults -report command determines whether fault reporting is in terms of
+            collapsed or uncollapsed faults. Patterns that do not detect faults are not printed in
+            the report.
+-max d : Specifies the maximum number of faults that are written. The default is to write all
+            selected faults.
+-replace : Indicates that the fault file is allowed to replace an existing file. The default is to
+            not allow a replacement.
+
+EXAMPLES:
+TEST-T> write_faults faults.ud_au_nd.flt -class {UD AU ND} -replace
+TEST-T> write_faults fault.summary -summary
+TEST-T> write_faults faults.all.flt -all -replace
+TEST-T> write_faults faults.AU.flt -class au -replace
+TEST-T> write_faults faults.NP.flt -class np -verbose
+

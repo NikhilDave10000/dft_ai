@@ -1,0 +1,37 @@
+COMMAND: report_fanin
+
+TITLE:
+report_fanin
+
+DESCRIPTION:
+This command reports fanin paths to a specific pin.
+
+SYNTAX:
+report_fanin -from pin_name -to pin_name [-hide_sequential] [-shift] [-test_setup] [-pi_constraints]
+
+OPTIONS:
+-from pin_name : Specifies the hierarchical pin name in the top-level netlist to be used for
+            mapping/tracing. Wildcard pin names are supported, although they do not apply to
+            instance names.
+-to pin_name : Specifies the pin name to be used as the end point or sink for mapping/tracing. By
+            default, the report_fanin command prints all the PIs, PIOs and
+            flip-flops that are driving this pin. You can specify wildcard characters for specifying
+            pin names, but not instance names. The report_fanin command will
+            report, one-by-one, all the sources for all the matching endpoint pin names.
+-hide_sequential : Hides printing flip-flops or latch endpoints, and outputs only the PIs and POs.
+-shift : Outputs endpoints after the shift constraints are applied.
+-test_setup : Outputs endpoints after applying the test_setup sequence.
+-pi_constraints : Outputs endpoints after applying the pin constraints.
+
+EXAMPLES:
+report_fanin -to top/Udftmax_core1/DFTMAX821/ZN
+
+ Possible sources for pin top/Udftmax_core1/DFTMAX821/ZN .
+ Udftmax_core1/d1_reg_3_ (3826)  DFF
+ dftmax_test_mode (28)  PI
+  test_si12 (19)  PI
+ test_si14 (21)  PI
+ test_si11 (18)  PI
+ test_si12 (19)  PI
+ test_si15 (22)  PI
+

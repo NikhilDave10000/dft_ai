@@ -1,0 +1,11 @@
+COMMAND: gui_start
+
+TITLE:
+gui_start
+
+DESCRIPTION:
+This command starts the TestMAX ATPG GUI.
+
+SYNTAX:
+gui_start
+

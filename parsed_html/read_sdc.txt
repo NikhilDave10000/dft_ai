@@ -1,0 +1,11 @@
+COMMAND: read_sdc
+
+TITLE:
+read_sdc
+
+DESCRIPTION:
+This command reads in setup timing exceptions directly from an SDC (Synopsys Design Constraints) file.
+
+SYNTAX:
+read_sdc file_name [-echo] [-syntax_only] [-version sdc_version]
+

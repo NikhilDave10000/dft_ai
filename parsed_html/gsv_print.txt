@@ -1,0 +1,15 @@
+COMMAND: gsv_print
+
+TITLE:
+gsv_print
+
+DESCRIPTION:
+This command creates a grayscale PostScript file, which captures the schematic displayed in the graphical schematic viewer (GSV).
+
+SYNTAX:
+gsv_print -file filename -banner string
+
+OPTIONS:
+-file filename : Specifies the name of output PostScript file.
+-banner string : Prints a user-defined string.
+

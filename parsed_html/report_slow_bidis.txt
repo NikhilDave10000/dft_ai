@@ -1,0 +1,11 @@
+COMMAND: report_slow_bidis
+
+TITLE:
+report_slow_bidis
+
+DESCRIPTION:
+This command is used to report all BUS primitives modified with the add_slow_bidis command.
+
+SYNTAX:
+report_slow_bidis
+

@@ -1,0 +1,16 @@
+COMMAND: remove_compressors
+
+TITLE:
+remove_compressors
+
+DESCRIPTION:
+This command removes compressors from the defined compressors list.
+
+SYNTAX:
+remove_compressors < compressor_name | -load | -unload |-all>
+
+OPTIONS:
+compressor_name | -load | -unload | -all : You can specify to remove a particular compressor name from the defined compressors
+            list, or use one of the following: -load removes all load compressors; -unload removes all unload compressors; -all removes
+            all compressors.
+

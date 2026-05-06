@@ -1,0 +1,18 @@
+COMMAND: get_attributes
+
+TITLE:
+get_attribute
+
+DESCRIPTION:
+This command searches the object_spec for the specified attribute and returns a list of attribute values.
+
+SYNTAX:
+list get_attribute [-class class_name] [-quiet] [-value_list] object_spec attr_name
+
+OPTIONS:
+-class class_name : If the object_spec attribute is a name, its class can be any of the
+            following: Clock, ScanChains, Cell, Primitive, Pin, Port, Modules, Instances, Timings,
+            Settings, Faults, Patterns, Candidates, DiagFile.
+-quiet : Does not report messages.
+-value_list : Forces the return of a single object as a list.
+

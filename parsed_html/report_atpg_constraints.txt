@@ -1,0 +1,21 @@
+COMMAND: report_atpg_constraints
+
+TITLE:
+report_atpg_constraints
+
+DESCRIPTION:
+Use this command to report data from the current ATPG constraints list.
+
+SYNTAX:
+report_atpg_constraints [-summary | -all] [-max d] [-no_detection_credit [-max number]]
+
+OPTIONS:
+-summary : Selects a summary report of all ATPG constraints. This is the default report type.
+-all : Specifies that all ATPG constraints should be reported.
+-max d : Specifies the maximum number of ATPG constraints to be reported. The default is no limit.
+-no_detection_credit [-max number ] : Reports information on the current no detection credit cells specified by the -no_detection_credit option of the add_atpg_constraints command. The -max option limits the number of cells reported. The information reported for each no detection credit cell includes the following: Gate ID of the associated DLAT/DFF Instance name of the associated DLAT/DFF Chain name and position in the chain if the DLAT/DFF is a scan cell For a complete description of using this option, see Defining, Reporting, and Removing
+            No Detection Credit Cells.
+Gate ID of the associated DLAT/DFF
+Instance name of the associated DLAT/DFF
+Chain name and position in the chain if the DLAT/DFF is a scan cell
+

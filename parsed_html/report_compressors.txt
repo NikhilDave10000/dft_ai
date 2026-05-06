@@ -1,0 +1,30 @@
+COMMAND: report_compressors
+
+TITLE:
+report_compressors
+
+DESCRIPTION:
+Generates a report containing data for the specified compressors.
+
+SYNTAX:
+report_compressors < compressor_name | -load | -unload |-pipeline | -shift_power_controller | -all> [-verbose]
+
+OPTIONS:
+compressor_name | -load | -unload | -pipeline |
+          -shift_power_controller | -all : You can specify a report related to a particular compressor name
+              ( compressor_name ), or use one of the following options: -load reports all load compressors; -unload reports
+            all unload compressors; -pipeline displays information about the load
+            and unload compressor pipelines (if any) for each pipeline input, in separate blocks
+            (see the examples below); -shift_power_controller reports chain and
+            connection information for shift power groups (SPC); -all reports all
+            compressors.
+-verbose : Reports the data for the specified compressors in verbose mode.
+
+EXAMPLES:
+report compressor -pipeline
+  Compressor pipeline report: #input stages=1, #output_stages=1
+  -------------------------------------------------------------
+  mode_port output_gate invert type clock pipeline_cells
+  --------- ----------- ------ ---- ----- --------------
+  SI_5          9544    1      hold ----- 9544(1)
+

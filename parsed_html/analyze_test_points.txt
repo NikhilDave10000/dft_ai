@@ -1,0 +1,29 @@
+COMMAND: analyze_test_points
+
+TITLE:
+analyze_test_points
+
+DESCRIPTION:
+This command analyzes a design and prints a file containing a list of optimal observe and control test points.
+
+SYNTAX:
+analyze_test_points [-target <testability | pattern_reduction | fault_class>] [-test_points_file file_name] [-max_control_points number] [-max_observe_points number] [-num_observe_points_per_cell number] [-class { list_of_fault_classes }] [-exclude { list_of_instance_names }] [-replace]
+
+OPTIONS:
+-target <testability | pattern_reduction | fault_class> : Specifies the type of analysis to perform when determining the test points. You can use
+            the following arguments:
+testability Targets improved test coverage with control and observe points Uses random patterns for iterative static analysis Does not require prior ATPG
+Targets improved test coverage with control and observe points
+Uses random patterns for iterative static analysis
+Does not require prior ATPG
+pattern_reduction Targets reduced pattern size with observe points Uses SCOAP(Sandia Controllability and Observability Analysis Program) numbers for
+              static analysis Does not require prior ATPG
+Targets reduced pattern size with observe points
+Uses SCOAP(Sandia Controllability and Observability Analysis Program) numbers for
+              static analysis
+Does not require prior ATPG
+fault_class Targets improved test coverage with observe points for fault classes Uses fault cone topology for dynamic analysis Requires initial ATPG for analysis of fault cones
+Targets improved test coverage with observe points for fault classes
+Uses fault cone topology for dynamic analysis
+Requires initial ATPG for analysis of fault cones
+
