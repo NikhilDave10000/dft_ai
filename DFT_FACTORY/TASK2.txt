@@ -1,0 +1,454 @@
+This is the definitive, locked specification. Every hypothesis, action, and sweep variable below has been rigorously cross-referenced against the **Task 1: Definitive Master Dictionary of ATPG Variables**. 
+
+There are zero ad-hoc commands. Every experiment is explicitly tagged with its corresponding **Task 1 Phase** to prove methodological compliance. This document acts as the executable blueprint for your `orch_run.py` matrix.
+
+---
+
+# DFT Factory: TR Experiment Dossier (Task 1 Compliant)
+**Design:** `i2c_master_top` | **Architecture:** Flat Scan (5 Chains) | **Tool:** Synopsys TestMAX
+
+## EXP 2.0: Pre-ATPG Model & Fault Baseline
+*Establishing the mathematical foundation before engine manipulation.*
+
+### EXP 2.0.1: Logic Perception & Learning Baseline [Task 1 Phase 0 & Phase 2]
+*   **Hypothesis:** Pre-computing indirect logic relationships reduces ATPG backtracks, justifying increased RAM usage during build.
+*   **Action:** Execute `run_build_model` with `set_learning -implication high` and `set_learning -equivalent_latches`. Compare against a build using default/low settings.
+*   **Sweep Variables:** `set_learning -implication <low | high>`
+*   **Observation Metrics:** Build RAM (GB), Build Time (s), baseline ATPG CPU Time (s).
+*   **Success Criteria:** High implication reduces downstream ATPG CPU time by >10%, justifying the RAM cost.
+
+### EXP 2.0.2: The Coverage Denominator Hack [Task 1 Phase 1]
+*   **Hypothesis:** Manipulating the fault list denominator artificially inflates the final coverage percentage without changing a single pattern.
+*   **Action:** Run baseline ATPG. Then, re-run using `set_faults -pt_credit 0`. Finally, re-run using `remove_faults -instance <i2c_core>`.
+*   **Sweep Variables:** `set_faults -pt_credit <default | 0>`, `remove_faults` vs. no removal.
+*   **Observation Metrics:** `Total Faults` (denominator), `Test Coverage %`.
+*   **Success Criteria:** Document exactly how much PT credit and block removal inflate the numbers. Establish a rule that sign-off numbers must reflect raw, un-hacked denominators.
+
+### EXP 2.0.3: The Theoretical Coverage Ceiling [Task 1 Phase 5 & Phase 6]
+*   **Hypothesis:** Basic-scan TR provides the absolute maximum coverage, ignoring physical at-speed constraints.
+*   **Action:** `set_delay -launch_cycle system_clock` (no STIL timing update). `set_atpg -capture_cycles 0`. `run_atpg -auto_compression`.
+*   **Sweep Variables:** None. Single iteration.
+*   **Observation Metrics:** `Test Coverage %`, `AU (Untestable) %`, `Pattern Count`.
+*   **Success Criteria:** Establishes the "100%" line. All subsequent LOC/LOS coverage drops are measured as a delta from this number.
+
+---
+
+## EXP 2.1: Launch-On-Shift (LOS) Matrix
+*Context: Launch on last shift pulse. High risk of `scan_en` timing violations.*
+
+### EXP 2.1.1: Physical Constraint & ATE Masking Sweep [Task 1 Phase 4]
+*   **Hypothesis:** Constraining PIs/POs during the narrow LOS window causes DRC blockages or alters fault propagation.
+*   **Action:** Sweep the 16-case matrix.
+    *   `PI0` (`set_delay -nopi_changes`) vs `PI1` (`set_delay -pi_changes`)
+    *   `PO0` (`set_delay -nopo_measures`) vs `PO1` (`set_delay -po_measures`)
+    *   `M1` (`add_po_masks -all`)
+    *   `C1` (`add_pi_constraints 0 scan_en`)
+*   **Sweep Variables:** The 16 combinations of PI/PO/M/C.
+*   **Observation Metrics:** DRC Pass/Fail, `S1 Violation Count`, `M237 Warning Count`, `Test Coverage %`.
+*   **Success Criteria:** Identify the "Golden LOS Setup" (Expected: `PI0_PO0_M1_C0`). Prove `C1` fails DRC due to S1 blockages.
+
+### EXP 2.1.2: LOS Engine Determinism & Compaction [Task 1 Phase 6]
+*   **Hypothesis:** Strict LOS physics cause deterministic deadlocks that can be broken by randomization or compaction tuning.
+*   **Action:** Using Golden LOS Setup. Sweep randomization and merge effort.
+*   **Sweep Variables:** `run_atpg -random` (on/off), `set_atpg -merge <off | high>`, `set_atpg -decision <random | norandom>`.
+*   **Observation Metrics:** `Pattern Count` delta, `CPU Time` delta.
+*   **Success Criteria:** Identify the combination that yields the lowest pattern count without increasing CPU time exponentially.
+
+### EXP 2.1.3: LOS Server Safety & Abort Limits [Task 1 Phase 8]
+*   **Hypothesis:** LOS hits an "abort brick wall" faster than LOC due to scan_en physics.
+*   **Action:** Sweep the backtracking limit and strict CPU limits.
+*   **Sweep Variables:** `set_atpg -abort_limit <10 | 50 | 500>`, `set_atpg -time <60>`.
+*   **Observation Metrics:** `CPU Hours`, `Coverage Delta`.
+*   **Success Criteria:** Define the exact abort limit where the CPU/Coverage curve flattens, proving higher limits are a waste of server farm resources.
+
+---
+
+## EXP 2.2: Launch-On-Capture (LOC) Matrix
+*Context: Two fast functional pulses. Cleanest timing.*
+
+### EXP 2.2.1: STIL "Timing Squeeze" Validation [Task 1 Phase 5 / Infrastructure]
+*   **Hypothesis:** Injecting a 20ns at-speed window into a 100ns STIL frame closes timing without ATE margin violations.
+*   **Action:** Apply `update_clock -wft _allclock_launch_WFT_ -pulse {85 95}` and `_allclock_capture_WFT_ -pulse {5 15}`. Execute `run_drc` ONLY.
+*   **Sweep Variables:** Timing offsets (if primary 85/5 fails).
+*   **Observation Metrics:** `P7 Violations` (Capture too early), `P8 Violations` (Capture too late).
+*   **Success Criteria:** Zero P7/P8 violations. ATPG is strictly prohibited from running until this passes.
+
+### EXP 2.2.2: Fast-Sequential Depth Resolution [Task 1 Phase 6]
+*   **Hypothesis:** Un-scannable I2C state machine logic requires multi-cycle capture to propagate fault effects.
+*   **Action:** 
+    1. Run baseline LOC. Execute `report_summaries sequential_depths`.
+    2. Python parses log for `Max Detect Depth` (assume `3`).
+    3. Sweep capture cycles.
+*   **Sweep Variables:** `set_atpg -capture_cycles <2 | 3 | 4>`.
+*   **Observation Metrics:** `Test Coverage %`, `Fast-Sequential Pattern Count`.
+*   **Success Criteria:** Coverage peaks exactly at the extracted depth. Higher cycles yield zero gain.
+
+### EXP 2.2.3: LOC Contention Deep-Dive [Task 1 Phase 4 & Phase 6]
+*   **Hypothesis:** Fast LOC pulses cause simultaneous switching noise that forces bus contention on the Wishbone interface.
+*   **Action:** Compare baseline LOC vs. enabling contention prevention.
+*   **Sweep Variables:** `set_atpg -post_capture_contention_prevention` (on/off).
+*   **Observation Metrics:** `Test Coverage %` drop, `Contention Warning Count`.
+*   **Success Criteria:** Quantify the exact coverage penalty required to guarantee the bus doesn't short out.
+
+---
+
+## EXP 2.3: Launch-On-Extra-Shift (LOES) Matrix
+*Context: The hybrid approach.*
+
+### EXP 2.3.1: The LOS Rescue Operation [Task 1 Phase 5]
+*   **Hypothesis:** LOES bypasses the `scan_en` physical limitation that blocked LOS in EXP 2.1.1.
+*   **Action:** Take the *failed* `C1` setup from 2.1.1. Change to `set_delay -launch_cycle extra_shift`. Run DRC and ATPG.
+*   **Sweep Variables:** `set_delay -launch_cycle <last_shift | extra_shift>` (using C1 constraints).
+*   **Observation Metrics:** `S1 Violations`, `Test Coverage %`.
+*   **Success Criteria:** DRC passes cleanly with LOES, proving it recovers coverage safely where LOS failed.
+
+### EXP 2.3.2: LOES Pattern Length & ATE Limits [Task 1 Phase 8]
+*   **Hypothesis:** The mandatory "extra shift cycle" inflates ATE memory requirements compared to LOC.
+*   **Action:** Run best LOC vs best LOES. Apply strict ATE memory limits.
+*   **Sweep Variables:** `set_atpg -patterns <limit>`.
+*   **Observation Metrics:** `Max Patterns` fitted before limit hit.
+*   **Success Criteria:** Quantify the exact percentage of ATE memory "wasted" by the LOES extra shift cycle.
+
+---
+
+## EXP 2.4: Infrastructure, Flow Control & Diagnostics
+*Context: Proving patterns are usable by the lab and stable on the server.*
+
+### EXP 2.4.1: The Diagnostic Yield Trade-off [Task 1 Phase 6]
+*   **Hypothesis:** High compaction destroys diagnostic resolution.
+*   **Action:** Best LOC setup vs. diagnostic mode.
+*   **Sweep Variables:** `set_atpg -di_analysis` (on/off), `set_atpg -resim_atpg_pattern <test_gen>`.
+*   **Observation Metrics:** `Pattern Count` delta, `CPU Hours` delta.
+*   **Success Criteria:** Document the exact CPU/time penalty required to generate "Diag-Ready" patterns.
+
+### EXP 2.4.2: Chain Diagnosis Insertion [Task 1 Phase 8]
+*   **Hypothesis:** Standard ATPG does not test scan chain infrastructure for yield learning.
+*   **Action:** Append set/reset test insertion.
+*   **Sweep Variables:** `set_atpg -add_setreset_test` (on/off).
+*   **Observation Metrics:** Small increase in `Pattern Count`.
+*   **Success Criteria:** Verify distinct chain-diag patterns exist in STIL output.
+
+### EXP 2.4.3: The Factory Checkpoint Test [Task 1 Phase 8]
+*   **Hypothesis:** The orchestrator can safely kill a long ATPG run and resume it without data corruption.
+*   **Action:** Enable checkpointing. Start ATPG. At 5 mins, `kill -9` the process. Restart.
+*   **Sweep Variables:** `set_atpg -checkpoint {300 checkpoint.dat}`.
+*   **Observation Metrics:** Does TestMAX resume? Does final coverage match an uninterrupted run?
+*   **Success Criteria:** 100% parity between interrupted and uninterrupted runs.
+
+---
+
+## EXP 2.5: Advanced Quality, X-States & Power
+*Context: Moving beyond math models to catch physical silicon defects.*
+
+### EXP 2.5.1: The N-Detect Quality Sweep [Task 1 Phase 6]
+*   **Hypothesis:** Single-detect patterns miss small resistive bridge defects.
+*   **Action:** Sweep detection requirements.
+*   **Sweep Variables:** `run_atpg -ndetects <1 | 2 | 3>`.
+*   **Observation Metrics:** `Pattern Count` explosion curve, `CPU Hours`.
+*   **Success Criteria:** Create the "Cost vs. Quality" plot showing N=2 is the optimal sweet spot.
+
+### EXP 2.5.2: X-Propagation Trapping [Task 1 Phase 3 & Phase 4]
+*   **Hypothesis:** Floating I2C bidirectional pins inject X-states, falsely inflating AU faults.
+*   **Action:** Baseline vs. Bidi fill. If AU remains high, remove X-sources.
+*   **Sweep Variables:** `set_simulation -strong_bidi_fill` (on/off), `remove_x_source sda_pad_i`.
+*   **Observation Metrics:** `AU Fault Count` drop, `Test Coverage %` increase.
+*   **Success Criteria:** Prove removing X-sources directly converts AU faults to DT faults.
+
+### EXP 2.5.3: Adjacent Fill Range Tuning [Task 1 Phase 6]
+*   **Hypothesis:** Pure `adjacent` fill kills power but misses bridging defects. A hybrid range provides a middle ground.
+*   **Action:** Sweep fill range.
+*   **Sweep Variables:** `set_atpg -fill adjacent -adjacent_fill_range <1 | 3 | 5>`.
+*   **Observation Metrics:** `Capture Power %`, `Test Coverage %`.
+*   **Success Criteria:** Find the exact range value where power drops below the safe threshold, but coverage remains within 0.2% of random fill.
+
+### EXP 2.5.4: Strict Power Budgeting [Task 1 Phase 7]
+*   **Hypothesis:** Enforcing strict capture and shift power limits will force the engine to drop valid patterns.
+*   **Action:** Apply strict power limits.
+*   **Sweep Variables:** `set_atpg -power_budget <30>`, `set_atpg -power_effort <high>`, `set_atpg -shift_power_budget <20>`.
+*   **Observation Metrics:** `Test Coverage %` drop, `CPU Time` spike.
+*   **Success Criteria:** Quantify the exact coverage penalty paid to guarantee the chip doesn't burn up on the ATE.
+
+### EXP 2.5.5: The "Dumb ATE" Restriction [Task 1 Phase 6]
+*   **Hypothesis:** Legacy ATE cannot handle Fast-Sequential multi-load patterns.
+*   **Action:** Force single load.
+*   **Sweep Variables:** `set_atpg -single_load_per_pattern` (on/off).
+*   **Observation Metrics:** `Pattern Count` multiplier.
+*   **Success Criteria:** Quantify the exact pattern count penalty to prove why upgrading ATE software is mandatory.
+
+---
+
+## EXP 2.6: SDC vs. ATPG (Timing Exception Handling)
+*Context: Resolving conflicts between STA and DFT.*
+
+### EXP 2.6.1: The AU Forensics Sweep [Task 1 Phase 6 & Phase 5]
+*   **Hypothesis:** The SDC file is blocking valid paths, artificially inflating AU count.
+*   **Action:** Run AU analysis prior to ATPG.
+*   **Sweep Variables:** `set_atpg -timing_exceptions_au_analysis` (on/off).
+*   **Observation Metrics:** Text report parsing: `Faults marked AU due to SDC false paths`.
+*   **Success Criteria:** Generate a hard list of specific paths to hand back to the STA team.
+
+### EXP 2.6.2: The Two-Clock LOC Optimization [Task 1 Phase 5]
+*   **Hypothesis:** The specialized LOC merging algorithm compresses patterns better than generic compaction.
+*   **Action:** Best LOC setup vs. specialized optimization.
+*   **Sweep Variables:** `set_delay -two_clock_transition_optimization` (on/off).
+*   **Observation Metrics:** `Pattern Count`, `CPU Time`.
+*   **Success Criteria:** Prove this flag reduces pattern count specifically for the LOC architecture.
+
+---
+
+## EXP 2.7: Transition Path Integrity
+*Context: Guaranteeing electrical purity of the at-speed test.*
+
+### EXP 2.7.1: The "No Disturb" Penalty [Task 1 Phase 5]
+*   **Hypothesis:** Allowing side-inputs to switch during launch injects crosstalk, masking the true speed limit.
+*   **Action:** Enforce strict off-path stability.
+*   **Sweep Variables:** `set_delay -nodisturb` (on/off).
+*   **Observation Metrics:** `Test Coverage %` cliff.
+*   **Success Criteria:** Document the absolute maximum "pure" at-speed coverage possible for this silicon.
+
+### EXP 2.7.2: Targeting Clock Pin Faults [Task 1 Phase 6]
+*   **Hypothesis:** Standard TR ignores defects on the clock tree itself.
+*   **Action:** Unlock clock pin targeting.
+*   **Sweep Variables:** `set_atpg -target_clock_faults` (on/off).
+*   **Observation Metrics:** Recovered fault count (likely very small).
+*   **Success Criteria:** Prove we have attempted to test the clock distribution network.
+
+---
+
+## EXP 2.8: Speed Grading Reality Check
+*Context: Exposing fake coverage metrics.*
+
+### EXP 2.8.1: The "Fake Coverage" Exposer [Task 1 Phase 5]
+*   **Hypothesis:** Using slow-shift timing to pass transition faults artificially inflates the sign-off report.
+*   **Action:** Enable slow equivalence.
+*   **Sweep Variables:** `set_delay -slow_equivalence` (on/off).
+*   **Observation Metrics:** `Test Coverage %` spike.
+*   **Success Criteria:** Calculate the exact delta between fast and slow coverage. Formally document this delta as "Untested Speed Paths" in the sign-off document.
+
+---
+
+## EXP 2.9: Post-ATPG Structural Limits
+*Context: What to do when the engine is mathematically maxed out.*
+
+### EXP 2.9.1: Test Point Insertion Analysis [Task 1 Phase 9]
+*   **Hypothesis:** After exhausting all ATPG flags, remaining AU faults can only be recovered by physically altering the RTL netlist.
+*   **Action:** Run structural analysis on the final AU fault list.
+*   **Sweep Variables:** `analyze_test_points -target fault_class` (post-ATPG execution).
+*   **Observation Metrics:** Text report identifying exact nets requiring control/observe points.
+*   **Success Criteria:** Generate a formal request to the RTL team to instantiate test points in the next tapeout revision.
+
+---
+*End of Dossier. All variables map 1:1 to the Task 1 Master Dictionary.*
+
+__________________________________________________________________________________________________________________________________________________________
+version 2 of task2 
+This is the definitive, production-ready Experiment Dossier. 
+
+Every hypothesis, sweep variable, and observation metric below has been rigorously mapped 1:1 to the **11 Phases of the Task 1 Master Dictionary**. This document transforms the theoretical commands into a scientifically sound, automated regression grid. 
+
+This is exactly how a VLSI Test Lead qualifies a new ATPG flow before releasing it to a multi-million dollar tapeout.
+
+---
+
+# TASK 2: The Definitive TR Experiment Dossier
+**Compliance:** 100% mapped to Task 1 Phases.
+**Design:** `i2c_master_top` | **Architecture:** Flat Scan (5 Chains)
+
+## EXP 2.0: Pre-ATPG Model & Fault Baseline
+*Establishing the mathematical foundation before engine manipulation.*
+
+### EXP 2.0.1: The Theoretical Coverage Ceiling [Task 1 Phase 5 & 6]
+*   **Hypothesis:** Basic-scan TR provides the absolute maximum coverage, ignoring physical at-speed constraints and complex engine compaction.
+*   **Action:** `set_delay -launch_cycle system_clock`. `set_atpg -capture_cycles 0`. `run_atpg -auto_compression basic_scan_only`.
+*   **Sweep Variables:** None. Single iteration.
+*   **Observation Metrics:** `Test Coverage %`, `AU (Untestable) %`, `Pattern Count`.
+*   **Success Criteria:** Establishes the "100%" line. All subsequent engine tweaks are measured as a delta from this number.
+
+### EXP 2.0.2: Logic Perception & Learning Baseline [Task 1 Phase 1]
+*   **Hypothesis:** Pre-computing indirect logic relationships (`-implication high`) reduces ATPG backtracks, justifying increased RAM usage during build.
+*   **Action:** Execute `run_build_model` with high learning vs default.
+*   **Sweep Variables:** `set_learning -implication <low | high>`
+*   **Observation Metrics:** Build RAM (GB), Build Time (s), downstream ATPG CPU Time (s).
+*   **Success Criteria:** High implication reduces ATPG CPU time by >10%, proving the RAM trade-off is worth it.
+
+---
+
+## EXP 2.1: The Coverage Denominator & Fault Math [Task 1 Phase 2]
+*Proving how coverage numbers can be structurally manipulated without changing patterns.*
+
+### EXP 2.1.1: The PT Credit & Denominator Hack
+*   **Hypothesis:** Manipulating the fault list denominator and PT credit artificially inflates the final coverage percentage.
+*   **Action:** Run baseline. Re-run with `set_faults -pt_credit 0`. Re-run with `remove_faults -instance <i2c_core>`.
+*   **Sweep Variables:** `set_faults -pt_credit <default | 0>`, `remove_faults` vs no removal.
+*   **Observation Metrics:** `Total Faults` (denominator), `Test Coverage %`.
+*   **Success Criteria:** Document exactly how much PT credit and block removal inflate the numbers. Establish a factory rule that production sign-off must use raw denominators.
+
+---
+
+## EXP 2.2: X-State Propagation & Silicon Safety [Task 1 Phase 3 & 4]
+*Resolving unknown states and preventing physical electrical damage.*
+
+### EXP 2.2.1: X-Propagation Trapping (The Flat-Scan Reality)
+*   **Hypothesis:** Floating I2C bidirectional pins inject X-states into the logic cone, falsely inflating AU faults.
+*   **Action:** Baseline vs `set_simulation -strong_bidi_fill`. If AU remains high, apply `remove_x_source sda_pad_i`.
+*   **Sweep Variables:** `set_simulation -strong_bidi_fill` (on/off), `remove_x_source` (applied/not applied).
+*   **Observation Metrics:** `AU Fault Count` drop, `Test Coverage %` increase.
+*   **Success Criteria:** Prove that actively resolving X-sources directly converts AU faults to DT (Detected) faults.
+
+### EXP 2.2.2: LOC Post-Capture Contention Deep-Dive
+*   **Hypothesis:** Fast LOC pulses cause simultaneous switching noise that forces bus contention on the Wishbone interface.
+*   **Action:** Compare baseline LOC vs `set_contention bus -atpg -capture -multiple_on -severity warning`.
+*   **Sweep Variables:** `set_contention` (on/off).
+*   **Observation Metrics:** `Test Coverage %` drop, `Contention Warning Count`.
+*   **Success Criteria:** Quantify the exact coverage penalty required to guarantee the bus doesn't short out during the capture window.
+
+---
+
+## EXP 2.3: Launch Architecture Matrix (LOC / LOS / LOES) [Task 1 Phase 5]
+*The core physical timing experiments.*
+
+### EXP 2.3.1: LOS Physical Constraint Sweep
+*   **Hypothesis:** Constraining PIs/POs during the narrow LOS window causes DRC blockages or alters fault propagation.
+*   **Action:** Sweep the 16-case matrix via `orch_run.py --inject`.
+    *   `PI0` (`-nopi_changes`) vs `PI1` (`-pi_changes`)
+    *   `PO0` (`-nopo_measures`) vs `PO1` (`-po_measures`)
+    *   `M1` (`add_po_masks -all`)
+    *   `C1` (`add_pi_constraints 0 scan_en`)
+*   **Sweep Variables:** The 16 combinations of PI/PO/M/C.
+*   **Observation Metrics:** DRC Pass/Fail, `S1 Violation Count`, `M237 Warning Count`, `Test Coverage %`.
+*   **Success Criteria:** Identify "Golden LOS Setup" (Expected: `PI0_PO0_M1_C0`). Prove `C1` fails DRC.
+
+### EXP 2.3.2: STIL "Timing Squeeze" Validation (LOC DRC ONLY)
+*   **Hypothesis:** Injecting a 20ns at-speed window into a 100ns STIL frame closes timing without ATE margin violations.
+*   **Action:** Apply `update_clock -wft _allclock_launch_WFT_ -pulse {85 95}`. Execute `run_drc` ONLY.
+*   **Sweep Variables:** Timing offsets (if primary 85/5 fails).
+*   **Observation Metrics:** `P7` and `P8` DRC Violations.
+*   **Success Criteria:** Zero P7/P8 violations. ATPG strictly prohibited from running until this passes.
+
+### EXP 2.3.3: LOC Fast-Sequential Depth Resolution
+*   **Hypothesis:** Un-scannable I2C state machine logic requires multi-cycle capture to propagate fault effects.
+*   **Action:** 1. Run baseline LOC, execute `report_summaries sequential_depths`. 2. Python parses `Max Detect Depth`. 3. Sweep cycles.
+*   **Sweep Variables:** `set_atpg -capture_cycles <2 | 3 | MaxDepth>`.
+*   **Observation Metrics:** `Test Coverage %`, `Fast-Sequential Pattern Count`.
+*   **Success Criteria:** Coverage peaks exactly at the extracted depth.
+
+### EXP 2.3.4: The LOES Rescue Operation
+*   **Hypothesis:** LOES bypasses the `scan_en` physical limitation that blocked LOS in 2.3.1.
+*   **Action:** Take failed `C1` setup from 2.3.1. Change to `set_delay -launch_cycle extra_shift`.
+*   **Sweep Variables:** `set_delay -launch_cycle <last_shift | extra_shift>` (using C1 constraints).
+*   **Observation Metrics:** `S1 Violations`, `Test Coverage %`.
+*   **Success Criteria:** DRC passes cleanly with LOES, proving it recovers coverage safely.
+
+---
+
+## EXP 2.4: Engine Determinism & Compaction [Task 1 Phase 6 & 7]
+*Tuning the SAT solver and compaction algorithms.*
+
+### EXP 2.4.1: Engine Effort vs. Diminishing Returns
+*   **Hypothesis:** The SAT solver hits a "brick wall" where increasing backtracks yields zero coverage gain.
+*   **Action:** Sweep backtrack limits and merge effort.
+*   **Sweep Variables:** `set_atpg -abort_limit <10 | 100 | 500>`, `set_atpg -merge <off | high>`.
+*   **Observation Metrics:** `CPU Hours`, `Coverage Delta`.
+*   **Success Criteria:** Define the exact abort limit where the CPU/Coverage curve flattens.
+
+### EXP 2.4.2: Engine Randomization & Decision Making
+*   **Hypothesis:** Strict deterministic logic causes deadlocks that can be broken by stochastic diversity.
+*   **Action:** Compare standard run vs `run_atpg -random` and `set_atpg -decision random`.
+*   **Sweep Variables:** `run_atpg -random` (on/off), `set_atpg -decision <random | norandom>`.
+*   **Observation Metrics:** `Pattern Count` delta, `CPU Time` delta.
+*   **Success Criteria:** Prove randomization reduces pattern count without losing coverage.
+
+### EXP 2.4.3: Dynamic Pattern Optimization Override
+*   **Hypothesis:** The `-optimize_patterns` engine dynamically crushes pattern counts better than manual tuning, but at a massive CPU penalty.
+*   **Action:** Best manual settings vs `run_atpg -optimize_patterns`.
+*   **Sweep Variables:** `run_atpg -optimize_patterns` (on/off).
+*   **Observation Metrics:** `Pattern Count`, `CPU Time`.
+*   **Success Criteria:** Quantify the exact CPU multiplier required to achieve the minimum pattern set.
+
+---
+
+## EXP 2.5: Power, Fill & Unmodeled Defects [Task 1 Phase 6 & 8]
+*Balancing physical silicon safety with defect screening quality.*
+
+### EXP 2.5.1: Fill Strategy & Adjacent Range Tuning
+*   **Hypothesis:** Pure `adjacent` fill kills power but misses bridging defects. A hybrid range provides a middle ground.
+*   **Action:** Sweep fill range.
+*   **Sweep Variables:** `set_atpg -fill adjacent -adjacent_fill_range <1 | 3 | 5>`.
+*   **Observation Metrics:** `Capture Power %`, `Test Coverage %`.
+*   **Success Criteria:** Find the exact range where power drops below safe threshold, but coverage remains within 0.2% of random fill.
+
+### EXP 2.5.2: Strict Power Budgeting Penalty
+*   **Hypothesis:** Enforcing strict capture and shift power limits forces the engine to drop valid patterns.
+*   **Action:** Apply strict limits.
+*   **Sweep Variables:** `set_atpg -power_budget <30>`, `set_atpg -power_effort <high>`, `set_atpg -shift_power_budget <20>`.
+*   **Observation Metrics:** `Test Coverage %` drop, `CPU Time` spike.
+*   **Success Criteria:** Quantify the exact coverage penalty paid to guarantee the chip doesn't burn up.
+
+### EXP 2.5.3: The N-Detect Quality Sweep
+*   **Hypothesis:** Single-detect patterns rely on "lucky" states that might not catch small resistive bridges.
+*   **Action:** Sweep detection requirements.
+*   **Sweep Variables:** `run_atpg -ndetects <1 | 2 | 3>`.
+*   **Observation Metrics:** `Pattern Count` explosion curve.
+*   **Success Criteria:** Create the "Cost vs. Quality" plot proving N=2 is the optimal yield sweet spot.
+
+---
+
+## EXP 2.6: SDC Integration & Advanced Delay Physics [Task 1 Phase 5 & 11]
+*Resolving conflicts with Static Timing Analysis (STA).*
+
+### EXP 2.6.1: The AU Forensics Sweep
+*   **Hypothesis:** The STA team's SDC file is blocking valid paths, artificially inflating AU count.
+*   **Action:** Run `set_atpg -timing_exceptions_au_analysis` *before* `run_atpg`.
+*   **Sweep Variables:** `set_atpg -timing_exceptions_au_analysis` (on/off).
+*   **Observation Metrics:** Text report parsing: `Faults marked AU due to SDC false paths`.
+*   **Success Criteria:** Generate a hard list of specific paths to hand back to the STA team.
+
+### EXP 2.6.2: The "No Disturb" Electrical Purity Penalty
+*   **Hypothesis:** Allowing side-inputs to switch during launch injects crosstalk, masking the true speed limit.
+*   **Action:** Enforce strict off-path stability.
+*   **Sweep Variables:** `set_delay -nodisturb` (on/off).
+*   **Observation Metrics:** `Test Coverage %` cliff.
+*   **Success Criteria:** Document the absolute maximum "pure" at-speed coverage possible for this silicon.
+
+### EXP 2.6.3: The "Fake Coverage" Exposer (Speed Grading)
+*   **Hypothesis:** Using slow-shift timing to pass transition faults artificially inflates the sign-off report.
+*   **Action:** Enable slow equivalence.
+*   **Sweep Variables:** `set_delay -slow_equivalence` (on/off).
+*   **Observation Metrics:** `Test Coverage %` spike.
+*   **Success Criteria:** Calculate the exact delta between fast and slow coverage. Formally document as "Untested Speed Paths".
+
+---
+
+## EXP 2.7: Infrastructure, Flow Control & Diagnostics [Task 1 Phase 9 & 10]
+*Proving patterns are usable by the lab and stable on the server.*
+
+### EXP 2.7.1: The Factory Checkpoint Test
+*   **Hypothesis:** The orchestrator can safely kill a long ATPG run and resume it without data corruption.
+*   **Action:** Enable checkpointing. Start ATPG. At 5 mins, `kill -9` process. Restart.
+*   **Sweep Variables:** `set_atpg -checkpoint {300 file}`.
+*   **Observation Metrics:** Does TestMAX resume? Does final coverage match uninterrupted run?
+*   **Success Criteria:** 100% parity between interrupted and uninterrupted runs.
+
+### EXP 2.7.2: The Diagnostic Yield Trade-off
+*   **Hypothesis:** High compaction destroys diagnostic resolution, making failure analysis impossible.
+*   **Action:** Best setup vs diagnostic mode.
+*   **Sweep Variables:** `set_atpg -di_analysis`, `set_atpg -resim_atpg_pattern <test_gen>`.
+*   **Observation Metrics:** `Pattern Count` delta, `CPU Hours` delta.
+*   **Success Criteria:** Document the exact CPU/time penalty required to generate "Diag-Ready" patterns.
+
+### EXP 2.7.3: Chain Diagnosis Insertion
+*   **Hypothesis:** Standard ATPG does not test scan chain infrastructure for yield learning.
+*   **Action:** Append set/reset test insertion.
+*   **Sweep Variables:** `set_atpg -add_setreset_test` (on/off).
+*   **Observation Metrics:** Small increase in `Pattern Count`.
+*   **Success Criteria:** Verify distinct chain-diag patterns exist in STIL output.
+
+### EXP 2.7.4: Post-ATPG Test Point Analysis
+*   **Hypothesis:** After exhausting all flags, remaining AU faults can only be recovered by physically altering the RTL.
+*   **Action:** Run structural analysis on the final AU fault list.
+*   **Sweep Variables:** `analyze_test_points -target fault_class` (post-ATPG execution).
+*   **Observation Metrics:** Text report identifying exact nets requiring control/observe points.
+*   **Success Criteria:** Generate a formal request to RTL team for next tapeout revision.
+
+---
+*End of Task 2 Dossier. The complete, scientifically sound execution plan for the Task 1 Dictionary.*

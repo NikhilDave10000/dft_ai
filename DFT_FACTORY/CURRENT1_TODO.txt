@@ -1,0 +1,218 @@
+ATPG is an very big and complex optimization problem
+in context of tool and commands 
+below are some NOT ALL factors on which ATPG run depends and affects 
+Command	Options	Description
+set_atpg	[-abort_limit ]	"Controls ATPG search effort per fault. Defines how many backtracks (aborted decisions) are allowed. 
+Working : ATPG tries to generate a pattern by making assumptions, setting inputs and scan chain values, and determining whether controllability and observability can be attained.
+If assumption fails → backtrack (abort)
+Process repeats until: Pattern is found , Abort limit is reached . 
+Use default (10) for most designs , Increase for hard-to-detect faults
+Avoid very high values → runtime increases"
+	[-capture_cycle d]	"Controls Fast-Sequential ATPG effort level. 
+Values: 0 → Basic Scan (combinational, default)
+2–10 → Enables Fast-Sequential ATPG
+Recommended start: 4 (increase gradually to improve coverage)
+Higher value → better coverage but longer runtime.  Required for system_clock mode (d ≥ 2)
+d = 1 →  invalid
+If run_atpg -auto_compress → sets capture_cycles = 2 by default. If d > 2 :
+First runs 2-cycle ATPG (easy faults)
+Then higher cycles for remaining faults. 
+Guideline: Full scan → 2 is enough
+Partial scan / memory → use >2."
+		
+Basic Scan Mode : 		"Default ATPG mode
+Uses combinational ATPG
+Tests flip-flops individually (ignores sequential behavior)
+Scan chains bypass normal logic → fast testing & easy debug"
+set_atpg	[-resim_atpg_pattern <off | fault_sim | nofault_sim | test_gen>]	"Re-simulates generated patterns
+Masks mismatches → replaces with X
+Removes simulation failures. See more on Tmax_cmnds - 336"
+	[-abort_limit ]	Refer Row -2 
+ run_atpg	[ ]	"Use this command to generate ATPG patterns for current set of faults using the pattern source set by the
+set_patterns command. Runs Basic Scan by default."
+	basic_scan_only	"Performs only Basic-Scan pattern generation. Basic-Scan must be specified to take
+advantage of the default two-clock transition ATPG when running distributed ATPG for
+system clock transition. This option is silently ignored by TestMAX multithreading"
+	[-optimize_patterns]	"Generates compact pattern set with high coverage
+Automatically tunes internal settings (no manual tuning needed). 
+Working :Dynamically adjusts -
+Abort limit, Merge limit, Detect settings
+Replaces multiple ATPG iterations with single run.  
+Pattern Behavior :
+Generates 2-clock patterns (basic scan)
+Stored/simulated as fast-sequential patterns
+→ Fault simulation may take longer
+Limitations :
+No Fast-Sequential / Full-Sequential support
+Not supported in distributed ATPG
+Only stuck-at & transition faults
+Be aware that unlike the run_atpg -auto_compression command, specifying set_atpg -capture_cycle number will not enable Fast-Sequential ATPG during the pattern optimization process. To run Fast-Sequential top-off ATPG, it must be done as an extra step."
+set_simulation	[-basic_scan | -nobasic_scan]	
+write_patterns	[-sorted | -reorder file | -type <basic_scan| clock_on_measure | fast_sequential | full_sequential>]	
+		
+Fast_Sequential Mode :		"Used for partial-scan designs and to target AU (undetectable) faults after basic scan
+Enables multi-cycle fault detection using:
+set_atpg -capture_cycles <2–10>.
+report_summaries sequential_depths
+Use reported depth to choose optimal capture_cycles
+Example: depth = 3 → set capture_cycles = 3
+Behavior:
+run_atpg -auto_compress → default 2 cycles
+If capture_cycles > 2:
+First runs 2-cycle ATPG
+Then higher cycles for remaining faults"
+set_atpg	[-capture_cycle d]	Refer Row -3
+run_atpg	fast_sequential_only	Performs only Fast-Sequential pattern generation. A -capture_cycles > 1 should have been previously selected with the set_atpg command. If this is not the case, then a setting of 4 is applied by default and this setting persists for subsequent use of the run_atpg command.
+analyze_faults	[-fast_sequential]	"Selects Fast-Sequential ATPG methods for the analysis. The default behavior is to perform
+the analysis using Basic-Scan (combinational) ATPG methods"
+		
+Full_Sequential  Mode :		"Supports unlimited capture cycles between scan load & unload
+Provides highest fault coverage, especially for partial-scan designs
+Does not require full controllability of clocks/resets at primary inputs
+Full-Sequential with Transition Faults - Not controlled by:
+set_delay -launch_cycle
+If you want to avoid last-shift launch patterns and generate only system-clock launch patterns with the Full-Sequential engine, you must constrain all scan enable signals to their inactive values.
+If you want to generate only last-shift launch patterns and avoid all system-clock launch patterns, you should be aware that there is no way to guarantee that you will get only last-shift launch patterns with the Full-Sequential engine. Even those last-shift launch patterns that it might generate will not be identical in form to those generated by the Basic-Scan ATPG engine"
+set_atpg	[-full_seq_atpg | -nofull_seq_atpg]	Specifies whether the pattern generator attempts to use the Full-Sequential ATPG algorithm after the Basic-Scan and (optionally) the Fast-Sequential ATPG algorithms. The default is not to enable the Full-Sequential ATPG algorithm.
+run_atpg	full_sequential_only	"Causes only Full-Sequential pattern generation to be performed.
+The Full-Sequential algorithm should have been previously enabled with the -full_seq_atpg option of the set_atpg command. If this is not the case, then this option is enabled and persists for subsequent use of the run_atpg command. "
+analyze_faults	[-fast_sequential]	"Selects Full-Sequential ATPG methods for the analysis. The default behavior is to do the
+analysis using Basic-Scan (combinational) ATPG methods"
+		
+set_delay		"Use this command to specify options for transition fault and path delay fault test generation and fault
+simulation.
+"
+	[-pi_changes | -nopi_changes]	"pi_changes (default) :
+PIs can change between launch & capture
+Faster, but may cause invalid transitions (slow inputs)
+nopi_changes :
+PIs are held constant
+Improves pattern validity
+-nopi_changes:
+Adds extra unclocked cycle
+Increases ATPG complexity (more backtracking)
+Works only in system_clock mode
+No effect on last-shift launch patterns
+Not applied in Full-Sequential ATPG"
+add_pi_constraints		"Use this command to define constant logic values on top-level ports.
+Used to fix constant values on PIs/BIDI ports
+ATPG generates patterns only satisfying these constraints
+Behavior :
+Constraint acts as fixed value during capture cycles
+Also applied during:
+test_setup, load_unload, shift
+- Prevents unnecessary PI switching
+Clock pins → can be constrained only to OFF value
+X → used as input mask
+Can also define constraints in STIL file"
+	"<0 | 1 | x | z> [-all_bidis | -all_bidis_except_clocks |
+{port_names} | -all | -all_except_clocks]"	"Applies only to PIs and BIDI ports
+Multiple ports can be set only with same value
+Useful for:
+Removing X sources
+Controlling unused inputs
+Forcing safe states"
+remove_pi_constraints	<{port_names} | -all>	"Use this command to delete PI constraints previously added with the add_pi_constraints command or
+implicitly defined in the test protocol file."
+report_pi_constraints	[-command_report]	"reports all primary input and bidirectional ports that have been constrained either explicitly with
+the add_pi_constraints command or implicitly by the test protocol file.
+-command_report
+Causes the PI constraints to be reported in the form of add_pi_constraints commands
+that would be necessary to define the PI constraints."
+add_cell_constraints		"Used to control scan cell values during load/unload
+Applies constraints on scan chain elements (flip-flops)"
+	"<0 | 1 | x | 0x | 1x | ox | xx>
+<[ chain_name | instance_name>
+[-position {< cell_pos1 | sci> [ cell_pos2 | sci]>} | -all>>]
+[-index number]"	"Captured value can change during capture cycle
+Controls scan load values and/or unload observation
+ox → masks output only (no effect on logic)
+0x / 1x → fix load + mask observation
+xx → Load = X (don’t care)"
+remove_cell_constraints	<<chain_name <-position cell_position | instance_name | -all>>	delete cell constraints that were added with the add_cell_constraints command.
+report_cell_constraints		"report cell constraints added with the add_cell_constraints command. Any cell
+constraint that was not defined by name is reported as ""..."" under the site name."
+add_capture_masks	"{instance_path | gate_id | -scan {chain_name:index}}
+[-index number]
+[-load_only]"	"Used to mask values captured during capture clock
+Applies to scan and non-scan sequential cells
+During capture cycle → value is forced to X (ignored)
+During shift/load → value remains unchanged
+When to Use:
+Unknown values during capture
+Glitchy or unstable sequential elements"
+add_atpg_constraints	"name <0 | 1 | z>
+[-module name]
+<atpg_primitive_name | id | module_pinname | pin_pathname>
+[-drc | -iddq]
+[-no_detection_credit file_name]"	"Used to force specific values on internal nodes/signals during ATPG
+Constraints must be satisfied while generating patterns
+Can also be applied during DRC
+Working:
+Ensures a signal/node = 0 / 1 / Z during pattern generation
+Default: constraint checked at pre-clock (clock-on) time
+Behavior by Mode:
+Basic Scan / Fast-Sequential
+→ Constraint checked only at pre-clock
+→ Not strictly enforced after clock (for speed)
+Full-Sequential 
+→ Constraint must hold at:
+Pre-clock, Clock, Post-clock
+- More strict
+Options:
+-drc → also checked during DRC
+-iddq → applied only during IDDQ measurement"
+set_atpg	[-merge <off | low | medium | high | d [low | medium | high | d]>]	"Merging = combine multiple patterns into one (Basic-Scan and Fast-Sequential)
+Helps reduce pattern count without losing coverage. default is off (0).
+If the run_atpg -auto_compression command is being used, no merging will
+occur and there is no verbose output to report.
+1st  group → normal merging
+2nd group → used in -auto_compress (multi-fault)
+The first group of labels have corresponding numeric values of low=20,
+medium=100, and high=500. The second group of labels have corresponding numeric
+values of low=200, medium=1000, and high=5000. To help determine whether a chosen
+effort level is appropriate, you can use the -verbose option."
+		
+
+
+just like los had 16 cases just image if  we try to run expirments of such above factors and their impact on results , then thisgs grow rapidly , explode and difficult to manage 
+
+you have 2 tasks :
+1. list all other things (commands, options,etc scenarios,constraints,etc) that affect atpg run for a design for a model HEAVILY REFER TMAX_UG AND TMAX_CMDS MANUAL
+2.(answer this is next message response)
+i have curated a  list of experiments but they dont seem professional and intention is missing 
+i cant just on and on adding experiments blindly and increse number of iterations and sub experiments and end up failing to automate 
+below is a mininal exp list (JUST FOR LOS ) , review it and add or remove more such experiments , sub experiments and their order , intention ,etc
+EXP No.			Description
+2 (TDF)	2.1 (LOS)	2.1.1	Try -capture_cycle "any value" & then run_atpg -auto_compress 
+		2.1.2	Change vlaues of -capture_cycle and look the effect on LOC/LOS/LOES
+		2.1.2	"Use the sequential_depths options of the report_summaries command to
+identify the maximum depth for controlling, observing , and detecting faults (In Tmax-UG, Max depth is 3 so start from set_atpg -capture_cycle 3)"
+		2.1.3	Move some DT faults to AU faults then try -capture_cycle....
+		2.1.4	"#Use meaningful log names so analysis is easy:
+LOS
+#i2c_tmax_tr_LOS_<PI><PO><MASK><CONST>.log
+
+#Where:
+
+#PI → PI0 (nopi_changes) / PI1 (pi_changes)
+#PO → PO0 (nopo_measures) / PO1 (po_measures)
+#MASK → M1 (mask) / M0 (no mask)
+#CONST → C1 (constraint) / C0 (no constraint)
+
+#Example:
+
+#i2c_tmax_tr_LOS_PI0_PO0_M1_C1.log
+
+Definitions
+PI0 = -nopi_changes
+PI1 = -pi_changes
+PO0 = -nopo_measures
+PO1 = -po_measures
+M0 = no add_po_mask -all
+M1 = add_po_mask -all
+C0 = no add_pi_constrain
+C1 = add_pi_constrain 0 scan_en
+
+All 16 LOS log cases
+" 

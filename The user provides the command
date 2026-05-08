@@ -1,0 +1,1 @@
+cmd_line = "run_atpg -ndetects=10"

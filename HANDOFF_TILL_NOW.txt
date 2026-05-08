@@ -1,0 +1,1056 @@
+````md id="dft-ai-handoff-2026"
+# DFT AI Infrastructure — Full Engineering Handoff / Handover Report
+
+## Author
+Nikhil Dave
+
+## Date
+May 2026
+
+---
+
+# 0. Executive Summary
+
+This document captures the complete engineering journey of building a hybrid AI-assisted DFT engineering infrastructure from scratch.
+
+The work evolved from:
+- simple local LLM experiments
+
+into:
+- repo-aware AI workflows
+- hybrid local/cloud orchestration
+- OpenRouter/NVIDIA backend routing
+- Claude Code proxying
+- LiteLLM concepts
+- Aider workflows
+- repo analysis agents
+- provider abstraction
+- infrastructure debugging
+
+The journey included:
+- successful deployments
+- failed workflows
+- authentication failures
+- provider routing issues
+- OpenRouter model instability
+- WSL incompatibilities
+- repo-aware analysis validation
+- architecture reasoning evaluation
+- local-vs-cloud benchmarking
+
+This report serves as:
+- operational documentation
+- architecture summary
+- failure-analysis log
+- lessons learned
+- future roadmap
+- reproducibility guide
+
+---
+
+# 1. Initial Goal
+
+The original objective was:
+
+- use AI effectively for DFT engineering
+- analyze validator/TMAX codebase
+- accelerate onboarding into DFT flows
+- build practical coding workflows
+- combine local and cloud inference
+- create a production-style AI engineering stack
+
+The work gradually expanded into:
+- AI infrastructure experimentation
+- routing systems
+- proxy architectures
+- orchestration strategies
+- context management
+- provider abstraction
+
+---
+
+# 2. Initial Environment
+
+## System Context
+
+### Windows
+Native Windows PowerShell environment
+
+### WSL
+Ubuntu/WSL environment
+
+### Python
+Python virtual environments
+
+### Git
+Repo-aware workflows
+
+### DFT Project
+```text
+/mnt/c/Nikhil/DFT/dft_ai
+````
+
+---
+
+# 3. Initial Local AI Setup
+
+## Installed
+
+### Ollama
+
+Purpose:
+
+* local inference
+* offline workflows
+* fast iteration
+
+Installed local models:
+
+```text
+qwen2.5-coder:7b-instruct-q4_K_M
+```
+
+Later explored:
+
+```text
+deepseek-coder
+```
+
+---
+
+# 4. Initial Aider Integration
+
+## Goal
+
+Use:
+
+```text
+Aider + local models
+```
+
+for:
+
+* repo editing
+* DFT code assistance
+* validator exploration
+* structured edits
+
+---
+
+# 5. First Important Discovery — Aider Edit Formats
+
+Initial failures included:
+
+```text
+"The LLM did not conform to the edit format"
+```
+
+This became one of the most important lessons.
+
+---
+
+## Root Cause
+
+Small local 7B models struggle with:
+
+* diff format
+* SEARCH/REPLACE format
+* precise patch protocols
+
+---
+
+## Successful Fix
+
+Use:
+
+```bash
+--edit-format whole
+```
+
+instead of:
+
+```bash
+--edit-format diff
+```
+
+---
+
+## Final Stable Local Command
+
+```bash
+aider --model ollama/qwen2.5-coder:7b-instruct-q4_K_M \
+      --edit-format whole
+```
+
+---
+
+# 6. Git Workflow Testing
+
+## Tested
+
+* edit sessions
+* rollback
+* undo
+* commits
+* validation loops
+
+---
+
+## Important Discovery
+
+`/undo` inside Aider:
+
+* only works after commits
+* cannot undo before first commit
+
+Observed:
+
+```text
+This is the first commit in the repository. Cannot undo.
+```
+
+---
+
+## Recovery Strategy
+
+Use:
+
+```bash
+git checkout -- validator_l3.py
+```
+
+for hard rollback.
+
+---
+
+# 7. NVIDIA NIM Experiment
+
+## Motivation
+
+Move beyond local-only workflows.
+
+Goal:
+
+```text
+Claude-style coding frontend
++
+free/open backend models
+```
+
+---
+
+# 8. Repository Chosen
+
+Cloned:
+
+```text
+free-claude-code
+```
+
+Initially cloned into:
+
+```text
+nvidia-nim/
+```
+
+---
+
+# 9. Installed Components
+
+## uv
+
+Installed:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Verified:
+
+```bash
+uv --version
+```
+
+---
+
+## Python 3.14
+
+Installed:
+
+```bash
+uv python install 3.14
+```
+
+---
+
+## Claude Code CLI
+
+Installed globally:
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Encountered permission issues initially:
+
+```text
+EACCES: permission denied
+```
+
+Fixed using:
+
+```bash
+sudo npm install -g @anthropic-ai/claude-code
+```
+
+---
+
+# 10. NVIDIA NIM Initial Failure
+
+Initial startup:
+
+```bash
+uv run uvicorn server:app --host 0.0.0.0 --port 8082
+```
+
+Failed with:
+
+```text
+NVIDIA_NIM_API_KEY is not set
+```
+
+---
+
+## Resolution
+
+Created `.env`
+
+Added:
+
+```env
+NVIDIA_NIM_API_KEY="nvapi-..."
+MODEL="nvidia_nim/deepseek-ai/deepseek-v4-pro"
+ANTHROPIC_AUTH_TOKEN="freecc"
+```
+
+---
+
+# 11. Major WSL Failure Investigation
+
+## Symptom
+
+Claude Code launched but showed:
+
+```text
+Not logged in · Please run /login
+```
+
+Also:
+
+```text
+Auth token: none
+```
+
+---
+
+## Critical Observation
+
+Proxy server logs showed:
+
+```text
+NO incoming requests
+```
+
+Meaning:
+
+* Claude frontend rejected auth locally
+* requests never reached proxy
+
+---
+
+# 12. Massive Debugging Insight
+
+Originally believed:
+
+```text
+proxy architecture broken
+```
+
+Eventually discovered:
+
+```text
+WSL-specific Claude auth/session behavior
+```
+
+---
+
+# 13. Native Windows Breakthrough
+
+Running same commands in:
+
+```text
+PowerShell
+```
+
+suddenly worked.
+
+---
+
+## Definitive Proof
+
+Proxy logs:
+
+```text
+POST /v1/messages?beta=true HTTP/1.1" 200 OK
+```
+
+Meaning:
+
+* frontend connected
+* proxy worked
+* inference routed successfully
+
+---
+
+# 14. Key Insight
+
+WSL and native Windows behaved differently.
+
+Likely causes:
+
+* auth/session handling
+* TTY handling
+* credential persistence
+* localhost behavior
+* environment isolation
+
+---
+
+# 15. NVIDIA NIM Backend Evaluation
+
+## Working Model
+
+```env
+MODEL="nvidia_nim/deepseek-ai/deepseek-v4-pro"
+```
+
+---
+
+## Strengths
+
+* repo analysis
+* large-context reasoning
+* architecture understanding
+* validator tracing
+
+---
+
+## Weaknesses
+
+* extremely slow
+* intermittent provider failures
+* unstable free endpoint behavior
+
+Observed:
+
+```text
+Provider API request failed
+```
+
+---
+
+# 16. Response Quality Evaluation — NVIDIA
+
+Compared against:
+
+* local Qwen
+* cloud reasoning expectations
+
+Findings:
+
+* stronger architecture synthesis
+* much better repo traversal
+* decent semantic understanding
+* useful for DFT code exploration
+
+---
+
+# 17. OpenRouter Migration
+
+Decision:
+
+```text
+replace NVIDIA backend
+with OpenRouter
+using SAME proxy architecture
+```
+
+---
+
+# 18. OpenRouter Integration
+
+Modified `.env`
+
+Initial attempts failed due to:
+
+* outdated model IDs
+* repo validation mismatch
+* OpenRouter drift
+
+---
+
+# 19. Failed OpenRouter Models
+
+Failed examples:
+
+```text
+stepfun/step-3.5-flash:free
+meta-llama/llama-3.1-8b-instruct:free
+qwen/qwen-2.5-7b-instruct:free
+```
+
+Errors:
+
+```text
+problem=missing model
+```
+
+---
+
+# 20. Important Discovery — Provider Drift
+
+Learned:
+
+* OpenRouter model IDs evolve frequently
+* repos may cache stale provider catalogs
+* free models rotate aggressively
+
+This validated the "battle-hardened" guide lessons. 
+
+---
+
+# 21. Successful OpenRouter Backend
+
+Successfully working:
+
+```env
+MODEL="open_router/nvidia/nemotron-3-super-120b-a12b:free"
+```
+
+---
+
+# 22. Definitive Confirmation
+
+Claude responses eventually displayed:
+
+```text
+nvidia/nemotron-3-super-120b-a12b-20230311:free
+```
+
+This proved:
+
+* OpenRouter routing active
+* proxy functioning
+* backend replacement successful
+
+---
+
+# 23. Final Working Architecture
+
+```text
+Claude Code frontend
+        ↓
+free-claude-code proxy
+        ↓
+OpenRouter
+        ↓
+Nemotron 120B Free
+```
+
+---
+
+# 24. Major Technical Breakthrough
+
+Most important conceptual realization:
+
+```text
+frontend != provider != model != proxy
+```
+
+Layers are separable:
+
+* frontend
+* routing
+* orchestration
+* backend
+* inference model
+
+This was one of the biggest learning outcomes.
+
+---
+
+# 25. Real Repo Analysis Achieved
+
+Successfully analyzed:
+
+* validator.py
+* validator_l2.py
+* validator_l3.py
+* validator_l4.py
+
+Tasks included:
+
+* architecture tracing
+* hierarchy extraction
+* semantic flow analysis
+* state tracking
+* transition probability understanding
+* layered validator explanation
+
+---
+
+# 26. Example Successful Outputs
+
+Generated:
+
+```text
+tree-style class/function hierarchies
+```
+
+Example:
+
+```text
+validator_l4.py
+├── class L4Advisor
+│   ├── advise()
+│   ├── _check_state()
+│   ├── _check_transition()
+│   └── ...
+```
+
+This demonstrated:
+
+* AST-style understanding
+* hierarchy reconstruction
+* repo traversal capability
+
+---
+
+# 27. Nemotron Evaluation
+
+## Strengths
+
+### Strong
+
+* repo traversal
+* hierarchy understanding
+* architecture summarization
+* context retention
+* useful engineering explanations
+
+### Weak
+
+* repetition
+* some drift
+* less nuanced than Claude/Gemini
+* weaker abstraction quality
+
+---
+
+## Approximate Practical Rating
+
+```text
+7.5/10
+```
+
+for free routed large-context repo reasoning.
+
+---
+
+# 28. Local vs Cloud Comparison
+
+## Local Qwen
+
+### Good For
+
+* quick edits
+* scripting
+* rapid iteration
+* offline work
+
+### Poor For
+
+* architecture synthesis
+* large repo reasoning
+* long-context workflows
+
+---
+
+## Cloud Routing (Nemotron/OpenRouter)
+
+### Good For
+
+* architecture tracing
+* repo analysis
+* layered reasoning
+* semantic understanding
+
+### Poor For
+
+* speed
+* reliability
+* free-tier consistency
+
+---
+
+# 29. Battle-Hardened Workflow Learnings
+
+Confirmed many lessons from the advanced workflow document. 
+
+Especially:
+
+## Critical Findings
+
+### Aider
+
+* local models require `--edit-format whole`
+
+### LiteLLM
+
+* requires proxy extras
+
+### OpenRouter
+
+* model IDs drift
+
+### AI Workflow
+
+* hybrid workflows outperform single-model workflows
+
+### Architect Mode
+
+* cloud planner + local editor is highly promising
+
+---
+
+# 30. What Worked Best
+
+## Most Stable Local Workflow
+
+```bash
+aider --model ollama/qwen2.5-coder:7b-instruct-q4_K_M \
+      --edit-format whole
+```
+
+---
+
+## Most Powerful Repo Reasoning
+
+```text
+Claude Code
++
+OpenRouter
++
+Nemotron 120B
+```
+
+---
+
+## Best Practical Philosophy
+
+```text
+local for edits
+cloud for architecture
+```
+
+---
+
+# 31. Major Failures Encountered
+
+## WSL Claude auth failure
+
+Unresolved fully.
+
+---
+
+## OpenRouter model drift
+
+Frequent issue.
+
+---
+
+## NVIDIA free endpoint instability
+
+Very common.
+
+---
+
+## Local model patch instability
+
+Solved via:
+
+```text
+--edit-format whole
+```
+
+---
+
+# 32. Most Important Engineering Lessons
+
+## AI Infrastructure Reality
+
+Internet tutorials show:
+
+```text
+happy path
+```
+
+Reality involves:
+
+* provider failures
+* auth mismatches
+* routing bugs
+* context issues
+* stale model IDs
+* patch failures
+* orchestration decisions
+
+---
+
+# 33. Biggest Conceptual Shift
+
+Moved from:
+
+```text
+"using AI"
+```
+
+to:
+
+```text
+understanding AI engineering infrastructure
+```
+
+This included:
+
+* proxy architectures
+* routing
+* orchestration
+* backend abstraction
+* hybrid workflows
+* repo cognition
+
+---
+
+# 34. Practical Next Steps
+
+## High Priority
+
+### 1. Create startup scripts
+
+Examples:
+
+```text
+start-local-ai.ps1
+start-openrouter.ps1
+start-aider.sh
+```
+
+---
+
+### 2. Build proper LiteLLM routing
+
+Implement:
+
+* retries
+* fallback chains
+* provider abstraction
+* automatic failover
+
+---
+
+### 3. Add `.aiderignore`
+
+Prevent:
+
+* generated file indexing
+* useless repo-map inflation
+
+---
+
+### 4. Build project prompt library
+
+Examples:
+
+* ATPG tracing prompts
+* validator-debug prompts
+* semantic-analysis prompts
+
+---
+
+### 5. Explore Architect Mode
+
+Potential future best workflow:
+
+```text
+cloud planner
++
+local editor
+```
+
+---
+
+### 6. VSCode integrations
+
+Potential future tools:
+
+* Continue.dev
+* Cline
+* OpenWebUI
+
+---
+
+# 35. Current Recommended Workflow
+
+## Local Workflow
+
+Use for:
+
+* edits
+* scripting
+* small refactors
+* iterative debugging
+
+---
+
+## Cloud Workflow
+
+Use for:
+
+* architecture understanding
+* repo exploration
+* semantic tracing
+* cross-file reasoning
+
+---
+
+# 36. Final Infrastructure Status
+
+## Successfully Built
+
+✅ Ollama local workflow
+✅ Aider integration
+✅ Repo-aware local coding
+✅ Claude Code proxy routing
+✅ NVIDIA NIM backend
+✅ OpenRouter backend
+✅ Nemotron routing
+✅ Large-context repo analysis
+✅ Hybrid local/cloud workflows
+✅ AI infrastructure understanding
+
+---
+
+# 37. Final Takeaway
+
+The most important realization from the journey:
+
+```text
+AI-assisted engineering is not one magical model.
+It is the orchestration of multiple layers intelligently.
+```
+
+The work evolved into:
+
+* understanding systems
+* debugging infrastructure
+* combining tools
+* designing workflows
+* evaluating reasoning quality
+* controlling context and routing
+
+This transformed the project from:
+
+```text
+"AI experimentation"
+```
+
+into:
+
+```text
+a practical engineering cognition amplification system
+```
+
+---
+
+# 38. Appendix — Core Working Commands
+
+## Start Proxy
+
+```bash
+uv run uvicorn server:app --host 0.0.0.0 --port 8082
+```
+
+---
+
+## Launch Claude Code
+
+### PowerShell
+
+```powershell
+$env:ANTHROPIC_AUTH_TOKEN="freecc"
+$env:ANTHROPIC_BASE_URL="http://localhost:8082"
+$env:CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY="1"
+claude
+```
+
+---
+
+## Local Aider
+
+```bash
+aider --model ollama/qwen2.5-coder:7b-instruct-q4_K_M \
+      --edit-format whole
+```
+
+---
+
+# 39. Appendix — Most Important Proven Facts
+
+| Topic                | Result                  |
+| -------------------- | ----------------------- |
+| WSL auth             | unreliable              |
+| Native Windows       | works                   |
+| OpenRouter routing   | confirmed               |
+| NVIDIA routing       | confirmed               |
+| Nemotron backend     | working                 |
+| Local 7B             | useful for edits        |
+| Cloud models         | better for architecture |
+| Hybrid workflow      | best overall            |
+| Proxy architecture   | validated               |
+| Repo-aware reasoning | successful              |
+
+---
+
+# 40. Final Engineering Assessment
+
+At the end of this phase:
+
+* practical AI coding infrastructure was successfully built
+* provider abstraction was understood
+* repo-aware reasoning was validated
+* hybrid workflows proved effective
+* multiple real-world infrastructure failures were debugged and resolved
+
+The resulting system is now capable of:
+
+* DFT repo exploration
+* semantic architecture analysis
+* hybrid AI-assisted development
+* large-context engineering reasoning
+* local/cloud orchestration
+
+This concludes the Phase-2 engineering handoff.
+
+```
+```

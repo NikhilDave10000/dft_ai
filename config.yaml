@@ -1,0 +1,16 @@
+model_list:
+  - model_name: fast
+    litellm_params:
+      model: ollama/qwen2.5-coder:7b-instruct-q4_K_M
+      api_base: http://localhost:11434
+
+  - model_name: smart
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_key: os.environ/GEMINI_API_KEY
+
+  - model_name: best
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1

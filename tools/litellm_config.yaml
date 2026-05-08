@@ -1,0 +1,83 @@
+model_list:
+  # ── LOCAL (always available, zero cost) ──────────────────────
+  - model_name: fast
+    litellm_params:
+      model: ollama/qwen2.5-coder:7b-instruct-q4_K_M
+      api_base: http://localhost:11434
+      timeout: 120
+
+  - model_name: local-large
+    litellm_params:
+      model: ollama/qwen2.5:14b-instruct-q4_K_M
+      api_base: http://localhost:11434
+      timeout: 180
+
+  # ── GEMINI (1M token context) ─────────────────────────────────
+  - model_name: smart
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_key: os.environ/GEMINI_API_KEY
+      timeout: 60
+
+  # ── OPENROUTER MODELS (stable free/cheap tier) ────────────────
+  - model_name: best
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      timeout: 60
+
+  - model_name: fast-cloud
+    litellm_params:
+      model: openrouter/meta-llama/llama-3.1-8b-instruct:free
+      api_key: os.environ/OPENROUTER_API_KEY
+      api_base: https://openrouter.ai/api/v1
+      timeout: 30
+
+  # ── GROQ (ultra-fast) ─────────────────────────────────────────
+  - model_name: turbo
+    litellm_params:
+      model: groq/llama-3.1-70b-versatile
+      api_key: os.environ/GROQ_API_KEY
+      timeout: 30
+
+# ── FALLBACK ROUTING (auto-recovery on 429 / timeout) ──────────
+router_settings:
+  fallbacks:
+    - smart:
+        - best          # Gemini 429 → OpenRouter DeepSeek
+        - fast          # OpenRouter fails → local qwen
+
+    - best:
+        - turbo         # OpenRouter fails → Groq
+        - fast          # Groq fails → local
+
+    - turbo:
+        - fast          # Groq fails → local
+
+  retry_policy:
+    RateLimitError:
+      num_retries: 2
+      retry_after: 5
+    Timeout:
+      num_retries: 2
+
+  context_window_fallbacks:
+    - smart:
+        - best          # If prompt exceeds Gemini context → route to DeepSeek
+
+# ── MONITORING ───────────────────────────────────────────────────
+litellm_settings:
+  success_callback: []
+  failure_callback: []
+  request_timeout: 120
+  drop_params: true
+  cache: true
+  cache_params:
+    type: local
+
+# ── PROXY SERVER ─────────────────────────────────────────────────
+general_settings:
+  master_key: "sk-dft-local"
+  port: 8000
+  health_check_interval: 30

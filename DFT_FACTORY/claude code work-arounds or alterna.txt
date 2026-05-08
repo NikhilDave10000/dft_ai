@@ -1,0 +1,6 @@
+claude code work-arounds or alternatives 
+1. GLM-5.1 (https://chat.z.ai)
+2. claude.md (https://github.com/forrestchang/andrej-karpathy-skills)
+3. graphify: (https://docs.google.com/document/d/1Kk8WpWeX0uEHWVS1lK0voWapiwqzj3shOrRhaFQvIbY/edit?tab=t.0#heading=h.3pmamvo891r1)
+	pip install graphifyy && gaphify install
+	open any local ai , then in its terminal run /graphify .
