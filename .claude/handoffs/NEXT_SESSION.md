@@ -2,30 +2,47 @@
 
 ## Current Priority
 
-Stabilize namespace-aware document classification before parser router implementation.
+Implement MessageParser for the tmax_messages corpus.
+
+## Current Architecture State
+
+Stable systems:
+- namespace-aware classification
+- parser router
+- semantic IR extraction
+- ontology mapping
+- semantic validation
+- semantic chunking
+- message IR schema
+
+Validation status:
+- systems healthy: TRUE
+- semantic validation: PASS
 
 ## Immediate Next Task
 
-Refactor document_classifier.py:
-- classify by namespace first
-- apply filename heuristics second
-- eliminate global .htm → COMMAND_PAGE fallback
+Build MessageParser:
+- parse deterministic semantic anchors
+- generate MessageIR objects
+- preserve raw_sections telemetry
+- preserve parser_warnings telemetry
 
-## Current Known Problem
+## Verified Message Anchors
 
-COMMAND_PAGE count is inflated because semantic fallback is too aggressive across the entire corpus.
+Observed semantic anchors:
+- mtxt
+- severity
+- desc
+- whatnext
 
-## Expected Result After Fix
+## Expected Output Flow
 
-Approximate topology:
-- COMMAND_PAGE ≈ 244
-- GUIDE_PAGE = realistic
-- DRC_RULE = realistic
-- MESSAGE_REF = realistic
-
-## After Classification Stabilization
-
-Next major milestone:
-- parser_router.py
-- typed parser dispatch
-- multi-corpus semantic ingestion
+MESSAGE_REF
+    ↓
+MessageParser
+    ↓
+MessageIR
+    ↓
+message validation
+    ↓
+MESSAGE → COMMAND graph edges
